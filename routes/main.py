@@ -45,7 +45,7 @@ def login_employee():
     return render_template('index.html')
 
 # Employee Dashboard
-@main_bp.route('/dashboard-employee')
+@main_bp.route('/gia-dashboard')
 @login_required
 def dashboard_employee():
     month = request.args.get('month')  # Get selected month (format: YYYY-MM)
@@ -78,7 +78,7 @@ def logout():
     return redirect(url_for('main.home'))
 
 # Clock-In/Clock-Out Routes
-@main_bp.route('/clock_in')
+@main_bp.route('/clock-in')
 @login_required
 def clock_in():
     today = datetime.today().strftime('%A')  # Get current day
@@ -147,7 +147,7 @@ def clock_in():
     flash("Clocked in successfully!", "success")
     return redirect(url_for('main.dashboard_employee'))
     
-@main_bp.route('/clock_out')
+@main_bp.route('/clock-out')
 @login_required
 def clock_out():
     # Get today's clock-in record (First clock-in of the day)
@@ -203,7 +203,7 @@ def clock_out():
     return redirect(url_for('main.dashboard_employee'))
 
 # Break Tracking Feature (Disabled)
-@main_bp.route('/start_break')
+@main_bp.route('/start-break')
 @login_required
 def start_break():
     """Logs the start of an employee's break."""
@@ -223,7 +223,7 @@ def start_break():
 
     return redirect(url_for('main.dashboard_employee'))
 
-@main_bp.route('/end_break')
+@main_bp.route('/end-break')
 @login_required
 def end_break():
     """Logs the end of an employee's break."""
