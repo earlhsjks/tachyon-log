@@ -684,12 +684,17 @@ def view_logs():
     return render_template('admin/system_logs.html', logs=logs, rows_per_page=rows_per_page)
 
 # DTR Print
-@app.route('/dtr')
+from collections import defaultdict
+from flask import render_template, redirect, url_for
+from flask_login import login_required, current_user
+from datetime import datetime, timedelta
+
+@admin_bp.route('/export-pdf')
 @login_required
 def export_pdf():
     # Restrict access to superadmin and admin
     if current_user.role not in ["superadmin", "admin"]:
-        return redirect(url_for('main.home'))
+        return redirect(url_for('dashboard_admin'))
 
     users = User.query.order_by(User.employee_id).all()
     today = datetime.today()
@@ -706,53 +711,34 @@ def export_pdf():
     ).order_by(Attendance.clock_in).all()
 
     # Dictionary structure: {employee_id: {date: {"shift1": {"in": "", "out": ""}, "shift2": {"in": "", "out": ""}}}}
-    attendance_dict = defaultdict(lambda: defaultdict(lambda: {"shift1": {"in": "", "out": ""}, "shift2": {"in": "", "out": ""}}))
+    attendance_dict = defaultdict(lambda: defaultdict(lambda: {"shift1": {"in": None, "out": None}, "shift2": {"in": None, "out": None}}))
 
     for record in attendance_records:
         date_key = record.clock_in.date().strftime('%Y-%m-%d')
         employee_id = record.employee_id
 
+        # Ensure clock-in and clock-out are stored as datetime objects
+        clock_in_time = record.clock_in
+        clock_out_time = record.clock_out if record.clock_out else None
+
         if not attendance_dict[employee_id][date_key]["shift1"]["in"]:
-            attendance_dict[employee_id][date_key]["shift1"]["in"] = record.clock_in.strftime('%I:%M %p')
-            attendance_dict[employee_id][date_key]["shift1"]["out"] = record.clock_out.strftime('%I:%M %p') if record.clock_out else ""
+            attendance_dict[employee_id][date_key]["shift1"]["in"] = clock_in_time
+            attendance_dict[employee_id][date_key]["shift1"]["out"] = clock_out_time
         else:
-            attendance_dict[employee_id][date_key]["shift2"]["in"] = record.clock_in.strftime('%I:%M %p')
-            attendance_dict[employee_id][date_key]["shift2"]["out"] = record.clock_out.strftime('%I:%M %p') if record.clock_out else ""
+            attendance_dict[employee_id][date_key]["shift2"]["in"] = clock_in_time
+            attendance_dict[employee_id][date_key]["shift2"]["out"] = clock_out_time
 
     # Pair users (two per page)
     user_pairs = [users[i:i+2] for i in range(0, len(users), 2)]
 
     return render_template(
-        'dtr.html', 
+        'admin/dtr_report.html', 
         user_pairs=user_pairs, 
         month=month, 
         year=year, 
         total_days=total_days, 
         attendance_dict=attendance_dict
     )
-
-# Export Routes (PDF & Excel)
-@admin_bp.route('/export-pdf')
-@login_required
-def export_pdf():
-    if current_user.role not in ["superadmin", "admin"]:
-        return redirect(url_for('main.home'))
-
-    buffer = io.BytesIO()
-    p = canvas.Canvas(buffer, pagesize=letter)
-    y_position = 750
-    p.drawString(200, 800, "Employee Attendance Report")
-
-    records = Attendance.query.all()
-    for record in records:
-        text = f"Employee ID: {record.employee_id}, Clock In: {record.clock_in}, Clock Out: {record.clock_out or 'N/A'}"
-        p.drawString(50, y_position, text)
-        y_position -= 20
-
-    p.showPage()
-    p.save()
-    buffer.seek(0)
-    return send_file(buffer, as_attachment=True, download_name="attendance_report.pdf", mimetype='application/pdf')
 
 @admin_bp.route('/export-excel')
 @login_required

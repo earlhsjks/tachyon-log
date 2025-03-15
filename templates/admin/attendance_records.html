@@ -59,8 +59,7 @@
 
         <!-- Export Buttons -->
         <div class="export-buttons">
-            <a href="{{ url_for('admin.export_pdf', month=request.form.get('month') or datetime.today().strftime('%Y-%m')) }}" class="btn pdf-btn">
-                Export PDF
+            <a href="{{ url_for('admin.export_pdf') }}" target="_blank" class="btn">Export DTR</a>
             </a>
             <a href="{{ url_for('admin.export_excel', month=request.form.get('month') or datetime.today().strftime('%Y-%m')) }}" class="btn excel-btn">
                 Export Excel
