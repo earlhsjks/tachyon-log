@@ -159,7 +159,7 @@ def clock_out():
     ).order_by(Attendance.id.asc()).first()  # Get the earliest clock-in of the day
 
     if not last_record:
-        flash("No active clock-in found for today!", "danger")
+        flash("No active clock-in found for today!", "error")
         return redirect(url_for('main.dashboard_employee'))
 
     # Adjust first-time clock-in (-5 minutes)
@@ -210,7 +210,7 @@ def start_break():
     last_record = Attendance.query.filter_by(employee_id=current_user.employee_id).order_by(Attendance.id.desc()).first()
 
     if not last_record or last_record.clock_out:
-        flash("You must be clocked in before starting a break!", "danger")
+        flash("You must be clocked in before starting a break!", "warning")
         return redirect(url_for('main.dashboard_employee'))
 
     if last_record.break_start and not last_record.break_end:
@@ -230,7 +230,7 @@ def end_break():
     last_record = Attendance.query.filter_by(employee_id=current_user.employee_id).order_by(Attendance.id.desc()).first()
 
     if not last_record or not last_record.break_start:
-        flash("You must start a break before ending it!", "danger")
+        flash("You must start a break before ending it!", "warning")
         return redirect(url_for('main.dashboard_employee'))
 
     if last_record.break_end:
