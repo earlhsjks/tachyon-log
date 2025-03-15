@@ -4,7 +4,8 @@ from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 import pandas as pd
 import io
-from datetime import datetime, time
+from collections import defaultdict
+from datetime import datetime, time, timedelta
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from models.models import db, User, Attendance, Schedule, GlobalSettings, Logs
@@ -681,7 +682,55 @@ def view_logs():
     logs = query.limit(rows_per_page).all()
 
     return render_template('admin/system_logs.html', logs=logs, rows_per_page=rows_per_page)
- 
+
+# DTR Print
+@app.route('/dtr')
+@login_required
+def export_pdf():
+    # Restrict access to superadmin and admin
+    if current_user.role not in ["superadmin", "admin"]:
+        return redirect(url_for('main.home'))
+
+    users = User.query.order_by(User.employee_id).all()
+    today = datetime.today()
+    year, month = today.year, today.month
+
+    first_day = datetime(year, month, 1)
+    last_day = (first_day + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+    total_days = last_day.day
+
+    # Fetch all attendance records for the selected month
+    attendance_records = Attendance.query.filter(
+        Attendance.clock_in >= first_day,
+        Attendance.clock_in <= last_day
+    ).order_by(Attendance.clock_in).all()
+
+    # Dictionary structure: {employee_id: {date: {"shift1": {"in": "", "out": ""}, "shift2": {"in": "", "out": ""}}}}
+    attendance_dict = defaultdict(lambda: defaultdict(lambda: {"shift1": {"in": "", "out": ""}, "shift2": {"in": "", "out": ""}}))
+
+    for record in attendance_records:
+        date_key = record.clock_in.date().strftime('%Y-%m-%d')
+        employee_id = record.employee_id
+
+        if not attendance_dict[employee_id][date_key]["shift1"]["in"]:
+            attendance_dict[employee_id][date_key]["shift1"]["in"] = record.clock_in.strftime('%I:%M %p')
+            attendance_dict[employee_id][date_key]["shift1"]["out"] = record.clock_out.strftime('%I:%M %p') if record.clock_out else ""
+        else:
+            attendance_dict[employee_id][date_key]["shift2"]["in"] = record.clock_in.strftime('%I:%M %p')
+            attendance_dict[employee_id][date_key]["shift2"]["out"] = record.clock_out.strftime('%I:%M %p') if record.clock_out else ""
+
+    # Pair users (two per page)
+    user_pairs = [users[i:i+2] for i in range(0, len(users), 2)]
+
+    return render_template(
+        'dtr.html', 
+        user_pairs=user_pairs, 
+        month=month, 
+        year=year, 
+        total_days=total_days, 
+        attendance_dict=attendance_dict
+    )
+
 # Export Routes (PDF & Excel)
 @admin_bp.route('/export-pdf')
 @login_required
