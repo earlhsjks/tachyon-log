@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Time Record</title>
+    <style>
+        @page { size: 8.5in 11in; margin: 0.2in; }
+        body { font-family: "Arial Narrow", Arial, sans-serif; font-size: 9pt; font-weight: 350; margin: 0.2in; }
+        
+        .container { display: flex; justify-content: space-between; width: 100%; page-break-inside: avoid; }
+        
+        .dtr { width: 48%; text-align: center; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+        
+        th, td { border: 1px solid black; padding: 2px; text-align: center; }
+        
+        th { background-color: #f2f2f2; font-weight: 600; }
+        
+        .footer { text-align: left; font-size: 9pt; margin-top: 5px; }
+        
+        .signature { display: flex; justify-content: space-between; margin-top: 10px; }
+        
+        .signature div { text-align: center; flex: 1; }
+        
+        .unit-head { text-align: center; font-weight: 600; margin-top: 5px; }
+        
+        .underline { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+{% for pair in user_pairs %}
+    <div class="container">
+        {% for user in pair %}
+        <div class="dtr">
+            <h2>GIA/WS PROGRAM</h2>
+            <h2>NOTRE DAME OF MARBEL UNIVERSITY</h2>
+            <h2>City of Koronadal, South Cotabato</h2>
+            <h3>DAILY TIME RECORD</h3>
+            <h4 class="name">{{ user.username }} - {{ user.employee_id }}</h4>
+            <h5 class="subtitle">Name</h5>
+            <div class="month-label">For the month of {{ month }}/{{ year }}</div>
+
+            <table>
+                <tr>
+                    <th rowspan="2">DATE</th>
+                    <th colspan="4">TIME</th>
+                    <th colspan="2">TOTAL</th>
+                </tr>
+                <tr>
+                    <th>IN</th><th>OUT</th><th>IN</th><th>OUT</th><th>HOURS</th><th>MINS</th>
+                </tr>
+                {% for day in range(1, total_days+1) %}
+                    {% set date_key = "%04d-%02d-%02d" % (year, month, day) %}
+                    {% set shift1 = attendance_dict[user.employee_id][date_key]["shift1"] %}
+                    {% set shift2 = attendance_dict[user.employee_id][date_key]["shift2"] %}
+
+                    <tr>
+                        <td>{{ day }}</td>
+                        <td>{{ shift1["in"] }}</td>
+                        <td>{{ shift1["out"] }}</td>
+                        <td>{{ shift2["in"] }}</td>
+                        <td>{{ shift2["out"] }}</td>
+                        <td></td><td></td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <div class="footer">
+                <p>I certify that the above is true and correct.</p>
+                <div class="signature">
+                    <div>
+                        <p>_________________________</p>
+                        <p>Signature</p>
+                    </div>
+                    <div>
+                        <p class="underline">Com. Lab - Main</p>
+                        <p>Work Assignment</p>
+                    </div>
+                </div>
+                <div class="unit-head">
+                    <p class="underline">JAYSON P. NOSIS</p>
+                    <p>Unit Head</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="page-break-after: always;"></div> <!-- Forces new page for next two users -->
+{% endfor %}
+
+<script>
+    window.onload = function() {
+        window.print();
+    };
+</script>
+
+</body>
+</html>
