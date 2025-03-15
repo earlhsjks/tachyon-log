@@ -1,0 +1,12 @@
+flask
+flask-login
+flask-migrate
+flask-sqlalchemy
+flask_socketio 
+flask-session
+pandas
+pymysql
+reportlab
+werkzeug
+waitress
+xlsxwriter

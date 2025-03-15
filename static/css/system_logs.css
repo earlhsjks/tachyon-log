@@ -1,0 +1,170 @@
+/* ========== GLOBAL STYLES ========== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Theme Colors */
+:root {
+    --primary-color: #388e3c; /* Green */
+    --accent-color: #ffb300; /* Gold */
+    --background-color: #f4f4f4;
+    --card-background: #ffffff;
+    --text-color: #333;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+    --radius: 10px;
+    --transition: all 0.3s ease-in-out;
+    --table-width: 100%;
+}
+
+/* ========== PAGE LAYOUT ========== */
+body {
+    background: var(--background-color);
+    padding: 20px;
+}
+
+/* Centered Container */
+.container {
+    width: 100%;
+    max-width: 1500px;
+    margin: auto;
+    margin-top: 80px;
+}
+
+/* ========== SECTION TITLE ========== */
+h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* ========== DATE FILTER FORM ========== */
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: var(--card-background);
+    padding: 15px;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px var(--shadow-light);
+    margin-bottom: 20px;
+}
+
+/* Date Input */
+input[type="date"] {
+    padding: 10px;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius);
+    font-size: 16px;
+    outline: none;
+    transition: var(--transition);
+    background: white;
+}
+
+/* Button */
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+button:hover {
+    background: var(--accent-color);
+    box-shadow: 0 4px 8px var(--shadow-dark);
+}
+
+/* ========== LOG TABLE ========== */
+table {
+    width: var(--table-width);
+    border-collapse: collapse;
+    background: var(--card-background);
+    box-shadow: 0 4px 10px var(--shadow-light);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+/* Table Header */
+thead {
+    background: var(--primary-color);
+    color: white;
+}
+
+thead th {
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Table Body */
+tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+tbody tr:hover {
+    background: rgba(56, 142, 60, 0.1);
+}
+
+/* Table Cells */
+td {
+    padding: 12px;
+    font-size: 16px;
+    color: var(--text-color);
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+/* ========== NO LOGS MESSAGE ========== */
+p {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-color);
+    background: white;
+    padding: 15px;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    .container {
+        max-width: 95%;
+    }
+
+    form {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    input[type="date"],
+    button {
+        width: 100%;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    thead th {
+        font-size: 14px;
+    }
+
+    td {
+        padding: 10px;
+    }
+}

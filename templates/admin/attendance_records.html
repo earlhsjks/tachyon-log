@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Records{% endblock %}
+{% block page_title %}Attendance Records{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/attendance_records.css') }}">
+
+    <div class="container">
+        <h3>Attendance Records</h3>
+
+        <!-- Month Filter -->
+        <form method="POST" class="filter-form">
+            <label>Select Month:</label>
+            <input type="month" id="month" name="month" value="{{ request.args.get('month', current_month) }}" class="filter-input">
+            <button type="submit">Filter</button>
+        </form>
+
+        <!-- Attendance Table -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Clock In</th>
+                        <th>Clock Out</th>
+                        <th>Total Hours</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('admin.view_user_logs', employee_id=record.employee_id) }}">
+                                {{ record.username }}
+                            </a>
+                        </td>
+                        <td>{{ record.clock_in.strftime('%I:%M %p') }}</td>
+                        <td>
+                            {{ record.clock_out.strftime('%I:%M %p') if record.clock_out else 'N/A' }}
+                        </td>
+                        <td>
+                            {% if record.clock_in and record.clock_out %}
+                                {{ ((record.clock_out - record.clock_in).seconds // 3600)|int }}h
+                                {{ ((record.clock_out - record.clock_in).seconds % 3600) // 60 }}m
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.edit_attendance', record_id=record.employee_id) }}" class="edit-btn">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Export Buttons -->
+        <div class="export-buttons">
+            <a href="{{ url_for('admin.export_pdf', month=request.form.get('month') or datetime.today().strftime('%Y-%m')) }}" class="btn pdf-btn">
+                Export PDF
+            </a>
+            <a href="{{ url_for('admin.export_excel', month=request.form.get('month') or datetime.today().strftime('%Y-%m')) }}" class="btn excel-btn">
+                Export Excel
+            </a>
+        </div>
+    </div>
+{% endblock %}

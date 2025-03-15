@@ -1,0 +1,178 @@
+/* ========== GLOBAL STYLES ========== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Theme Colors */
+:root {
+    --primary-color: #388e3c; /* Green */
+    --accent-color: #ffb300; /* Gold */
+    --background-color: #f4f4f4;
+    --card-background: #ffffff;
+    --text-color: #333;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+    --radius: 10px;
+    --transition: all 0.3s ease-in-out;
+}
+
+/* ========== PAGE LAYOUT ========== */
+body {
+    background: var(--background-color);
+    padding: 20px;
+}
+
+/* Centered Container */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Section Title */
+h3 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* ========== FILTER FORM ========== */
+.filter-form {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+
+.filter-form input {
+    padding: 10px;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius);
+    font-size: 16px;
+    outline: none;
+}
+
+.filter-form button {
+    padding: 10px 16px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-form button:hover {
+    background: var(--accent-color);
+}
+
+/* ========== ATTENDANCE TABLE ========== */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-background);
+    box-shadow: 0 4px 10px var(--shadow-light);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+/* Alternating Row Colors */
+tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+tbody tr:hover {
+    background: rgba(56, 142, 60, 0.1);
+}
+
+/* Edit Button */
+.edit-btn {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--radius);
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.edit-btn:hover {
+    background: var(--accent-color);
+}
+
+/* ========== EXPORT BUTTONS ========== */
+.export-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.pdf-btn {
+    background: #d32f2f;
+    color: white;
+}
+
+.pdf-btn:hover {
+    background: #b71c1c;
+}
+
+.excel-btn {
+    background: #1976d2;
+    color: white;
+}
+
+.excel-btn:hover {
+    background: #125ea3;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    .export-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+}

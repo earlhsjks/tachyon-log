@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+
+    <!-- Base CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
+    <!-- Boxicons & FontAwesome -->
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <div id="toast-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="toast {{ category }}">
+                        <span class="toast-message">{{ message }}</span>
+                        <div class="toast-progress"></div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <i class="bx bx-menu menu-icon"></i>
+            <span class="logo-name">{% block page_title %}Dashboard{% endblock %}</span> <!-- Dynamic Navbar Title -->
+        </div>
+
+        <div class="sidebar">
+            <div class="logo">
+                <i class="bx bx-menu menu-icon"></i>
+                <span class="logo-name">Tachyon Log</span>  <!-- Static Title -->
+            </div>
+
+            <div class="sidebar-content">
+                <ul class="lists">
+                    <li class="list"><a href="{{ url_for('admin.admin_dashboard') }}" class="nav-link"><i class="bx bx-home-alt icon"></i> <span class="link">Dashboard</span></a></li>
+                    <li class="list"><a href="{{ url_for('admin.admin_employees') }}" class="nav-link"><i class="bx bx-id-card icon"></i> <span class="link">Users</span></a></li>
+                    <li class="list"><a href="{{ url_for('admin.admin_attendance') }}" class="nav-link"><i class="bx bx-time-five icon"></i> <span class="link">Attendance</span></a></li>
+                    <li class="list"><a href="{{ url_for('admin.settings') }}" class="nav-link"><i class="bx bx-cog icon"></i> <span class="link">Settings</span></a></li>
+                    <li class="list"><a href="{{ url_for('admin.view_logs') }}" class="nav-link"><i class="bx bx-folder-open icon"></i> <span class="link">Logs</span></a></li>
+                </ul>
+
+                <div class="bottom-content">
+                    <li class="list"><a href="{{ url_for('admin.account_settings') }}" class="nav-link"><i class="bx bx-user icon"></i> <span class="link">Account</span></a></li>
+                    <li class="list"><a href="{{ url_for('main.logout') }}" class="nav-link"><i class="bx bx-log-out icon"></i> <span class="link">Logout</span></a></li>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Overlay for Sidebar -->
+    <section class="overlay"></section> 
+
+    <!-- Main Content Block -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- JavaScript for Sidebar -->
+    <script>
+        const navBar = document.querySelector("nav"),
+            menuBtns = document.querySelectorAll(".menu-icon"),
+            overlay = document.querySelector(".overlay");
+
+        menuBtns.forEach((menuBtn) => {
+            menuBtn.addEventListener("click", () => {
+                navBar.classList.toggle("open");
+            });
+        });
+
+        overlay.addEventListener("click", () => {
+            navBar.classList.remove("open");
+        });
+    </script>
+
+</body>
+</html>

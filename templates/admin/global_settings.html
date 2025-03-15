@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Global Settings{% endblock %}
+{% block page_title %}Global Settings{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global_settings.css') }}">
+
+    <div class="container">
+        <div class="card">
+            <h2>Global Settings</h2>
+
+            <form method="POST" action="{{ url_for('admin.settings') }}" class="settings-form">
+                <!-- ✅ Toggle Switch Settings -->
+                <label class="checkbox-label">
+                    Enforce Strict Schedule
+                    <input type="checkbox" name="enable_strict_schedule" {% if settings.enable_strict_schedule %}checked{% endif %}>
+                    <span class="toggle-switch"></span>
+                </label>
+
+                    <label class="checkbox-label">
+                        Allow Early Clock-Out
+                        <input type="checkbox" name="allow_early_out" {% if settings.allow_early_out %}checked{% endif %}>
+                        <span class="toggle-switch"></span>
+                    </label>
+
+                    <label class="checkbox-label">
+                        Allow Overtime
+                        <input type="checkbox" name="allow_overtime" {% if settings.allow_overtime %}checked{% endif %}>
+                        <span class="toggle-switch"></span>
+                    </label>
+                </div>                
+
+                <!-- ✅ Allowed Early In (Minutes) -->
+                <h3>Allowed Early In</h3>
+                <div class="form-group">
+                    <label>Minutes Before Scheduled Time:</label>
+                    <input type="number" name="allowed_early_in" min="0" max="120"
+                        value="{{ settings.allowed_early_in if settings.allowed_early_in is not none else 0 }}">
+                </div>
+
+                <!-- ✅ Default Work Schedule -->
+                <h3>Default Work Schedule</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Time:</label>
+                        <input type="time" name="default_schedule_start" 
+                            value="{{ settings.default_schedule_start.strftime('%H:%M') if settings.default_schedule_start else '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>End Time:</label>
+                        <input type="time" name="default_schedule_end" 
+                            value="{{ settings.default_schedule_end.strftime('%H:%M') if settings.default_schedule_end else '' }}">
+                    </div>
+                </div>
+
+                <button type="submit" class="save-btn">Save Settings</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}User Attendance{% endblock %}
+{% block page_title %}User Attendance{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_attendance.css') }}">
+
+    <div class="container">
+
+        <h2>Viewing Attendance for: {{ user.username }}</h2>
+        
+        <form method="POST" action="{{ url_for('admin.edit_attendance') }}">
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Clock In</th>
+                            <th>Clock Out</th>
+                            <th>Total Hours</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if attendance %}
+                            {% for record in attendance %}
+                            <tr>
+                                <td>{{ record.clock_in.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <input type="hidden" name="record_id" value="{{ record.id }}">
+                                    <input type="time" name="clock_in_{{ record.id }}" value="{{ record.clock_in.strftime('%H:%M') }}">
+                                </td>
+                                <td>
+                                    <input type="time" name="clock_out_{{ record.id }}" value="{{ record.clock_out.strftime('%H:%M') if record.clock_out else '' }}">
+                                </td>
+                                <td>
+                                    {% if record.clock_in and record.clock_out %}
+                                        {{ ((record.clock_out - record.clock_in).seconds // 3600)|int }}h 
+                                        {{ ((record.clock_out - record.clock_in).seconds % 3600) // 60 }}m
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button type="submit" name="save" value="{{ record.id }}" class="save-btn">Save</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="no-records">No attendance records found.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+{% endblock %}

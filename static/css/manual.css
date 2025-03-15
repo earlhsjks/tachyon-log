@@ -1,0 +1,137 @@
+/* ========== GLOBAL STYLES ========== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
+}
+
+/* ========== BODY & PAGE LAYOUT ========== */
+body {
+    background: #f4f4f4;
+    color: #333;
+    padding: 20px;
+}
+
+/* Centered Container */
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ========== HEADER ========== */
+header {
+    text-align: center;
+    padding: 20px;
+    background: #388e3c;
+    color: white;
+    border-radius: 10px 10px 0 0;
+}
+
+/* ========== NAVIGATION ========== */
+nav {
+    background: #ffb300;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+nav ul li a:hover {
+    background: #333;
+}
+
+/* ========== MAIN CONTENT ========== */
+main {
+    padding: 20px;
+}
+
+/* Sections */
+section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #388e3c;
+    border-bottom: 3px solid #ffb300;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+h3 {
+    color: #555;
+    margin-top: 15px;
+}
+
+/* Lists */
+ul {
+    padding-left: 20px;
+}
+
+ul li {
+    margin: 5px 0;
+}
+
+/* ========== FOOTER ========== */
+footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+    background: #388e3c;
+    color: white;
+    border-radius: 0 0 10px 10px;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    section {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+}

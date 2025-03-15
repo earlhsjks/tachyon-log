@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIA User Manual</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account_settings.css') }}">
+</head>
+<body>
+    <header>
+        <h1>GIA User Manual</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#introduction">Introduction</a></li>
+            <li><a href="#employee-guide">Employee Guide</a></li>
+            <li><a href="#admin-guide">Administrator Guide</a></li>
+            <li><a href="#rules">Rules & Regulations</a></li>
+            <li><a href="#support">Support</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>Welcome to the GIA system. This platform manages attendance, schedules, and employee records efficiently.</p>
+        </section>
+        
+        <section id="employee-guide">
+            <h2>Employee Guide</h2>
+            <h3>Clocking In & Out</h3>
+            <p>To clock in, navigate to the dashboard and click the "Clock In" button. To clock out, click "Clock Out."</p>
+            <h3>Attendance Records</h3>
+            <p>Employees can view their attendance logs and report discrepancies to their supervisor.</p>
+        </section>
+        
+        <section id="admin-guide">
+            <h2>Administrator Guide</h2>
+            <h3>Managing Employees</h3>
+            <p>Admins can add, edit, or remove employees from the system.</p>
+            <h3>Attendance Oversight</h3>
+            <p>Admins can monitor attendance, force clock-out, and generate reports.</p>
+        </section>
+        
+        <section id="rules">
+            <h2>Rules & Regulations</h2>
+            <ul>
+                <li>Employees must clock in and out on time.</li>
+                <li>Unauthorized absences will be recorded and reported.</li>
+                <li>Admins must ensure data accuracy and confidentiality.</li>
+            </ul>
+        </section>
+        
+        <section id="support">
+            <h2>Support</h2>
+            <p>For assistance, contact the IT department or refer to the help section in the dashboard.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 GIA System. All rights reserved.</p>
+    </footer>
+</body>
+</html>

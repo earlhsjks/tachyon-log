@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Tachyon Log - Account Settings{% endblock %}
+{% block page_title %}Account Settings{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account_settings.css') }}">
+
+    <div class="container">
+        <h2>Change Password</h2>
+
+        <form method="POST" action="{{ url_for('admin.account_settings') }}">
+            <label for="current_password">Current Password:</label>
+            <input type="password" name="current_password" required>
+
+            <label for="new_password">New Password:</label>
+            <input type="password" name="new_password" required>
+
+            <label for="confirm_password">Confirm New Password:</label>
+            <input type="password" name="confirm_password" required>
+
+            <button type="submit">Update Password</button>
+        </form>
+    </div>
+{% endblock %}

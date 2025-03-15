@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tachyon Log</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="icon" type="image/png" href="static/favicon.png">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="title">Tachyon Log</h1>
+        <p class="subtitle">Computer Center DTR System</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="login-box">
+            <div style="margin-bottom:20px;"><h2>Login</h2></div>
+            <form action="{{ url_for('main.login_employee') }}" method="POST">
+                
+                <!-- Floating Label Input -->
+                <div class="input-container">
+                    <i class="fas fa-id-badge"></i>
+                    <input type="text" name="employee_id" id="employee_id" placeholder=" " required autocomplete="off">
+                    <label for="employee_id">School ID</label>
+                </div>
+                
+                <button type="submit">Login</button>
+            </form>
+
+            <p class="admin-link">
+                <a href="{{ url_for('admin.login') }}">Admin Login</a>
+            </p>
+        </div>
+
+        <footer>
+            <p>Created by <strong>Earl Jeno Garcia</strong></p>
+        </footer>
+    </div>
+</body>
+</html>

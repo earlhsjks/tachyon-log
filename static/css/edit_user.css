@@ -1,0 +1,303 @@
+/* ========== GLOBAL STYLES ========== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Theme Colors */
+:root {
+    --primary-color: #388e3c; /* Green */
+    --accent-color: #ffb300; /* Gold */
+    --danger-color: #d32f2f; /* Red */
+    --background-color: #f4f4f4;
+    --card-background: #ffffff;
+    --text-color: #333;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+    --radius: 10px;
+    --transition: all 0.3s ease-in-out;
+}
+
+/* ========== PAGE LAYOUT ========== */
+body {
+    background: var(--background-color);
+    padding: 20px;
+    display: flex;
+    justify-content: center; /* Centers content horizontally */
+    align-items: flex-start; /* Aligns content at the top */
+    min-height: 100vh;
+}
+
+/* Centered Container */
+.container {
+    width: 100%;
+    max-width: 700px; /* Keeps it responsive */
+    background: var(--card-background);
+    padding: 25px;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 10px var(--shadow-light);
+    margin-top: 80px; /* Prevents overlap with nav */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Ensure Main Content is Positioned Correctly */
+main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* ========== HEADER ROW ========== */
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Back Button */
+.back-btn {
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between icon and text */
+    transition: var(--transition);
+}
+
+/* Back Button Hover */
+.back-btn:hover {
+    color: var(--accent-color);
+}
+
+/* Back Button Icon */
+.back-btn i {
+    font-size: 24px;
+}
+
+/* ========== FORM STYLES ========== */
+.edit-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left;
+}
+
+/* Form Groups */
+.form-group {
+    width: 100%;
+}
+
+/* Two-Column Row for ID & Role */
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Labels */
+label {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-color);
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Input & Select Fields */
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius);
+    font-size: 16px;
+    outline: none;
+    transition: var(--transition);
+    background: white;
+}
+
+/* Input Focus Effect */
+input:focus, select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(255, 179, 0, 0.4);
+}
+
+/* ========== SCHEDULE DESIGN ========== */
+.schedule-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Schedule Row */
+.schedule-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.schedule-row label {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Time Inputs */
+.schedule-row input {
+    flex: 2;
+}
+
+/* ========== BROKEN SCHEDULE ========== */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-background);
+    box-shadow: 0 4px 10px var(--shadow-light);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+/* Table Header */
+thead {
+    background: var(--primary-color);
+    color: white;
+}
+
+thead th {
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+/* Table Body */
+tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+tbody tr:hover {
+    background: rgba(56, 142, 60, 0.1);
+}
+
+/* Table Cells */
+td {
+    padding: 12px;
+    font-size: 16px;
+    color: var(--text-color);
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+/* Remove Button */
+.removeSchedule {
+    background: var(--danger-color);
+    color: white;
+    padding: 6px 10px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.removeSchedule:hover {
+    background: #b71c1c;
+}
+
+/* Add Broken Schedule Button */
+#addSchedule {
+    width: 40%;
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: white;
+    background-color: darkgray;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 5px;
+    align-self: center;
+}
+
+/* ========== ACTION BUTTONS ========== */
+.action-row {
+    display: flex;
+    justify-content: space-between; /* Ensures spacing */
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Ensure both buttons are the same width */
+.action-row form {
+    flex: 1;
+}
+
+/* Update Button */
+.save-btn {
+    width: 70%;
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.save-btn:hover {
+    background: var(--accent-color);
+    box-shadow: 0 4px 8px var(--shadow-dark);
+}
+
+/* Delete Button */
+.delete-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 600;
+    background: var(--danger-color);
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.delete-btn:hover {
+    background: #b71c1c;
+    box-shadow: 0 4px 8px var(--shadow-dark);
+}
+
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    .container {
+        max-width: 90%;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .action-row {
+        flex-direction: column;
+    }
+}

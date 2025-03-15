@@ -1,0 +1,147 @@
+/* ========== GLOBAL STYLES ========== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Theme Colors */
+:root {
+    --primary-color: #388e3c;
+    --accent-color: #ffb300;
+    --background-color: #f4f4f4;
+    --card-background: #ffffff;
+    --text-color: #333;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+    --radius: 10px;
+    --transition: all 0.3s ease-in-out;
+}
+
+/* ========== PAGE LAYOUT ========== */
+body {
+    background: var(--background-color);
+    padding: 20px;
+    margin-top: 80px;
+}
+
+/* Maximize the screen width */
+.dashboard-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Table Container */
+.table-container {
+    background: var(--card-background);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 10px var(--shadow-light);
+}
+
+/* Section Title */
+h3 {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+/* ========== ATTENDANCE TABLE ========== */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-background);
+    box-shadow: 0 4px 10px var(--shadow-light);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+/* Alternating Row Colors */
+tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+tbody tr:hover {
+    background: rgba(56, 142, 60, 0.1);
+}
+
+/* No Data Message */
+.no-data-message {
+    text-align: center;
+    font-weight: 600;
+    padding: 15px;
+    color: var(--text-color);
+}
+
+/* ========== FORCE CLOCK OUT BUTTON ========== */
+.force-clock-out-btn {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--radius);
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.force-clock-out-btn:hover {
+    background: var(--accent-color);
+}
+
+.review-user-btn {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--radius);
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.review-user-btn:hover {
+    background: var(--accent-color);
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 10px;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    .force-clock-out-btn {
+        padding: 6px 10px;
+    }
+}

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Records{% endblock %}
+{% block page_title %}User Management{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/manage_employees.css') }}">
+
+<div class="container">
+    <h2>User Management</h2>
+
+    <!-- Success & Error Notifications -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <script>
+                window.onload = function() {
+                    {% for category, message in messages %}
+                        showNotification("{{ message }}", "{{ category }}");
+                    {% endfor %}
+                };
+            </script>
+        {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        <h3>Add User</h3>
+
+        <form method="POST" action="{{ url_for('admin.add_user') }}" class="add-employee-form">
+            <!-- Full Name -->
+            <div class="form-group">
+                <label>First Name:</label>
+                <input type="text" name="username" required autocomplete="off">
+            </div>
+
+            <!-- Employee ID & Role in One Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Employee ID:</label>
+                    <input type="text" name="employee_id" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Role:</label>
+                    <select name="role" required>
+                        <option value="employee">Employee</option>
+                        <option value="manager">Manager</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit">Add User</button>
+        </form>
+    </div>
+
+    <!-- Employee List -->
+    <div class="card">
+        <h3>Employee List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Full Name</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users if user.role != 'admin' %}
+                <tr>
+                    <td>{{ user.employee_id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_user', employee_id=user.employee_id) }}" class="edit-btn">Edit</a>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4">No employees found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Admin List -->
+    <div class="card">
+        <h3>Admin List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Admin ID</th>
+                    <th>Full Name</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users if user.role == 'admin' or user.role == 'manager' %}
+                <tr>
+                    <td>{{ user.employee_id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.edit_user', employee_id=user.employee_id) }}" class="edit-btn">Edit</a>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4">No admins found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

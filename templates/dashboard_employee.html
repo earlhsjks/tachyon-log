@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tachyon Log - Attendance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_employee.css') }}">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+</head>
+<body>
+
+    <!-- Logout Button (Moved to Body) -->
+    <a href="{{ url_for('main.logout') }}" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+
+    <div id="toast-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="toast {{ category }}">
+                        <span class="toast-message">{{ message }}</span>
+                        <div class="toast-progress"></div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Header Section -->
+    <div class="header-container">
+        {{ name }}
+    </div>
+
+    <!-- Live Clock & Date -->
+    <div class="clock-container">
+        <div id="date"></div>
+        <div id="clock"></div>
+    </div>
+
+    <!-- Clock In/Out Buttons -->
+    <div class="button-container">
+        <a href="{{ url_for('main.clock_in') }}" class="btn clock-in">Clock In</a>
+        <a href="{{ url_for('main.clock_out') }}" class="btn clock-out">Clock Out</a>
+    </div>
+
+    <!-- Attendance Records Section -->
+    <section class="attendance-section">
+        <div class="attendance-header">
+            <h2 class="section-title">Attendance Records</h2>
+            <form method="GET" action="{{ url_for('main.dashboard_employee') }}" class="attendance-filter">
+                <label for="month" class="filter-label">Select Month:</label>
+                <div class="filter-input-group">
+                    <input type="month" id="month" name="month" value="{{ request.args.get('month', current_month) }}" class="filter-input">
+                    <button type="submit" class="btn filter-btn">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            {% if attendance_records %}
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Clock In</th>
+                            <th>Clock Out</th>
+                            <th>Total Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance_records %}
+                            <tr>
+                                <td>{{ record.clock_in.strftime('%Y-%m-%d') if record.clock_in else 'N/A' }}</td>
+                                <td>{{ record.clock_in.strftime('%I:%M %p') if record.clock_in else 'N/A' }}</td>
+                                <td>{{ record.clock_out.strftime('%I:%M %p') if record.clock_out else 'N/A' }}</td>
+                                <td>
+                                    {% if record.clock_in and record.clock_out %}
+                                        {{ ((record.clock_out - record.clock_in).seconds // 3600)|int }}h 
+                                        {{ ((record.clock_out - record.clock_in).seconds % 3600) // 60 }}m
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="no-records">No attendance records found for this month.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/dashboard_clock.js') }}"></script>
+</body>
+</html>

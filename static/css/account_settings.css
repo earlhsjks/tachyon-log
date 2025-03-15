@@ -1,0 +1,111 @@
+/* ========== GLOBAL STYLES ========== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Theme Colors */
+:root {
+    --primary-color: #388e3c; /* Green */
+    --accent-color: #ffb300; /* Gold */
+    --background-color: #f4f4f4;
+    --card-background: #ffffff;
+    --text-color: #333;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+    --radius: 10px;
+    --transition: all 0.3s ease-in-out;
+}
+
+/* ========== PAGE LAYOUT ========== */
+body {
+    background: var(--background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Centered Container */
+.container {
+    width: 450px;
+    max-width: 450px;
+    background: var(--card-background);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: 0 5px 15px var(--shadow-light);
+    text-align: center;
+}
+
+/* Page Title */
+h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* ========== FORM STYLES ========== */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Labels */
+label {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-color);
+    text-align: left;
+}
+
+/* Styled Input Fields */
+input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius);
+    font-size: 16px;
+    background: white;
+    outline: none;
+    transition: var(--transition);
+}
+
+/* Input Focus Effect */
+input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(255, 179, 0, 0.4);
+}
+
+/* Submit Button */
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 17px;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+/* Hover Effect */
+button:hover {
+    background: var(--accent-color);
+    box-shadow: 0 5px 10px var(--shadow-dark);
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    .container {
+        max-width: 90%;
+    }
+}

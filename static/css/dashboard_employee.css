@@ -1,0 +1,418 @@
+/* ========== GLOBAL STYLES ========== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Theme Colors */
+:root {
+    --primary-color: #388e3c; /* Green */
+    --accent-color: #ffb300; /* Gold */
+    --background-color: #f4f4f4;
+    --card-background: #ffffff;
+    --text-color: #333;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.2);
+    --radius: 10px;
+    --transition: all 0.3s ease-in-out;
+}
+
+/* ========== BODY ========== */
+body {
+    background: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* ========== LOGOUT BUTTON ========== */
+.logout-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    text-decoration: none;
+    color: white;
+    background: #d32f2f;
+    padding: 10px 15px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.logout-btn:hover {
+    background: #b71c1c;
+}
+
+/* ========== HEADER ========== */
+.header-container {
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    margin-top: 80px;
+}
+
+/* ========== CLOCK DISPLAY ========== */
+.clock-container {
+    background: var(--card-background);
+    padding: 15px;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 10px var(--shadow-light);
+    text-align: center;
+    width: 350px;
+    margin-bottom: 20px;
+}
+
+#date {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+#clock {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-top: 5px;
+}
+
+/* ========== BUTTONS ========== */
+.button-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.clock-in {
+    background: var(--primary-color);
+}
+
+.clock-out {
+    background: #d32f2f;
+}
+
+.clock-in:hover {
+    background: #2e7d32;
+}
+
+.clock-out:hover {
+    background: #b71c1c;
+}
+
+/* ========== ATTENDANCE SECTION ========== */
+.attendance-section {
+    width: 100%;
+    max-width: 800px;
+    background: var(--card-background);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 10px var(--shadow-light);
+    text-align: center;
+}
+
+/* Section Title */
+.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+/* ========== FILTER FORM ========== */
+.attendance-filter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.filter-label {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.filter-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-input {
+    padding: 8px;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--radius);
+    font-size: 14px;
+    outline: none;
+}
+
+.filter-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-btn:hover {
+    background: #2e7d32;
+}
+
+/* ========== ATTENDANCE TABLE ========== */
+.table-container {
+    margin-top: 15px;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 4px 10px var(--shadow-light);
+}
+
+.attendance-table th {
+    background: var(--primary-color);
+    color: white;
+    font-size: 16px;
+    padding: 12px;
+    text-align: center;
+}
+
+.attendance-table td {
+    padding: 12px;
+    font-size: 16px;
+    color: var(--text-color);
+    border-bottom: 1px solid #ddd;
+}
+
+/* Alternating Row Colors */
+.attendance-table tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+/* Hover Effect */
+.attendance-table tbody tr:hover {
+    background: rgba(56, 142, 60, 0.1);
+}
+
+/* ========== NO RECORDS MESSAGE ========== */
+.no-records {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-color);
+    text-align: center;
+    padding: 20px;
+    background: var(--background-color);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 10px var(--shadow-light);
+    margin-top: 15px;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    .attendance-section {
+        padding: 15px;
+    }
+
+    .filter-label {
+        font-size: 14px;
+    }
+
+    .attendance-table th, .attendance-table td {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .filter-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .no-records {
+        font-size: 16px;
+        padding: 15px;
+    }
+}
+
+/* Toast Container */
+#toast-container {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+  
+  /* Toast Notification */
+  .toast {
+    min-width: 280px;
+    max-width: 320px;
+    padding: 15px 18px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateX(100%);
+    animation: slideIn 0.4s ease forwards, fadeOut 0.4s ease 3.5s forwards;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Toast Variants */
+  .toast.success { background-color: #4CAF50; }
+  .toast.warning { background-color: #FF9800; }
+  .toast.error { background-color: #F44336; }
+  
+  /* Progress Bar */
+  .toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.7);
+    animation: progress 3.5s linear forwards;
+  }
+  
+  /* Animations */
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateX(100%); }
+  }
+  
+  @keyframes progress {
+    from { width: 100%; }
+    to { width: 0%; }
+  }
+  
+  body {
+    min-height: 100%;
+    background: #f4f4f4;
+  }
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+  nav .logo {
+    display: flex;
+    align-items: center;
+    margin: 0 20px;
+  }
+  .logo .menu-icon {
+    color: #333;
+    font-size: 22px;
+    margin-right: 12px;
+    cursor: pointer;
+  }
+  .logo .logo-name {
+    color: #333;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  nav .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100%;
+    width: 240px;
+    padding: 15px 0;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  nav.open .sidebar {
+    left: 0;
+  }
+  .sidebar .sidebar-content {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 25px 14px;
+  }
+  .sidebar-content .list {
+    list-style: none;
+  }
+  .list .nav-link {
+    display: flex;
+    align-items: center;
+    margin: 6px 0;
+    padding: 12px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+  }
+  .lists .nav-link:hover {
+    background-color: #ffb300;
+  }
+  .nav-link .icon {
+    margin-right: 12px;
+    font-size: 18px;
+    color: #707070;
+  }
+  .nav-link .link {
+    font-size: 14px;
+    color: #707070;
+    font-weight: 400;
+  }
+  .lists .nav-link:hover .icon,
+  .lists .nav-link:hover .link {
+    color: #fff;
+  }
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100vh;
+    width: 100%;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  nav.open ~ .overlay {
+    opacity: 1;
+    left: 240px;
+    pointer-events: auto;
+  }
