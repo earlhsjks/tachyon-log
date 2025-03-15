@@ -133,7 +133,7 @@ def admin_dashboard():
         current_time=datetime.utcnow()
     )
 
-@admin_bp.route('/force_clock_out/<string:employee_id>', methods=['POST'])
+@admin_bp.route('/force-clock-out/<string:employee_id>', methods=['POST'])
 @login_required
 def force_clock_out(employee_id):
     """Allows admins to forcibly clock out an employee, ensuring schedule end time is logged if applicable."""
@@ -220,7 +220,7 @@ def admin_attendance():
     )
 
 # View Employee Management Page
-@admin_bp.route('/employees')
+@admin_bp.route('/users')
 @login_required
 def admin_employees():
     if current_user.role not in ["superadmin", "admin"]:
@@ -263,7 +263,7 @@ def edit_user(employee_id):
     )
 
 # Update User & Schedule
-@admin_bp.route('/update_user/<string:employee_id>', methods=['POST'])
+@admin_bp.route('/update-user/<string:employee_id>', methods=['POST'])
 @login_required
 def update_user(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
@@ -387,7 +387,7 @@ def update_user(employee_id):
     return redirect(url_for('admin.admin_employees'))
 
 # Add New User
-@admin_bp.route('/add_user', methods=['POST'])
+@admin_bp.route('/add-user', methods=['POST'])
 @login_required
 def add_user():
     if current_user.role not in ["superadmin", "admin"]:
@@ -429,7 +429,7 @@ def add_user():
     return redirect(url_for('admin.admin_employees'))
 
 # Delete User
-@admin_bp.route('/delete_user/<string:employee_id>', methods=['POST'])
+@admin_bp.route('/delete-user/<string:employee_id>', methods=['POST'])
 @login_required
 def delete_user(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
@@ -468,7 +468,7 @@ def delete_user(employee_id):
     return redirect(url_for('admin.admin_employees'))
 
 # Specific User Attendance
-@admin_bp.route('/view_user_logs/<string:employee_id>', methods=['GET', 'POST'])
+@admin_bp.route('/user-logs/<string:employee_id>', methods=['GET', 'POST'])
 @login_required
 def view_user_logs(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
@@ -502,7 +502,7 @@ def view_user_logs(employee_id):
     )
 
 # Edit Attendance Logs
-@admin_bp.route('/edit_attendance', methods=['POST'])
+@admin_bp.route('/edit-attendance', methods=['POST'])
 @login_required
 def edit_attendance():
     if current_user.role not in ["superadmin", "admin"]:
@@ -562,7 +562,7 @@ def edit_attendance():
     return redirect(request.referrer)
 
 # Account Settings (Change Password)
-@admin_bp.route('/account_settings', methods=['GET', 'POST'])
+@admin_bp.route('/account-settings', methods=['GET', 'POST'])
 @login_required
 def account_settings():
     if request.method == 'POST':
