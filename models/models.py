@@ -8,9 +8,9 @@ db = SQLAlchemy()
 class User(UserMixin, db.Model):
     __tablename__ = 'users'  # Ensure consistency
 
-    employee_id = db.Column(db.String(50), primary_key=True)  # ✅ Changed from id to employee_id
+    employee_id = db.Column(db.String(50), primary_key=True)
     username = db.Column(db.String(100), nullable=False)
-    password = db.Column(db.String(200), nullable=True)  # Optional for employees
+    password = db.Column(db.String(200), nullable=True)
     role = db.Column(db.String(20), nullable=False, default='employee')
 
     def set_password(self, password):
@@ -18,12 +18,12 @@ class User(UserMixin, db.Model):
             self.password = generate_password_hash(password)
 
     def get_id(self):
-        return str(self.employee_id)  # Ensure it returns a string
+        return str(self.employee_id)
 
 class Attendance(db.Model):
     __tablename__ = 'attendance'
     id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.String(50), db.ForeignKey('users.employee_id', ondelete="CASCADE"), nullable=False)  # ✅ Changed FK
+    employee_id = db.Column(db.String(50), db.ForeignKey('users.employee_id', ondelete="CASCADE"), nullable=False)
     clock_in = db.Column(db.DateTime, nullable=True)
     clock_out = db.Column(db.DateTime, nullable=True)
 
@@ -32,25 +32,25 @@ class Attendance(db.Model):
 class Schedule(db.Model):
     __tablename__ = 'schedule'
     id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.String(50), db.ForeignKey("users.employee_id", ondelete="CASCADE"), nullable=False)  # ✅ Changed FK
+    employee_id = db.Column(db.String(50), db.ForeignKey("users.employee_id", ondelete="CASCADE"), nullable=False)
     day = db.Column(db.String(10), nullable=False)  # Monday, Tuesday, etc.
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
-    is_broken = db.Column(db.Boolean, default=False)  # ✅ Indicates if the shift is broken
-    second_start_time = db.Column(db.Time, nullable=True)  # ✅ Second shift start
-    second_end_time = db.Column(db.Time, nullable=True)  # ✅ Second shift end
+    is_broken = db.Column(db.Boolean, default=False)  # Indicates if the shift is broken
+    second_start_time = db.Column(db.Time, nullable=True)  # Second shift start
+    second_end_time = db.Column(db.Time, nullable=True)  # Second shift end
 
 class GlobalSettings(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     
-    enable_strict_schedule = db.Column(db.Boolean, default=False)  # ✅ Enforce schedule
-    auto_clock_out_hours = db.Column(db.Integer, default=10)  # ✅ Auto clock-out
+    enable_strict_schedule = db.Column(db.Boolean, default=False)  # Enforce schedule
+    auto_clock_out_hours = db.Column(db.Integer, default=10)  # Auto clock-out
     
-    early_out_allowed = db.Column(db.Boolean, default=True)  # ✅ Allow early clock-out
-    overtime_allowed = db.Column(db.Boolean, default=True)  # ✅ Allow overtime
+    early_out_allowed = db.Column(db.Boolean, default=True)  # Allow early clock-out
+    overtime_allowed = db.Column(db.Boolean, default=True)  # Allow overtime
     
-    default_schedule_start = db.Column(db.Time, default=time(9, 0))  # ✅ Default start time
-    default_schedule_end = db.Column(db.Time, default=time(18, 0))  # ✅ Default end time
+    default_schedule_start = db.Column(db.Time, default=time(9, 0))  # Default start time
+    default_schedule_end = db.Column(db.Time, default=time(18, 0))  # Default end time
 
     allowed_early_in = db.Column(db.Integer, default=0)
         
@@ -64,7 +64,7 @@ class GlobalSettings(db.Model):
 class AttendanceInconsistency(db.Model):
     __tablename__ = 'attendance_inconsistencies'
     id = db.Column(db.Integer, primary_key=True)
-    employee_id = db.Column(db.String(50), db.ForeignKey("users.employee_id", ondelete="CASCADE"), nullable=False)  # ✅ Changed FK
+    employee_id = db.Column(db.String(50), db.ForeignKey("users.employee_id", ondelete="CASCADE"), nullable=False)
     date = db.Column(db.Date, nullable=False)
     issue_type = db.Column(db.String(50), nullable=False)  # "Late", "Absent", "Overtime"
     details = db.Column(db.Text, nullable=True)
@@ -80,7 +80,6 @@ class Logs(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     details = db.Column(db.Text, nullable=True)
 
-    # ✅ Add relationship to User
     admin = db.relationship('User', backref='logs', lazy=True)
 
     def __repr__(self):
