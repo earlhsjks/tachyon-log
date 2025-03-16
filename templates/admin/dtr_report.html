@@ -12,15 +12,15 @@
     <div class="container">
         {% for user in pair %}
         <div class="dtr">
-            <h2>GIA/WS PROGRAM</h2>
-            <h2>NOTRE DAME OF MARBEL UNIVERSITY</h2>
-            <h2 class="address">City of Koronadal, South Cotabato</h2>
-            <h2 class="dtr-title">DAILY TIME RECORD</h2>
-            <h2 class="name">{{ user.username }} - {{ user.employee_id }}</h2>
-            <h3 class="subtitle">Name</h3>
-            <h3 class="month-label">
+            <div>GIA/WS PROGRAM</div>
+            <div>NOTRE DAME OF MARBEL UNIVERSITY</div>
+            <div class="address">City of Koronadal, South Cotabato</div>
+            <div class="dtr-title">DAILY TIME RECORD</div>
+            <div class="name">{{ user.username }} - {{ user.employee_id }}</div>
+            <div class="subtitle">Name</div>
+            <div class="month-label">
                 For the month of {{ datetime(year, month, 1).strftime('%B') }}, {{ year }}
-            </h3>
+            </div>
             
             <table>
                 <tr>
