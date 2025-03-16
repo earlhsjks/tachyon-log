@@ -4,7 +4,7 @@
 }
 
 body {
-    font-family: "Arial Narrow", Arial, sans-serif;
+    font-family: "Arial Narrow";
     font-size: 8pt;
     font-weight: 400;
     margin: 0;
@@ -14,21 +14,23 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    margin-left: 1px;
 }
 
 .dtr h2 {
+    font-size: 8pt;
     margin: 0;
     font-weight: normal;
 }
 
 .address {
+    font-size: 8pt;
     font-style: italic;
     text-align: center;
     font-weight: normal;
 }
 
 .dtr-title {
+    font-size: 8pt;
     display: block; 
     text-align: center;
     text-transform: uppercase;
@@ -40,6 +42,7 @@ body {
 }
 
 .name {
+    font-size: 8pt;
     text-decoration: underline;
     padding-top: 20px;
     margin-bottom: 0;
@@ -47,12 +50,13 @@ body {
 }
 
 .subtitle {
+    font-size: 6pt;
     margin-top: 0;
     font-weight: 400;
 }
 
 .month-label {
-    font-size: 10pt;
+    font-size: 8pt;
     text-align: left;
     font-weight: 500;
     margin-top: 5px;
