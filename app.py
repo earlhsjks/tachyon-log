@@ -1,5 +1,5 @@
 import os
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 import logging
 
 from flask import Flask, session, render_template
@@ -43,11 +43,28 @@ login_manager.login_view = "main.login_employee"
 def session_timeout():
     session.modified = True
     session.permanent = True
-    if 'last_activity' in session:
-        elapsed = datetime.utcnow() - session['last_activity']
-        if elapsed > app.config['PERMANENT_SESSION_LIFETIME']:
-            session.clear()
-    session['last_activity'] = datetime.utcnow()
+
+    # Ensure session['last_activity'] exists and is stored as an ISO string
+    if 'last_activity' not in session or not isinstance(session['last_activity'], str):
+        session['last_activity'] = datetime.now(timezone.utc).isoformat()  # Store as ISO string
+        return
+
+    try:
+        last_activity = datetime.fromisoformat(session['last_activity'])  # Convert back to datetime
+        
+        # Ensure it's timezone-aware
+        if last_activity.tzinfo is None:
+            last_activity = last_activity.replace(tzinfo=timezone.utc)
+    
+    except (ValueError, TypeError):  # Handle invalid or corrupted session values
+        last_activity = datetime.now(timezone.utc)
+
+    elapsed = datetime.now(timezone.utc) - last_activity
+
+    if elapsed > app.config['PERMANENT_SESSION_LIFETIME']:
+        session.clear()
+
+    session['last_activity'] = datetime.now(timezone.utc).isoformat()  # Store as ISO string
 
 # Register Blueprints
 from routes.main import main_bp
@@ -64,7 +81,7 @@ def maintenance_mode(e):
 # User loader for Flask-Login
 @login_manager.user_loader
 def load_user(employee_id):
-    return User.query.get(employee_id)
+    return db.session.get(User, employee_id)
 
 # Database initialization (to be run separately in setup scripts)
 def initialize_database():

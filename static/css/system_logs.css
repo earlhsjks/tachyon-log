@@ -19,7 +19,6 @@
     --shadow-dark: rgba(0, 0, 0, 0.2);
     --radius: 10px;
     --transition: all 0.3s ease-in-out;
-    --table-width: 100%;
 }
 
 /* ========== PAGE LAYOUT ========== */
@@ -31,7 +30,7 @@ body {
 /* Centered Container */
 .container {
     width: 100%;
-    max-width: 1500px;
+    max-width: 1400px;
     margin: auto;
     margin-top: 80px;
 }
@@ -46,7 +45,7 @@ h2 {
 }
 
 /* ========== DATE FILTER FORM ========== */
-form {
+.filter-form {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -58,18 +57,16 @@ form {
     margin-bottom: 20px;
 }
 
-/* Date Input */
-input[type="date"] {
+input[type="date"], select {
     padding: 10px;
     border: 2px solid var(--primary-color);
     border-radius: var(--radius);
     font-size: 16px;
     outline: none;
-    transition: var(--transition);
     background: white;
+    transition: var(--transition);
 }
 
-/* Button */
 button {
     padding: 10px 15px;
     border: none;
@@ -87,9 +84,9 @@ button:hover {
     box-shadow: 0 4px 8px var(--shadow-dark);
 }
 
-/* ========== LOG TABLE ========== */
-table {
-    width: var(--table-width);
+/* ========== LOG TABLE DESIGN ========== */
+.custom-table {
+    width: 100%;
     border-collapse: collapse;
     background: var(--card-background);
     box-shadow: 0 4px 10px var(--shadow-light);
@@ -98,44 +95,84 @@ table {
 }
 
 /* Table Header */
-thead {
+.custom-table thead {
     background: var(--primary-color);
     color: white;
-}
-
-thead th {
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 600;
     text-transform: uppercase;
 }
 
+.custom-table thead th {
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: left;
+}
+
 /* Table Body */
-tbody tr:nth-child(even) {
+.custom-table tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.custom-table tbody tr:nth-child(even) {
     background: #f9f9f9;
 }
 
-tbody tr:hover {
+.custom-table tbody tr:hover {
     background: rgba(56, 142, 60, 0.1);
 }
 
 /* Table Cells */
-td {
-    padding: 12px;
+.custom-table td {
+    padding: 14px;
     font-size: 16px;
     color: var(--text-color);
-    border-bottom: 1px solid #ddd;
-    text-align: center;
+    text-align: left;
 }
 
-/* ========== NO LOGS MESSAGE ========== */
-p {
+/* Timestamp Styling */
+.custom-table .log-timestamp {
+    font-weight: 600;
+    color: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-table .log-date {
+    font-size: 14px;
+    color: #666;
+}
+
+.custom-table .log-time {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Admin Name */
+.custom-table .log-admin {
+    font-weight: 600;
+    color: #555;
+}
+
+/* Action Styling */
+.custom-table .log-action {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+/* Details */
+.custom-table .log-details {
+    font-size: 14px;
+    color: #444;
+}
+
+/* No Logs Message */
+.no-records {
     text-align: center;
     font-size: 18px;
     font-weight: 500;
-    color: var(--text-color);
-    background: white;
+    color: #888;
     padding: 15px;
+    background: var(--card-background);
     border-radius: var(--radius);
     box-shadow: 0 2px 8px var(--shadow-light);
 }
@@ -146,7 +183,7 @@ p {
         max-width: 95%;
     }
 
-    form {
+    .filter-form {
         flex-direction: column;
         align-items: center;
     }
@@ -156,15 +193,15 @@ p {
         width: 100%;
     }
 
-    table {
+    .custom-table {
         font-size: 14px;
     }
 
-    thead th {
+    .custom-table thead th {
         font-size: 14px;
     }
 
-    td {
+    .custom-table td {
         padding: 10px;
     }
 }
