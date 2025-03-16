@@ -14,12 +14,14 @@
         <div class="dtr">
             <h2>GIA/WS PROGRAM</h2>
             <h2>NOTRE DAME OF MARBEL UNIVERSITY</h2>
-            <h2>City of Koronadal, South Cotabato</h2>
-            <h3>DAILY TIME RECORD</h3>
-            <h4 class="name">{{ user.username }} - {{ user.employee_id }}</h4>
-            <h5 class="subtitle">Name</h5>
-            <div class="month-label">For the month of {{ month }}/{{ year }}</div>
-
+            <h2 class="address">City of Koronadal, South Cotabato</h2>
+            <h2 class="dtr-title">DAILY TIME RECORD</h2>
+            <h2 class="name">{{ user.username }} - {{ user.employee_id }}</h2>
+            <h3 class="subtitle">Name</h3>
+            <h3 class="month-label">
+                For the month of {{ datetime(year, month, 1).strftime('%B') }}, {{ year }}
+            </h3>
+            
             <table>
                 <tr>
                     <th rowspan="2">DATE</th>
@@ -27,78 +29,75 @@
                     <th colspan="2">TOTAL</th>
                 </tr>
                 <tr>
-                    <th>IN</th><th>OUT</th><th>IN</th><th>OUT</th><th>HOURS</th><th>MINS</th>
+                    <th>IN</th><th>OUT</th><th>IN</th><th>OUT</th><th>HH</th><th>MM</th>
                 </tr>
-            
-                {% set total_seconds_all_days = 0 %}  {# Initialize total seconds variable #}
-            
+
                 {% for day in range(1, total_days+1) %}
                     {% set date_key = "%04d-%02d-%02d" % (year, month, day) %}
-                    {% set shift1 = attendance_dict[user.employee_id].get(date_key, {}).get("shift1", {"in": None, "out": None}) %}
-                    {% set shift2 = attendance_dict[user.employee_id].get(date_key, {}).get("shift2", {"in": None, "out": None}) %}
-            
-                    {% set total_seconds = 0 %}  {# Reset per day #}
-            
-                    {# Only calculate time if both in and out exist #}
+                    {% set shifts = attendance_dict[user.employee_id].get(date_key, {}) %}
+                    {% set shift1 = shifts.get("shift1", {"in": None, "out": None}) %}
+                    {% set shift2 = shifts.get("shift2", {"in": None, "out": None}) %}
+
+                    {% set daily_hours = 0 %}
+                    {% set daily_minutes = 0 %}
+
+                    {# Calculate shift 1 time #}
                     {% if shift1["in"] and shift1["out"] %}
-                        {% set total_seconds = total_seconds + (shift1["out"] - shift1["in"]).total_seconds() %}
+                        {% set daily_hours = (shift1["out"] - shift1["in"]).seconds // 3600 %}
+                        {% set daily_minutes = ((shift1["out"] - shift1["in"]).seconds % 3600) // 60 %}
                     {% endif %}
+
+                    {# Calculate shift 2 time #}
                     {% if shift2["in"] and shift2["out"] %}
-                        {% set total_seconds = total_seconds + (shift2["out"] - shift2["in"]).total_seconds() %}
+                        {% set daily_hours = daily_hours + (shift2["out"] - shift2["in"]).seconds // 3600 %}
+                        {% set daily_minutes = daily_minutes + ((shift2["out"] - shift2["in"]).seconds % 3600) // 60 %}
                     {% endif %}
-            
-                    {# Add the daily total to the overall total #}
-                    {% set total_seconds_all_days = total_seconds_all_days + total_seconds %}
-            
+
                     <tr>
                         <td>{{ day }}</td>
                         <td>{{ shift1["in"].strftime('%I:%M %p') if shift1["in"] else '' }}</td>
                         <td>{{ shift1["out"].strftime('%I:%M %p') if shift1["out"] else '' }}</td>
                         <td>{{ shift2["in"].strftime('%I:%M %p') if shift2["in"] else '' }}</td>
                         <td>{{ shift2["out"].strftime('%I:%M %p') if shift2["out"] else '' }}</td>
-                        <td>{{ (total_seconds // 3600)|int if total_seconds > 0 else '' }}</td>
-                        <td>{{ ((total_seconds % 3600) // 60)|int if total_seconds > 0 else '' }}</td>
+                        <td>{{ daily_hours if daily_hours > 0 else '' }}</td>
+                        <td>{{ daily_minutes if daily_minutes > 0 else '' }}</td>
                     </tr>
                 {% endfor %}
-            
             </table>
-            
-            <!-- Calculate total hours and minutes for all days -->
-            {% set total_hours = (total_seconds_all_days // 3600) %}
-            {% set total_minutes = ((total_seconds_all_days % 3600) // 60) %}
-            
-            <!-- Display the total hours and minutes at the bottom -->
+
+            <!-- Display total hours outside the table (Right-Aligned) -->
             <div class="total-hours">
-                <p>Total Hours Worked: {{ total_hours }} hours {{ total_minutes }} minutes</p>
-            </div>            
-                <div class="footer">
-                    <p>I certify that the above is true and correct.</p>
-                    <div class="signature">
-                        <div>
-                            <p>__________________</p>
-                            <p>Signature</p>
-                        </div>
-                        <div class="assign">
-                            <p class="underline">Com. Lab - Main</p>
-                            <p>Work Assignment</p>
-                        </div>
-                    </div>
-                    <div class="unit-head">
-                        <p class="underline">JAYSON P. NOSIS</p>
-                        <p>Unit Head</p>
-                    </div>
-                </div>            
+                <p><strong>Total:</strong> {{ total_hours_dict[user.employee_id] }}</p>
             </div>
-            {% endfor %}
+
+            <div class="footer">
+                <p>I certify that the above is true and correct.</p>
+                <div class="signature">
+                    <div>
+                        <p>__________________</p>
+                        <p>Signature</p>
+                    </div>
+                    <div class="assign">
+                        <p class="underline">Com. Lab - Main</p>
+                        <p>Work Assignment</p>
+                    </div>
+                </div>
+                <div class="unit-head">
+                    <p class="underline">JAYSON P. NOSIS</p>
+                    <p>Unit Head</p>
+                </div>
+            </div>
         </div>
-        <div style="page-break-after: always;"></div> <!-- Forces new page for next two users -->
-    {% endfor %}
+        {% endfor %}
+    </div>
+    <div style="page-break-after: always;"></div>
+{% endfor %}
 
-    <script>
-        window.onload = function() {
-            window.print();
-        };
-    </script>
+<script>
+    window.onload = function() {
+        window.print(); // Open print dialog
+    };
+</script>
 
-    </body>
-    </html>
+</body>
+</html>

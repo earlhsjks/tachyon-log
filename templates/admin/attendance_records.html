@@ -9,12 +9,31 @@
     <div class="container">
         <h3>Attendance Records</h3>
 
-        <!-- Month Filter -->
-        <form method="POST" class="filter-form">
-            <label>Select Month:</label>
+        <!-- Unified Month Selection with Filter and Export Buttons -->
+        <div class="filter-export-wrapper">
+            <label for="month">Select Month:</label>
             <input type="month" id="month" name="month" value="{{ request.args.get('month', current_month) }}" class="filter-input">
-            <button type="submit">Filter</button>
+            
+            <button type="submit" form="filter-form" class="btn filter-btn">Filter</button>
+
+            <form method="GET" action="{{ url_for('admin.export_pdf') }}" target="_blank" class="export-form">
+                <input type="hidden" name="month" id="export-month">
+                <button type="submit" class="btn export-btn">Print</button>
+            </form>
+        </div>
+
+        <!-- Hidden Form for Filtering (Now Uses GET) -->
+        <form id="filter-form" method="GET" action="{{ url_for('admin.admin_attendance') }}" style="display: none;">
+            <input type="hidden" name="month" id="filter-month">
         </form>
+
+        <script>
+            // Update both hidden inputs when the user selects a month
+            document.getElementById('month').addEventListener('change', function() {
+                document.getElementById('filter-month').value = this.value;
+                document.getElementById('export-month').value = this.value;
+            });
+        </script>
 
         <!-- Attendance Table -->
         <div class="table-container">
@@ -57,13 +76,9 @@
             </table>
         </div>
 
-        <!-- Export Buttons -->
-        <div class="export-buttons">
-            <a href="{{ url_for('admin.export_pdf') }}" target="_blank" class="btn">Export DTR</a>
-            </a>
-            <a href="{{ url_for('admin.export_excel', month=request.form.get('month') or datetime.today().strftime('%Y-%m')) }}" class="btn excel-btn">
-                Export Excel
-            </a>
+        <!-- Export Section -->
+        <div class="export-section">
+            
         </div>
-    </div>
+
 {% endblock %}

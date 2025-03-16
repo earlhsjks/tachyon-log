@@ -188,15 +188,16 @@ def force_clock_out(employee_id):
     return redirect(url_for("admin.admin_dashboard"))  # Redirect back to dashboard
 
 # Admin Attendance
-@admin_bp.route('/attendance-records')
+@admin_bp.route('/attendance-records', methods=['GET', 'POST'])
 @login_required
 def admin_attendance():
     if current_user.role not in ["superadmin", "admin"]:
         flash("Unauthorized Access!", "danger")
         return redirect(url_for('main.login_employee'))
 
-    month = request.form.get('month')  # Format: YYYY-MM
-    
+    month = request.args.get('month', datetime.today().strftime('%Y-%m'))  # Format: YYYY-MM
+    year, month = map(int, month.split('-'))  # Convert to integers
+
     query = db.session.query(
         User.username,
         Attendance.employee_id,
@@ -204,20 +205,20 @@ def admin_attendance():
         Attendance.clock_out
     ).join(User).order_by(Attendance.clock_in.desc())
 
-    if month:
-        year, month = map(int, month.split('-'))
-        query = query.filter(
-            db.extract('year', Attendance.clock_in) == year,
-            db.extract('month', Attendance.clock_in) == month
-        )
+    # ✅ Apply filters only if month is valid
+    query = query.filter(
+        db.extract('year', Attendance.clock_in) == year,
+        db.extract('month', Attendance.clock_in) == month
+    )
 
     attendance_records = query.all()
 
-    # Pass datetime explicitly
+    # ✅ Pass datetime explicitly & ensure current month format is correct
     return render_template(
         'admin/attendance_records.html',
         attendance=attendance_records,
-        datetime=datetime  # Pass datetime module to Jinja
+        current_month=f"{year}-{month:02d}",  # Ensure format remains YYYY-MM
+        datetime=datetime
     )
 
 # View Employee Management Page
@@ -684,40 +685,43 @@ def view_logs():
     return render_template('admin/system_logs.html', logs=logs, rows_per_page=rows_per_page)
 
 # DTR Print
-from collections import defaultdict
-from flask import render_template, redirect, url_for
-from flask_login import login_required, current_user
-from datetime import datetime, timedelta
-
 @admin_bp.route('/export-pdf')
 @login_required
 def export_pdf():
-    # Restrict access to superadmin and admin
     if current_user.role not in ["superadmin", "admin"]:
         return redirect(url_for('dashboard_admin'))
 
-    users = User.query.order_by(User.employee_id).all()
-    today = datetime.today()
-    year, month = today.year, today.month
+    # ✅ Get selected month or default to the current month
+    selected_month = request.args.get('month', datetime.today().strftime('%Y-%m'))
+    year, month = map(int, selected_month.split('-'))  # Convert to integers
 
     first_day = datetime(year, month, 1)
     last_day = (first_day + timedelta(days=32)).replace(day=1) - timedelta(days=1)
     total_days = last_day.day
 
-    # Fetch all attendance records for the selected month
+    # ✅ Exclude "superadmin" and "admin" roles
+    users = User.query.filter(User.role.notin_(["superadmin", "admin"])).order_by(User.employee_id).all()
+
+    # ✅ Fetch attendance records for the selected month
     attendance_records = Attendance.query.filter(
         Attendance.clock_in >= first_day,
         Attendance.clock_in <= last_day
     ).order_by(Attendance.clock_in).all()
 
-    # Dictionary structure: {employee_id: {date: {"shift1": {"in": "", "out": ""}, "shift2": {"in": "", "out": ""}}}}
-    attendance_dict = defaultdict(lambda: defaultdict(lambda: {"shift1": {"in": None, "out": None}, "shift2": {"in": None, "out": None}}))
+    # ✅ Dictionary to store attendance data
+    attendance_dict = defaultdict(lambda: defaultdict(lambda: {
+        "shift1": {"in": None, "out": None}, 
+        "shift2": {"in": None, "out": None}
+    }))
 
+    # ✅ Dictionary to store total hours per user
+    total_hours_dict = {}
+
+    # ✅ Populate attendance records
     for record in attendance_records:
         date_key = record.clock_in.date().strftime('%Y-%m-%d')
         employee_id = record.employee_id
 
-        # Ensure clock-in and clock-out are stored as datetime objects
         clock_in_time = record.clock_in
         clock_out_time = record.clock_out if record.clock_out else None
 
@@ -728,7 +732,24 @@ def export_pdf():
             attendance_dict[employee_id][date_key]["shift2"]["in"] = clock_in_time
             attendance_dict[employee_id][date_key]["shift2"]["out"] = clock_out_time
 
-    # Pair users (two per page)
+    # ✅ Calculate total hours per user
+    for user in users:
+        total_seconds = 0
+        for date, shifts in attendance_dict[user.employee_id].items():
+            shift1 = shifts["shift1"]
+            shift2 = shifts["shift2"]
+
+            if shift1["in"] and shift1["out"]:
+                total_seconds += (shift1["out"] - shift1["in"]).total_seconds()
+            if shift2["in"] and shift2["out"]:
+                total_seconds += (shift2["out"] - shift2["in"]).total_seconds()
+
+        # ✅ Convert total seconds to hours and minutes
+        total_hours = int(total_seconds // 3600)
+        total_minutes = int((total_seconds % 3600) // 60)
+        total_hours_dict[user.employee_id] = f"{total_hours}:{total_minutes:02d}"  # Format HH:MM
+
+    # ✅ Pair users (two per page)
     user_pairs = [users[i:i+2] for i in range(0, len(users), 2)]
 
     return render_template(
@@ -737,7 +758,9 @@ def export_pdf():
         month=month, 
         year=year, 
         total_days=total_days, 
-        attendance_dict=attendance_dict
+        datetime=datetime,
+        attendance_dict=attendance_dict,
+        total_hours_dict=total_hours_dict  # ✅ Pass total hours data to template
     )
 
 @admin_bp.route('/export-excel')

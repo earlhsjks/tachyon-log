@@ -1,21 +1,74 @@
 @page { 
     size: 8.5in 11in; 
-    margin: 0.2in; 
+    margin: 0.2in;
 }
 
-body { 
-    font-family: "Arial Narrow", Arial, sans-serif; 
-    font-size: 8pt; /* Global font size 9pt */
-    font-weight: 350; 
-    margin: 0.2in; 
+body {
+    font-family: "Arial Narrow", Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin-left: 1px;
+}
+
+.dtr h2 {
+    margin: 0;
+    font-weight: normal;
+}
+
+.address {
+    font-style: italic;
+    text-align: center;
+    font-weight: normal;
+}
+
+.dtr-title {
+    display: block; 
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: normal;
+    padding-top: 20px;
+    margin-top: 20px; 
+    margin-bottom: 20px;
+    border-top: 1px solid transparent; 
+}
+
+.name {
+    text-decoration: underline;
+    padding-top: 20px;
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+.subtitle {
+    margin-top: 0;
+    font-weight: 400;
+}
+
+.month-label {
+    font-size: 10pt;
+    text-align: left;
+    font-weight: 500;
+    margin-top: 5px;
+    margin-left: 3px;
+    margin-bottom: 3px;
 }
 
 /* Container for two users per page */
-.container { 
-    display: flex; 
-    justify-content: space-between; 
-    width: 100%; 
-    page-break-inside: avoid; 
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: auto;
+    page-break-inside: avoid;
+    page-break-before: auto;
 }
 
 /* Each DTR takes 48% width */
@@ -26,52 +79,57 @@ body {
 
 /* Table: Fixed size and compact layout */
 table {
-    width: 100%; /* Ensures it fills the container */
-    max-width: 95%; /* Reduce the width slightly */
-    border-collapse: collapse; /* Ensures borders merge for a clean look */
-    font-size: 8pt; /* Keep text size small */
-    table-layout: fixed; /* Keeps columns from resizing */
-    margin: 0; /* Center the table */
+    width: 100%;
+    max-width: 95%;
+    border-collapse: collapse;
+    font-size: 8pt;
+    table-layout: fixed;
+    margin: 0;
     margin-left: 3px;
 }
 
 /* Table Header and Cells */
 th, td {
-    border: 1px solid black;
-    padding: 2px 4px; /* Reduce padding to make rows compact */
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 2px 4px;
     text-align: center;
     font-weight: normal;
-    line-height: 1.2; /* Reduce line height to make rows shorter */
+    line-height: 1;
 }
 
 /* Header cells remain bold */
 th {
     background-color: #f2f2f2;
-    font-weight: 600;
+    font-weight: 400;
 }
 
-/* Fix column widths to maintain alignment */
 th:nth-child(1), td:nth-child(1) { width: 1%; }  /* DATE */
 th:nth-child(2), td:nth-child(2) { width: 20%; }  /* EMPLOYEE */
-th:nth-child(3), td:nth-child(3) { width: 9%; }  /* CLOCK IN */
+th:nth-child(3), td:nth-child(3) { width: 7%; }  /* CLOCK IN */
 
-/* Reduce extra spacing around the table */
 .container {
-    padding: 5px; /* Reduce space around the entire table */
+    padding: 5px;
 }
 
-/* Footer adjustments */
+.total-hours {
+    text-align: right;
+    font-size: 10pt;
+    margin-top: -10px;
+    margin-right: 17px;
+}
+
 .footer {
     text-align: left;
-    font-size: 8pt;
-    margin-top: 2px; /* Reduce margin to keep compact */
+    font-size: 10pt;
+    margin-left: 3px;
+    margin-top: 1px;
 }
 
-/* Signature block */
 .signature {
+    font-size: 10pt;
     display: flex;
     justify-content: space-between;
-    margin-top: 30px; /* Adjust space between elements */
+    margin-top: 30px; 
 }
 
 .signature p {
@@ -79,45 +137,47 @@ th:nth-child(3), td:nth-child(3) { width: 9%; }  /* CLOCK IN */
 }
 
 .signature div {
+    font-size: 10pt;
     text-align: center;
     flex: 1;
 }
 
 .assign p:first-child {
-    text-decoration: underline; /* Underlines the text */
-    font-weight: bold; /* Makes the text bold */
-    margin: 3; /* Removes any extra spacing */
+    font-size: 10pt;
+    text-decoration: underline; 
+    font-weight: bold;
+    margin: 3; 
 }
 
-/* Unit Head Section - remove bold */
 .unit-head p {
+    font-size: 10pt;
     text-align: center;
-    font-weight: normal; /* Removes bold */
-    margin: 0; /* Ensures no extra spacing */
+    font-weight: normal; 
+    margin: 0; 
 }
 
-/* Work Assignment Section - remove bold */
 .assign p:last-child {
-    font-weight: normal; /* Removes bold */
-    margin: 0; /* Ensures no extra spacing */
+    font-size: 10pt;
+    font-weight: normal; 
+    margin: 0; 
 }
 
-/* JAYSON P. NOSIS should be bold and underlined */
 .unit-head p:first-child {
+    font-size: 10pt;
     text-align: center;
-    font-weight: bold; /* Keeps bold for JAYSON P. NOSIS */
-    text-decoration: underline; /* Keeps underlined */
+    font-weight: bold;
+    text-decoration: underline;
     margin-top: 40px;
 }
 
-/* "Com. Lab - Main" should be bold and underlined */
 .assign p:first-child {
-    font-weight: bold; /* Keeps bold for Com. Lab - Main */
-    text-decoration: underline; /* Keeps underlined */
+    font-size: 10pt;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
-/* Remove extra space between lines in the table */
 table tr {
-    height: 16px; /* Reduce row height */
-    line-height: 16px; /* Control line height for compact rows */
+    font-size: 10pt;
+    height: 16px;
+    line-height: 16px;
 }
