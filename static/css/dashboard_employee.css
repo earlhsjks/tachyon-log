@@ -69,6 +69,12 @@ body {
     margin-bottom: 20px;
 }
 
+#status-icon {
+  font-size: 14px;
+  position: relative;
+  top: 2px;
+}
+
 #date {
     font-size: 18px;
     font-weight: 600;
@@ -80,6 +86,61 @@ body {
     font-weight: 700;
     color: var(--text-color);
     margin-top: 5px;
+    align-items: center;
+}
+
+.clock-status-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 18px;
+}
+
+/* Default Icon Style */
+#status-icon {
+  font-size: 20px;
+  transition: opacity 0.6s ease-in-out;
+}
+
+/* Blinking Effect */
+@keyframes fadeBlink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+.blink {
+  animation: fadeBlink 1.5s infinite;
+}
+
+/* Status Icons */
+.on-duty::before {
+  content: "\f017"; /* Clock Icon */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #4CAF50; /* Green */
+}
+
+.late::before {
+  content: "\f071"; /* Warning Triangle */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #FFC107; /* Yellow */
+}
+
+.overtime::before {
+  content: "\f2f2"; /* Briefcase */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #FF5722; /* Orange */
+}
+
+.off-duty::before {
+  content: "\f011"; /* Power Off */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #9E9E9E; /* Grey */
 }
 
 /* ========== BUTTONS ========== */

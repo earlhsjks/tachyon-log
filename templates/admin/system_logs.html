@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/system_logs.css') }}">
 
     <div class="container">
-        <!-- ✅ Back Button -->
+        <!-- Back Button -->
         <div class="header-row">
         </div>
 
         <h2>Activity Logs</h2>
 
-        <!-- ✅ Date Filter & Rows Per Page Selection -->
+        <!-- Date Filter & Rows Per Page Selection -->
         <form method="POST" class="filter-form">
             <div class="filter-controls">
                 <label>Filter by Date:</label>
@@ -30,7 +30,7 @@
                 <button type="submit" class="btn filter-btn">Filter</button>
             </div>
         </form>
-        <!-- ✅ Logs Table -->
+        <!-- Logs Table -->
         <div class="table-container">
             <table class="custom-table">
                 <thead>
@@ -46,7 +46,7 @@
                         {% for log in logs %}
                         <tr>
                             <td>{{ log.timestamp.strftime('%Y-%m-%d %I:%M %p') }}</td>
-                            <td>{{ log.admin.username }}</td>  <!-- ✅ Corrected -->
+                            <td>{{ log.admin_id }}</td>
                             <td>{{ log.action }}</td>
                             <td>{{ log.details }}</td>
                         </tr>

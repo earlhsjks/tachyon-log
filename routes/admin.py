@@ -3,17 +3,18 @@ from flask import (Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 import pandas as pd
-import io
+import io, pytz
 from collections import defaultdict
 from datetime import datetime, timezone, timedelta
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 from models.models import db, User, Attendance, Schedule, GlobalSettings, Logs
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import text, or_, select
+from sqlalchemy import text, or_
 
 # Create a Blueprint for admin routes
 admin_bp = Blueprint('admin', __name__)
+
+# TimeZone
+SG_TZ = pytz.timezone("Asia/Singapore")
 
 # Funtion of udate user schedule
 def parse_time(time_str):
@@ -29,10 +30,10 @@ def parse_time(time_str):
 def log_entry(admin_id, action, details=None):
     """Logs admin actions into the system."""
     log_entry = Logs(
-        admin_id=admin_id,
-        action=action,
-        details=details,
-        timestamp=datetime.now(timezone.utc)
+        admin_id = admin_id,
+        action = action,
+        details = details,
+        timestamp = datetime.now()
     )
     db.session.add(log_entry)
     db.session.commit()
@@ -51,16 +52,7 @@ def login():
         ).first()
 
         if user and check_password_hash(user.password, password):
-            login_user(user)
-
-            # Log admin login
-            log_entry = Logs(
-                admin_id=employee_id,
-                action="Admin Login",
-                details="Admin successfully logged in."
-            )
-            db.session.add(log_entry)
-            db.session.commit()            
+            login_user(user)        
 
             return redirect(url_for("admin.admin_dashboard"))
         else:

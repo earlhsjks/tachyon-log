@@ -37,8 +37,11 @@
     <!-- Live Clock & Date -->
     <div class="clock-container">
         <div id="date"></div>
-        <div id="clock"></div>
-    </div>
+        <div class="clock-status-wrapper">
+            <div id="clock"></div>
+            <span id="status-icon" class="{{ status|lower|replace(' ', '-') }}"></span>
+        </div>              
+    </div>    
 
     <!-- Clock In/Out Buttons -->
     <div class="button-container">

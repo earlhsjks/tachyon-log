@@ -57,16 +57,42 @@ def dashboard_employee():
         today = datetime.today()
         year, month = today.year, today.month
 
+    today_day = datetime.today().strftime('%A')  # Get today's weekday
+    user_schedule = Schedule.query.filter_by(employee_id=current_user.employee_id, day=today_day).first()
+
     attendance_records = Attendance.query.filter(
         Attendance.employee_id == current_user.employee_id,
         db.extract('year', Attendance.clock_in) == year,
         db.extract('month', Attendance.clock_in) == month
     ).all()
 
+    # ✅ Determine Employee Status
+    status = ""  # Default status
+
+    if attendance_records:
+        last_record = attendance_records[-1]  # Get the latest attendance record
+
+        # ✅ If the employee is still clocked in but has not clocked out
+        if last_record.clock_out is None:
+            status = "On Duty"
+
+            # ✅ Check if the employee is late (Clock-in time is after scheduled start time)
+            if user_schedule and last_record.clock_in.time() > user_schedule.start_time:
+                status = "Late"
+
+        # ✅ If the employee has clocked out, check if they worked overtime
+        elif user_schedule and last_record.clock_out.time() > user_schedule.end_time:
+            status = "Overtime"
+
+    # ✅ Convert status to class-friendly format (lowercase + hyphens)
+    status_class = status.lower().replace(" ", "-")
+
     return render_template(
         'dashboard_employee.html',
+        status=status,  # For display text
+        status_class=status_class,  # For CSS class
         name=current_user.username,
-        attendance_records=attendance_records,  # Pass the correct variable
+        attendance_records=attendance_records,
         current_month=f"{year}-{month:02d}"  # Ensure month is always two digits (e.g., 2024-03)
     )
 
