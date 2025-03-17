@@ -104,11 +104,13 @@ def clock_in():
     # Get allowed early-in time
     allowed_early_in = global_settings.allowed_early_in if global_settings and global_settings.allowed_early_in else 0
 
-    # Find if the user has a second shift (broken schedule)
+    # Detect if the user has a second shift (broken schedule)
     has_second_shift = any(sched.is_broken and sched.second_start_time and sched.second_end_time for sched in user_schedules)
 
     # Validate clock-in time (Checking both normal & broken schedules)
     valid_schedule = None
+    is_second_shift = False  # Track if user is clocking in for second shift
+
     for schedule in user_schedules:
         earliest_clock_in_time = (datetime.combine(datetime.today(), schedule.start_time) - timedelta(minutes=allowed_early_in)).time()
 
@@ -122,26 +124,43 @@ def clock_in():
             earliest_second_clock_in_time = (datetime.combine(datetime.today(), schedule.second_start_time) - timedelta(minutes=allowed_early_in)).time()
             if earliest_second_clock_in_time <= now <= schedule.second_end_time:
                 valid_schedule = schedule
+                is_second_shift = True  # Mark this as second shift clock-in
                 break
 
-    # Prevent clock-in if still on duty (BUT ONLY FOR CURRENT SHIFT)
-    active_shift = Attendance.query.filter(
+    # Prevent clock-in if still on duty (for this shift)
+    active_shifts = Attendance.query.filter(
         Attendance.employee_id == current_user.employee_id,
         Attendance.clock_in != None,
         Attendance.clock_out == None,  # No clock-out yet
         Attendance.clock_in >= datetime.combine(datetime.today(), datetime.min.time())  # Only today's records
-    ).first()
+    ).all()
 
-    if active_shift and valid_schedule:
-        # If user already has a clock-in for this shift, prevent clock-in
-        if valid_schedule.start_time <= active_shift.clock_in.time() <= valid_schedule.end_time:
-            flash("You are already on duty for this shift! Please clock out before clocking in again.", "warning")
+    # If user already has an active shift today, check if it's in the same time block
+    for shift in active_shifts:
+        if valid_schedule:
+            # First shift protection
+            if not is_second_shift and valid_schedule.start_time <= shift.clock_in.time() <= valid_schedule.end_time:
+                flash("You are already on duty for this shift! Please clock out before clocking in again.", "warning")
+                return redirect(url_for('main.dashboard_employee'))
+
+            # Second shift protection
+            if is_second_shift and shift.clock_in.time() >= valid_schedule.second_start_time and shift.clock_out is None:
+                flash("You already clocked in for your second shift! Please clock out before clocking in again.", "warning")
+                return redirect(url_for('main.dashboard_employee'))
+
+    # Allow second clock-in ONLY IF still within the scheduled shift
+    if len(active_shifts) == 1 and not has_second_shift:
+        active_shift = active_shifts[0]
+        if active_shift.clock_in.time() <= now <= valid_schedule.end_time:
+            flash("Clocking in again during the same shift!", "info")
+        else:
+            flash("You cannot clock in twice outside your scheduled hours!", "error")
             return redirect(url_for('main.dashboard_employee'))
 
-        # ❌ If user has a second shift, prevent multiple clock-ins
-        if has_second_shift:
-            flash("You already have two shifts today! You cannot clock in again.", "warning")
-            return redirect(url_for('main.dashboard_employee'))
+    # Prevent triple clock-ins for users with second shifts
+    if len(active_shifts) >= 2 and has_second_shift:
+        flash("You cannot clock in more than twice in a day!", "warning")
+        return redirect(url_for('main.dashboard_employee'))
 
     # Enforce strict schedule rule
     if global_settings and global_settings.enable_strict_schedule and not valid_schedule:
@@ -156,7 +175,7 @@ def clock_in():
 
     flash("Clocked in successfully!", "success")
     return redirect(url_for('main.dashboard_employee'))
-    
+
 @main_bp.route('/clock-out')
 @login_required
 def clock_out():
@@ -171,11 +190,6 @@ def clock_out():
     if not last_record:
         flash("No active clock-in found for today!", "error")
         return redirect(url_for('main.dashboard_employee'))
-
-    # Adjust first-time clock-in (-5 minutes)
-    if last_record.clock_in:
-        adjusted_clock_in = last_record.clock_in - timedelta(minutes=5)
-        last_record.clock_in = max(adjusted_clock_in, datetime.combine(last_record.clock_in.date(), time(0, 0)))  # Prevent going before midnight
 
     # Get the user's schedule for today
     today_day = datetime.today().strftime("%A")
