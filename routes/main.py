@@ -40,7 +40,7 @@ def login_employee():
             login_user(user)
             return redirect(url_for('main.dashboard_employee'))
         else:
-            flash("Invalid Employee ID", "error")
+            flash("ID Not Found!", "error")
 
     return render_template('index.html')
 

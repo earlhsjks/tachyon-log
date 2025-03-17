@@ -50,11 +50,7 @@
                 <tbody>
                     {% for record in attendance %}
                     <tr>
-                        <td>
-                            <a href="{{ url_for('admin.view_user_logs', employee_id=record.employee_id) }}">
-                                {{ record.username }}
-                            </a>
-                        </td>
+                        <td>{{ record.username }}</td>
                         <td>{{ record.clock_in.strftime('%I:%M %p') }}</td>
                         <td>
                             {{ record.clock_out.strftime('%I:%M %p') if record.clock_out else 'N/A' }}
@@ -68,7 +64,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ url_for('admin.edit_attendance', record_id=record.employee_id) }}" class="edit-btn">Edit</a>
+                            <a href="{{ url_for('admin.view_user_logs', employee_id=record.employee_id) }}" class="edit-btn">Review</a>
                         </td>
                     </tr>
                     {% endfor %}

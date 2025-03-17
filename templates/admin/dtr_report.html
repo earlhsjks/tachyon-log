@@ -33,36 +33,43 @@
                 </tr>
 
                 {% for day in range(1, total_days+1) %}
-                    {% set date_key = "%04d-%02d-%02d" % (year, month, day) %}
-                    {% set shifts = attendance_dict[user.employee_id].get(date_key, {}) %}
-                    {% set shift1 = shifts.get("shift1", {"in": None, "out": None}) %}
-                    {% set shift2 = shifts.get("shift2", {"in": None, "out": None}) %}
-
-                    {% set daily_hours = 0 %}
-                    {% set daily_minutes = 0 %}
-
-                    {# Calculate shift 1 time #}
-                    {% if shift1["in"] and shift1["out"] %}
-                        {% set daily_hours = (shift1["out"] - shift1["in"]).seconds // 3600 %}
-                        {% set daily_minutes = ((shift1["out"] - shift1["in"]).seconds % 3600) // 60 %}
-                    {% endif %}
-
-                    {# Calculate shift 2 time #}
-                    {% if shift2["in"] and shift2["out"] %}
-                        {% set daily_hours = daily_hours + (shift2["out"] - shift2["in"]).seconds // 3600 %}
-                        {% set daily_minutes = daily_minutes + ((shift2["out"] - shift2["in"]).seconds % 3600) // 60 %}
-                    {% endif %}
-
-                    <tr>
-                        <td>{{ day }}</td>
-                        <td>{{ shift1["in"].strftime('%I:%M %p') if shift1["in"] else '' }}</td>
-                        <td>{{ shift1["out"].strftime('%I:%M %p') if shift1["out"] else '' }}</td>
-                        <td>{{ shift2["in"].strftime('%I:%M %p') if shift2["in"] else '' }}</td>
-                        <td>{{ shift2["out"].strftime('%I:%M %p') if shift2["out"] else '' }}</td>
-                        <td>{{ daily_hours if daily_hours > 0 else '' }}</td>
-                        <td>{{ daily_minutes if daily_minutes > 0 else '' }}</td>
-                    </tr>
-                {% endfor %}
+                {% set date_key = "%04d-%02d-%02d" % (year, month, day) %}
+                {% set shifts = attendance_dict[user.employee_id].get(date_key, {}) %}
+                {% set shift1 = shifts.get("shift1", {"in": None, "out": None}) %}
+                {% set shift2 = shifts.get("shift2", {"in": None, "out": None}) %}
+            
+                {% set daily_hours = 0 %}
+                {% set daily_minutes = 0 %}
+            
+                {# Calculate shift 1 time #}
+                {% if shift1["in"] and shift1["out"] %}
+                    {% set shift1_seconds = (shift1["out"] - shift1["in"]).seconds %}
+                    {% set daily_hours = shift1_seconds // 3600 %}
+                    {% set daily_minutes = shift1_seconds % 3600 // 60 %}
+                {% endif %}
+            
+                {# Calculate shift 2 time #}
+                {% if shift2["in"] and shift2["out"] %}
+                    {% set shift2_seconds = (shift2["out"] - shift2["in"]).seconds %}
+                    {% set daily_hours = daily_hours + (shift2_seconds // 3600) %}
+                    {% set daily_minutes = daily_minutes + (shift2_seconds % 3600 // 60) %}
+                {% endif %}
+            
+                {# Convert extra minutes into hours #}
+                {% set extra_hours = daily_minutes // 60 %}
+                {% set daily_hours = daily_hours + extra_hours %}
+                {% set daily_minutes = daily_minutes % 60 %}
+            
+                <tr>
+                    <td>{{ day }}</td>
+                    <td>{{ shift1["in"].strftime('%I:%M %p') if shift1["in"] else '' }}</td>
+                    <td>{{ shift1["out"].strftime('%I:%M %p') if shift1["out"] else '' }}</td>
+                    <td>{{ shift2["in"].strftime('%I:%M %p') if shift2["in"] else '' }}</td>
+                    <td>{{ shift2["out"].strftime('%I:%M %p') if shift2["out"] else '' }}</td>
+                    <td>{{ daily_hours if daily_hours > 0 else '' }}</td>
+                    <td>{{ daily_minutes if daily_minutes > 0 else '' }}</td>
+                </tr>
+            {% endfor %}            
             </table>
 
             <!-- Display total hours outside the table (Right-Aligned) -->
