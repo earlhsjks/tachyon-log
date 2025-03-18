@@ -197,51 +197,58 @@ def clock_in():
     flash("Clocked in successfully!", "success")
     return redirect(url_for('main.dashboard_employee'))
 
-@main_bp.route('/clock-out')
+@main_bp.route('/clock_out')
 @login_required
 def clock_out():
-    # Get today's clock-in record (First clock-in of the day)
+    today = datetime.today()
+    now = datetime.now()
+    
+    # Get the latest clock-in record for today
     last_record = Attendance.query.filter(
         Attendance.employee_id == current_user.employee_id,
         Attendance.clock_in != None,
-        Attendance.clock_in >= datetime.combine(datetime.today(), datetime.min.time()),  # Only today
+        Attendance.clock_in >= datetime.combine(today, datetime.min.time()),  # Only today's records
         Attendance.clock_out == None  # Ensure they haven’t clocked out yet
-    ).order_by(Attendance.id.asc()).first()  # Get the earliest clock-in of the day
+    ).order_by(Attendance.id.desc()).first()  # Get the latest clock-in
 
     if not last_record:
-        flash("No active clock-in found for today!", "error")
+        flash("No active clock-in found for today!", "danger")
         return redirect(url_for('main.dashboard_employee'))
 
+    # Fetch global settings
+    global_settings = GlobalSettings.query.first()
+    strict_schedule = global_settings.enable_strict_schedule if global_settings else False
+
     # Get the user's schedule for today
-    today_day = datetime.today().strftime("%A")
-    schedule = Schedule.query.filter_by(employee_id=current_user.employee_id, day=today_day).first()
+    today_day = today.strftime("%A")
+    user_schedule = Schedule.query.filter_by(employee_id=current_user.employee_id, day=today_day).first()
 
     # Default clock-out time: Now
-    actual_clock_out = datetime.now()
-    time_730pm = datetime.combine(actual_clock_out.date(), time(19, 30))  # 7:30 PM rule
+    actual_clock_out = now
 
-    if schedule:
-        schedule_end = datetime.combine(actual_clock_out.date(), schedule.end_time)
+    if strict_schedule and user_schedule:
+        schedule_end = datetime.combine(today, user_schedule.end_time)
         time_limit = schedule_end + timedelta(minutes=30)  # ⏳ 30-minute grace period
 
-        # **Block clock-out if more than 30 minutes late**
+        # ⛔ Block clock-out if more than 30 minutes past scheduled end time
         if actual_clock_out > time_limit:
             flash("Clock-out denied! More than 30 minutes past your scheduled end time.", "error")
             return redirect(url_for('main.dashboard_employee'))
 
         # If between schedule end and 7:30 PM, force clock-out to schedule end
+        time_730pm = datetime.combine(today, time(19, 30))  # 7:30 PM cutoff
         if schedule_end < actual_clock_out < time_730pm:
             last_record.clock_out = schedule_end
         else:
             last_record.clock_out = actual_clock_out  # Normal clock-out
 
     else:
-        # If no schedule, allow normal clock-out
+        # 🔓 No strict schedule → Allow clock-out anytime
         last_record.clock_out = actual_clock_out
 
     db.session.commit()
 
-    # Check attendance flags (Overtime)
+    # Check attendance flags (Overtime, etc.)
     check_attendance_flags(last_record)
 
     flash("Clocked out successfully!", "success")
