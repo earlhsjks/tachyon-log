@@ -66,25 +66,20 @@ def dashboard_employee():
         db.extract('month', Attendance.clock_in) == month
     ).all()
 
-    # ✅ Determine Employee Status
-    status = ""  # Default status
+    status = "Off Duty"  # Default status
 
     if attendance_records:
-        last_record = attendance_records[-1]  # Get the latest attendance record
+        last_record = attendance_records[-1]
 
-        # ✅ If the employee is still clocked in but has not clocked out
         if last_record.clock_out is None:
             status = "On Duty"
 
-            # ✅ Check if the employee is late (Clock-in time is after scheduled start time)
             if user_schedule and last_record.clock_in.time() > user_schedule.start_time:
                 status = "Late"
 
-        # ✅ If the employee has clocked out, check if they worked overtime
         elif user_schedule and last_record.clock_out.time() > user_schedule.end_time:
             status = "Overtime"
 
-    # ✅ Convert status to class-friendly format (lowercase + hyphens)
     status_class = status.lower().replace(" ", "-")
 
     return render_template(

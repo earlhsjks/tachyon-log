@@ -47,10 +47,10 @@ class GlobalSettings(db.Model):
     auto_clock_out_hours = db.Column(db.Integer, default=10)  # Auto clock-out
     
     early_out_allowed = db.Column(db.Boolean, default=True)  # Allow early clock-out
-    overtime_allowed = db.Column(db.Boolean, default=True)  # Allow overtime
+    overtime_allowed = db.Column(db.Boolean, default=False)  # Allow overtime
     
-    default_schedule_start = db.Column(db.Time, default=time(9, 0))  # Default start time
-    default_schedule_end = db.Column(db.Time, default=time(18, 0))  # Default end time
+    default_schedule_start = db.Column(db.Time, default=time(7, 30))  # Default start time
+    default_schedule_end = db.Column(db.Time, default=time(20, 30))  # Default end time
 
     allowed_early_in = db.Column(db.Integer, default=0)
         
