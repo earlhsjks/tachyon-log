@@ -41,6 +41,7 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Date</th>
                         <th>Clock In</th>
                         <th>Clock Out</th>
                         <th>Total Hours</th>
@@ -51,6 +52,7 @@
                     {% for record in attendance %}
                     <tr>
                         <td>{{ record.username }}</td>
+                        <td>{{ record.clock_in.strftime('%Y-%m-%d')}}</td>
                         <td>{{ record.clock_in.strftime('%I:%M %p') }}</td>
                         <td>
                             {{ record.clock_out.strftime('%I:%M %p') if record.clock_out else 'N/A' }}

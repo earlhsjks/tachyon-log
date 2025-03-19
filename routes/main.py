@@ -230,7 +230,7 @@ def clock_out():
         schedule_end = datetime.combine(today, user_schedule.end_time)
         time_limit = schedule_end + timedelta(minutes=30)  # ⏳ 30-minute grace period
 
-        # ⛔ Block clock-out if more than 30 minutes past scheduled end time
+        # Block clock-out if more than 30 minutes past scheduled end time
         if actual_clock_out > time_limit:
             flash("Clock-out denied! More than 30 minutes past your scheduled end time.", "error")
             return redirect(url_for('main.dashboard_employee'))
