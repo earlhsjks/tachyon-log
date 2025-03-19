@@ -64,7 +64,7 @@
                             <td>{{ user.clock_in.strftime('%Y-%m-%d') }}</td>
                             <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
                             <td>
-                                <a href="{{ url_for('admin.view_user_logs', employee_id=record.employee_id) }}" class="review-user-btn">Review</a>
+                                <button class="review-user-btn" onclick="reviewUser('{{ user.employee_id }}')">Review</button>
                             </td>
                         </tr>
                         {% endfor %}
