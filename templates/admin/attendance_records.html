@@ -4,6 +4,13 @@
 {% block page_title %}Attendance Records{% endblock %}
 
 {% block content %}
+
+    <!-- Local Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!-- Local Bootstrap JS -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/attendance_records.css') }}">
 
     <div class="container mt-4">
@@ -43,7 +50,7 @@
                     {% for record in attendance %}
                     <tr class="text-center">
                         <td>{{ record.username }}</td>
-                        <td>{{ record.clock_in.strftime('%Y-%m-%d')}}</td>
+                        <td>{{ record.clock_in.strftime('%m-%d-%Y')}}</td>
                         <td>{{ record.clock_in.strftime('%I:%M %p') }}</td>
                         <td>{{ record.clock_out.strftime('%I:%M %p') if record.clock_out else 'N/A' }}</td>
                         <td>

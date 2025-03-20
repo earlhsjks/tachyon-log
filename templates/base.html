@@ -7,8 +7,8 @@
 
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap (Local) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 
     <!-- Boxicons & FontAwesome -->
     <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
@@ -16,54 +16,71 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    
+
     {% block extra_css %}{% endblock %}
 </head>
-<body class="d-flex">
+<body>
 
-    <!-- Sidebar (Fixed on the Left) -->
-    <nav id="sidebar" class="bg-dark text-white p-3 vh-100">
-        <div class="text-center fs-4 fw-bold mb-3">Tachyon Log</div>
-        <hr>
-        <ul class="nav flex-column">
-            <li class="nav-item"><a href="{{ url_for('admin.admin_dashboard') }}" class="nav-link text-white"><i class="bx bx-home-alt"></i> Dashboard</a></li>
-            <li class="nav-item"><a href="{{ url_for('admin.admin_employees') }}" class="nav-link text-white"><i class="bx bx-id-card"></i> Users</a></li>
-            <li class="nav-item"><a href="{{ url_for('admin.admin_attendance') }}" class="nav-link text-white"><i class="bx bx-time-five"></i> Attendance</a></li>
-            <li class="nav-item"><a href="{{ url_for('admin.settings') }}" class="nav-link text-white"><i class="bx bx-cog"></i> Settings</a></li>
-            <li class="nav-item"><a href="{{ url_for('admin.view_logs') }}" class="nav-link text-white"><i class="bx bx-folder-open"></i> Logs</a></li>
-        </ul>
-        <hr>
-        <ul class="nav flex-column">
-            <li class="nav-item"><a href="{{ url_for('admin.account_settings') }}" class="nav-link text-white"><i class="bx bx-user"></i> Account</a></li>
-            <li class="nav-item"><a href="{{ url_for('main.logout') }}" class="nav-link text-white"><i class="bx bx-log-out"></i> Logout</a></li>
-        </ul>
+    <!-- Navbar (Visible Only on Mobile) -->
+    <nav class="navbar navbar-dark bg-dark d-md-none">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="navbar-brand">Tachyon Log</span>
+        </div>
     </nav>
 
-    <!-- Main Content (Expands Next to Sidebar) -->
-    <div class="flex-grow-1 p-4">
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="container">
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
+    <div class="d-flex">
+        <!-- Sidebar (Hidden on Mobile, Visible on Desktop) -->
+        <nav id="sidebar" class="bg-dark text-white p-3 vh-100">
+            <div class="sidebar-content">
+                <div class="text-center fs-4 fw-bold mb-3">Tachyon Log</div>
+                <hr>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="{{ url_for('admin.admin_dashboard') }}" class="nav-link text-white"><i class="bx bx-home-alt"></i> <span>Dashboard</span></a></li>
+                    <li class="nav-item"><a href="{{ url_for('admin.admin_employees') }}" class="nav-link text-white"><i class="bx bx-id-card"></i> <span>Users</span></a></li>
+                    <li class="nav-item"><a href="{{ url_for('admin.admin_attendance') }}" class="nav-link text-white"><i class="bx bx-time-five"></i> <span>Attendance</span></a></li>
+                    <li class="nav-item"><a href="{{ url_for('admin.settings') }}" class="nav-link text-white"><i class="bx bx-cog"></i> <span>Settings</span></a></li>
+                    <li class="nav-item"><a href="{{ url_for('admin.view_logs') }}" class="nav-link text-white"><i class="bx bx-folder-open"></i> <span>Logs</span></a></li>
+                </ul>
+                <hr>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="{{ url_for('admin.account_settings') }}" class="nav-link text-white"><i class="bx bx-user"></i> <span>Account</span></a></li>
+                    <li class="nav-item"><a href="{{ url_for('main.logout') }}" class="nav-link text-white"><i class="bx bx-log-out"></i> <span>Logout</span></a></li>
+                </ul>
+            </div>
+        </nav>
 
-        <!-- Page Title -->
-        <h2 class="mb-4">{% block page_title %}Dashboard{% endblock %}</h2>
+        <!-- Main Content -->
+        <div class="flex-grow-1 p-4">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="container">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
 
-        <!-- Page Content -->
-        {% block content %}{% endblock %}
+            <h2 class="mb-4">{% block page_title %}Dashboard{% endblock %}</h2>
+            {% block content %}{% endblock %}
+        </div>
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Sidebar Toggle for Mobile -->
+    <script>
+        document.getElementById("mobileMenuToggle").addEventListener("click", function () {
+            document.getElementById("sidebar").classList.toggle("mobile-active");
+        });
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>

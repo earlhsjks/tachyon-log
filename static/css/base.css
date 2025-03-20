@@ -1,32 +1,165 @@
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
-
-body {
+* {
     font-family: 'Inter', sans-serif;
 }
+/* General Reset */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
 
-/* Sidebar Styles */
+:root {
+    --mobile-sidebar-width: 80px; /* Set to 100px, 120px, etc., as needed */
+}
+
+/* Sidebar (Default for Desktop) */
 #sidebar {
     width: 250px;
-    transition: width 0.3s ease-in-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    background: #343a40; /* Dark Gray */
+    color: white;
+    padding: 15px;
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
 }
 
-#sidebar.collapsed {
-    width: 80px;
+/* Sidebar Small Mode (Mobile) */
+@media (max-width: 768px) {
+    #sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        width: var(--mobile-sidebar-width);
+        overflow-x: hidden;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    /* Sidebar expands when active */
+    #sidebar.active {
+        transform: translateX(0);
+    }
+
+    /* Hide "Tachyon Log" title on mobile */
+    #sidebar .fs-4.fw-bold {
+        display: none;
+        margin-top: 20px;
+    }
+
+    /* Hide sidebar text, show only icons */
+    #sidebar .nav-link {
+        text-indent: -9999px; /* Hide text */
+        padding: 10px; /* Maintain clickable area */
+    }
+
+    /* Ensure icons remain visible */
+    #sidebar .nav-link i {
+        text-indent: 0;
+        display: block;
+        text-align: center;
+        font-size: 1.5rem; /* Adjust icon size */
+    }
+
+    /* Content area shifts based on sidebar */
+    .flex-grow-1 {
+        margin-left: var(--mobile-sidebar-width);
+        width: calc(100% - var(--mobile-sidebar-width));
+    }
 }
 
-.nav-link {
+/* Sidebar Navigation Links */
+#sidebar ul {
+    padding-left: 0;
+}
+
+#sidebar .nav-item {
+    list-style: none;
+}
+
+#sidebar .nav-item .nav-link {
+    color: white;
+    padding: 10px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px;
-    font-size: 1rem;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background 0.2s;
+    border-radius: 5px;
 }
 
-.nav-link i {
-    font-size: 1.4rem;
+#sidebar .nav-item .nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
-.menu-icon {
-    cursor: pointer;
+/* Sidebar Icons and Text */
+#sidebar .nav-link i {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+/* Sidebar Small Mode (Mobile) */
+@media (max-width: 768px) {
+    #sidebar {
+        transform: translateX(-500%);
+        position: fixed;
+        width: var(--mobile-sidebar-width);
+    }
+
+    /* Adjust content area when sidebar is visible */
+    #sidebar.active {
+        transform: translateX(0);
+    }
+
+    /* Content area when sidebar is open */
+    .flex-grow-1 {
+        margin-left: var(--mobile-sidebar-width);
+        width: calc(100% - var(--mobile-sidebar-width));
+    }
+
+    #sidebar.mobile-active {
+        transform: translateX(0);
+    }
+
+    /* Hide Sidebar Text on Mobile */
+    #sidebar .nav-link span {
+        display: none;
+    }
+
+    /* Make Sidebar Narrower on Mobile */
+    #sidebar .nav-link i {
+        margin-right: 0;
+        font-size: 22px;
+    }
+}
+
+/* Adjust Dashboard Icon Margin on Mobile */
+@media (max-width: 768px) {
+    #sidebar .nav-item:first-child {
+        margin-top: 33px;
+    }
+}
+
+/* Navbar (Only for Mobile) */
+.navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1100;
+}
+
+/* Main Content */
+.flex-grow-1 {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease-in-out;
+    width: calc(100% - 250px);
+}
+
+/* Adjust for Mobile */
+@media (max-width: 768px) {
+    .flex-grow-1 {
+        margin-left: 0;
+        width: 100%;
+    }
 }

@@ -4,6 +4,13 @@
 {% block page_title %}Activity Logs{% endblock %}
 
 {% block content %}
+
+    <!-- Local Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!-- Local Bootstrap JS -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    
 <div class="container mt-4">
     <h2 class="text-center text-primary">Activity Logs</h2>
 
@@ -42,7 +49,7 @@
                 {% if logs %}
                     {% for log in logs %}
                     <tr>
-                        <td>{{ log.timestamp.strftime('%Y-%m-%d %I:%M %p') }}</td>
+                        <td>{{ log.timestamp.strftime('%m-%d-%y %I:%M %p') }}</td>
                         <td>{{ log.admin_id }}</td>
                         <td class="log-action">{{ log.action }}</td>
                         <td>{{ log.details }}</td>

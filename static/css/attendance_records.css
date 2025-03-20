@@ -1,9 +1,8 @@
-/* Import Google Font */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f8f9fa;
+/* Apply Inter as the primary font */
+body, html, button, input, textarea, select, 
+.form-control, .btn, .alert, .nav-link, .card, 
+.card-header, .table, .badge, .input-group-text {
+    font-family: 'Inter', sans-serif;
 }
 
 /* Container Spacing */
@@ -55,10 +54,11 @@ body {
     font-weight: bold;
 }
 
+/* Background Colors */
 .bg-danger {
-    background-color: #dc3545 !important;
+    background-color: #dc3545;
 }
 
 .bg-secondary {
-    background-color: #6c757d !important;
+    background-color: #6c757d;
 }
