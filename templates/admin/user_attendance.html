@@ -16,6 +16,7 @@
                     <thead>
                         <tr>
                             <th>Date</th>
+                            <th>Day</th>
                             <th>Clock In</th>
                             <th>Clock Out</th>
                             <th>Total Hours</th>
@@ -27,6 +28,8 @@
                             {% for record in attendance %}
                             <tr>
                                 <td>{{ record.clock_in.strftime('%Y-%m-%d') }}</td>
+                                <dt>{{ record.clock_in.strftime('%A') }}
+                                </dt>
                                 <td>
                                     <input type="hidden" name="record_id" value="{{ record.id }}">
                                     <input type="time" name="clock_in_{{ record.id }}" value="{{ record.clock_in.strftime('%H:%M') }}">
