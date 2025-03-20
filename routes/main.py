@@ -76,7 +76,7 @@ def dashboard_employee():
         if last_record.clock_out is None and last_record.clock_in.date() == today:
             status = "On Duty"
     
-            if global_settings.enable_strict_schedule:
+            if GlobalSettings.enable_strict_schedule:
                 # Check if the user is late
                 if user_schedule and last_record.clock_in.time() > user_schedule.start_time:
                     status = "Late"
@@ -86,7 +86,7 @@ def dashboard_employee():
                     status = "Overtime"
     
         elif last_record.clock_out:  # User has clocked out
-            if global_settings.enable_strict_schedule:
+            if GlobalSettings.enable_strict_schedule:
                 if user_schedule and last_record.clock_in.time() > user_schedule.start_time:
                     status = "Late"
     
