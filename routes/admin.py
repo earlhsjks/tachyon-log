@@ -242,8 +242,10 @@ def admin_attendance():
     inconsistency_map = {}
     for inc in inconsistencies:
         if inc.employee_id not in inconsistency_map:
-            inconsistency_map[inc.employee_id] = []
-        inconsistency_map[inc.employee_id].append(inc.issue_type)
+            inconsistency_map[inc.employee_id] = {}
+        if inc.date not in inconsistency_map[inc.employee_id]:
+            inconsistency_map[inc.employee_id][inc.date] = []
+        inconsistency_map[inc.employee_id][inc.date].append(inc.issue_type)
 
     # Pass the data to the template
     return render_template(
