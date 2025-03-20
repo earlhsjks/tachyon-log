@@ -28,7 +28,7 @@
                             {% for record in attendance %}
                             <tr>
                                 <td>{{ record.clock_in.strftime('%Y-%m-%d') }}</td>
-                                <dt>{{ record.clock_in.strftime('%A') }}
+                                <td>{{ record.clock_in.strftime('%A') }}</td>
                                 </dt>
                                 <td>
                                     <input type="hidden" name="record_id" value="{{ record.id }}">
