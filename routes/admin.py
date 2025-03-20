@@ -33,7 +33,7 @@ def log_entry(admin_id, action, details=None):
         admin_id = admin_id,
         action = action,
         details = details,
-        timestamp = datetime.now()
+        timestamp = datetime.now(timezone.utc).date()
     )
     db.session.add(log_entry)
     db.session.commit()
@@ -75,53 +75,52 @@ def admin_dashboard():
         flash("Access Denied!", "error")
         return redirect(url_for('main.home'))
 
-    # Exclude superadmin from statistics
     total_employees = User.query.filter(User.role != "superadmin").count()
-
-    # Today's Date
     today = datetime.now(timezone.utc).date()
 
     # Fetch on-duty employees (clocked in today, not clocked out)
     on_duty_today_list = (
-        db.session.query(User.employee_id, User.username, Attendance.clock_in)
+        db.session.query(User.employee_id, User.username, db.func.min(Attendance.clock_in))
         .join(Attendance, Attendance.employee_id == User.employee_id)
         .filter(
             Attendance.clock_out.is_(None),
-            db.func.date(Attendance.clock_in) == today  # Only today
+            db.func.date(Attendance.clock_in) == today
         )
+        .group_by(User.employee_id, User.username)
         .all()
     )
 
     # Fetch employees who forgot to clock out (previous days)
     forgot_to_clock_out_list = (
-        db.session.query(User.employee_id, User.username, Attendance.clock_in)
+        db.session.query(User.employee_id, User.username, db.func.min(Attendance.clock_in))
         .join(Attendance, Attendance.employee_id == User.employee_id)
         .filter(
             Attendance.clock_out.is_(None),
-            db.func.date(Attendance.clock_in) < today  # Before today
+            db.func.date(Attendance.clock_in) < today
         )
+        .group_by(User.employee_id, User.username)
         .all()
     )
 
-    # Fetch attendance inconsistencies
-    late_employees = (
-        AttendanceInconsistency.query.filter_by(issue_type="Late", date=today).count()
-    )
-    early_out_employees = (
-        AttendanceInconsistency.query.filter_by(issue_type="Early Out", date=today).count()
-    )
-    overtime_employees = (
-        AttendanceInconsistency.query.filter_by(issue_type="Overtime", date=today).count()
-    )
+    # Fetch attendance inconsistencies for today
+    late_employees = AttendanceInconsistency.query.filter_by(issue_type="Late", date=today).count()
+    early_out_employees = AttendanceInconsistency.query.filter_by(issue_type="Early Out", date=today).count()
+    overtime_employees = AttendanceInconsistency.query.filter_by(issue_type="Overtime", date=today).count()
 
-    # Employees who are absent based on schedule
-    all_users = User.query.filter(User.role != "superadmin").all()
-    present_users = [att.employee_id for att in Attendance.query.filter(Attendance.clock_in.isnot(None)).all()]
-    absent_employees = AttendanceInconsistency.query.filter_by(issue_type="Absent", date=today).count()
+    # Get present employees today
+    present_users = db.session.query(Attendance.employee_id).filter(Attendance.clock_in.isnot(None)).distinct().all()
+    present_users = {u[0] for u in present_users}  # Convert list of tuples to set
 
-    # Fetch attendance inconsistencies and map them by employee_id and date
+    # Count employees marked as absent today but not present
+    absent_employees = AttendanceInconsistency.query.filter(
+        AttendanceInconsistency.issue_type == "Absent",
+        AttendanceInconsistency.date == today,
+        AttendanceInconsistency.employee_id.notin_(present_users)
+    ).count()
+
+    # Fetch today's inconsistencies and map them by employee_id
     inconsistencies = {}
-    inconsistency_records = AttendanceInconsistency.query.all()
+    inconsistency_records = AttendanceInconsistency.query.filter_by(date=today).all()
 
     for record in inconsistency_records:
         if record.employee_id not in inconsistencies:
