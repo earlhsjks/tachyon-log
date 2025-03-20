@@ -6,6 +6,29 @@
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
 
+    <div class="dashboard-summary">
+        <div class="summary-box">
+            <h4>Total Employees</h4>
+            <p>{{ total_employees }}</p>
+        </div>
+        <div class="summary-box late">
+            <h4>Late</h4>
+            <p>{{ late_employees }}</p>
+        </div>
+        <div class="summary-box early-out">
+            <h4>Early Out</h4>
+            <p>{{ early_out_employees }}</p>
+        </div>
+        <div class="summary-box overtime">
+            <h4>Overtime</h4>
+            <p>{{ overtime_employees }}</p>
+        </div>
+        <div class="summary-box absent">
+            <h4>Absent</h4>
+            <p>{{ absent_employees }}</p>
+        </div>
+    </div>
+    
     <div class="dashboard-container">
         <!-- On-Duty Employees (Today) -->
         <div class="table-container">
@@ -86,29 +109,6 @@
         </div>
     </div>
 
-    <div class="dashboard-summary">
-        <div class="summary-box">
-            <h4>Total Employees</h4>
-            <p>{{ total_employees }}</p>
-        </div>
-        <div class="summary-box late">
-            <h4>Late</h4>
-            <p>{{ late_employees }}</p>
-        </div>
-        <div class="summary-box early-out">
-            <h4>Early Out</h4>
-            <p>{{ early_out_employees }}</p>
-        </div>
-        <div class="summary-box overtime">
-            <h4>Overtime</h4>
-            <p>{{ overtime_employees }}</p>
-        </div>
-        <div class="summary-box absent">
-            <h4>Absent</h4>
-            <p>{{ absent_employees }}</p>
-        </div>
-    </div>
-    
     <script>
         function forceClockOut(employeeId) {
             if (confirm("Are you sure you want to force clock-out this user?")) {
