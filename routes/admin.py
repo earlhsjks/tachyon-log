@@ -723,8 +723,8 @@ def export_pdf():
         "shift2": {"in": None, "out": None}
     }))
 
-    # Dictionary to store total hours per user
-    total_hours_dict = {user.employee_id: "0:00" for user in users}  # Initialize total hours
+    # Dictionary to store total hours per user (initialized to 0 seconds)
+    total_hours_dict = {user.employee_id: 0 for user in users}  
 
     # Populate attendance records
     for record in attendance_records:
@@ -737,6 +737,9 @@ def export_pdf():
         if not attendance_dict[employee_id][date_key]["shift1"]["in"]:
             attendance_dict[employee_id][date_key]["shift1"]["in"] = clock_in_time
             attendance_dict[employee_id][date_key]["shift1"]["out"] = clock_out_time
+        elif attendance_dict[employee_id][date_key]["shift1"]["out"] is None:
+            # If the first shift has an 'in' but no 'out', update 'out'
+            attendance_dict[employee_id][date_key]["shift1"]["out"] = clock_out_time
         else:
             attendance_dict[employee_id][date_key]["shift2"]["in"] = clock_in_time
             attendance_dict[employee_id][date_key]["shift2"]["out"] = clock_out_time
@@ -746,13 +749,9 @@ def export_pdf():
         total_seconds = 0
         if user.employee_id in attendance_dict:
             for date, shifts in attendance_dict[user.employee_id].items():
-                shift1 = shifts["shift1"]
-                shift2 = shifts["shift2"]
-
-                if shift1["in"] and shift1["out"]:
-                    total_seconds += (shift1["out"] - shift1["in"]).total_seconds()
-                if shift2["in"] and shift2["out"]:
-                    total_seconds += (shift2["out"] - shift2["in"]).total_seconds()
+                for shift in ["shift1", "shift2"]:
+                    if shifts[shift]["in"] and shifts[shift]["out"]:
+                        total_seconds += (shifts[shift]["out"] - shifts[shift]["in"]).total_seconds()
 
         # Convert total seconds to HH:MM format
         total_hours = int(total_seconds // 3600)
