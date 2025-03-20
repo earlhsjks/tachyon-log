@@ -71,6 +71,34 @@ tbody tr:hover {
     background: rgba(56, 142, 60, 0.1);
 }
 
+/* Attendance Flags */
+.flag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fff;
+    margin-right: 5px;
+}
+
+.flag.late {
+    background-color: #ff4d4d; /* Red */
+}
+
+.flag.early-out {
+    background-color: #ff9900; /* Orange */
+}
+
+.flag.overtime {
+    background-color: #4caf50; /* Green */
+}
+
+.flag.none {
+    background-color: #ccc;
+}
+
 /* ========== INPUT FIELDS ========== */
 input[type="time"] {
     width: 100%;

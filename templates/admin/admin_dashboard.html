@@ -18,6 +18,7 @@
                             <th>Employee ID</th>
                             <th>Name</th>
                             <th>Clock In</th>
+                            <th>Flags</th> <!-- New Column -->
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -27,6 +28,16 @@
                             <td>{{ user.employee_id }}</td>
                             <td>{{ user.username }}</td>
                             <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
+                            <td>
+                                {% set flags = inconsistencies.get(user.employee_id, {}).get(user.clock_in.date(), []) %}
+                                {% if flags %}
+                                    {% for flag in flags %}
+                                        <span class="flag {{ flag.issue_type|lower|replace(' ', '-') }}">{{ flag.issue_type }}</span>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="flag none">No Issues</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 <button class="force-clock-out-btn" onclick="forceClockOut('{{ user.employee_id }}')">
                                     Force Clock-Out

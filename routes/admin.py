@@ -6,7 +6,7 @@ import pandas as pd
 import io, pytz
 from collections import defaultdict
 from datetime import datetime, timezone, timedelta
-from models.models import db, User, Attendance, Schedule, GlobalSettings, Logs
+from models.models import db, User, Attendance, Schedule, GlobalSettings, Logs, AttendanceInconsistency
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import text, or_
 
@@ -103,24 +103,30 @@ def admin_dashboard():
         .all()
     )
 
-    # Employees who clocked in late
-    late_employees = Attendance.query.filter(Attendance.clock_in > datetime.now(timezone.utc)).count()
+    # Fetch attendance inconsistencies
+    late_employees = (
+        AttendanceInconsistency.query.filter_by(issue_type="Late", date=today).count()
+    )
+    early_out_employees = (
+        AttendanceInconsistency.query.filter_by(issue_type="Early Out", date=today).count()
+    )
+    overtime_employees = (
+        AttendanceInconsistency.query.filter_by(issue_type="Overtime", date=today).count()
+    )
 
-    # Employees who are absent based on their schedule
+    # Employees who are absent based on schedule
     all_users = User.query.filter(User.role != "superadmin").all()
     present_users = [att.employee_id for att in Attendance.query.filter(Attendance.clock_in.isnot(None)).all()]
-    absent_employees = [user.username for user in all_users if user.employee_id not in present_users]
-
-    # Employees currently in overtime
-    overtime_employees = Attendance.query.filter(Attendance.clock_out > Attendance.clock_in).count()
+    absent_employees = AttendanceInconsistency.query.filter_by(issue_type="Absent", date=today).count()
 
     return render_template(
         'admin/admin_dashboard.html',
         user=current_user,
         total_employees=total_employees,
         late_employees=late_employees,
-        absent_employees=absent_employees,
+        early_out_employees=early_out_employees,
         overtime_employees=overtime_employees,
+        absent_employees=absent_employees,
         on_duty_today_list=on_duty_today_list,
         forgot_to_clock_out_list=forgot_to_clock_out_list,
         current_time=datetime.now(timezone.utc)
@@ -180,9 +186,6 @@ def force_clock_out(employee_id):
     return redirect(url_for("admin.admin_dashboard"))  # Redirect back to dashboard
 
 # Admin Attendance
-from datetime import datetime
-from flask import request, flash, redirect, url_for
-
 @admin_bp.route('/attendance-records', methods=['GET', 'POST'])
 @login_required
 def admin_attendance():
@@ -203,7 +206,7 @@ def admin_attendance():
         return redirect(url_for('admin.admin_attendance'))
 
     # Query attendance records
-    query = db.session.query(
+    attendance_records = db.session.query(
         User.username,
         Attendance.employee_id,
         Attendance.clock_in,
@@ -211,14 +214,31 @@ def admin_attendance():
     ).join(User).filter(
         db.extract('year', Attendance.clock_in) == year,
         db.extract('month', Attendance.clock_in) == month
-    ).order_by(Attendance.clock_in.desc())
+    ).order_by(Attendance.clock_in.desc()).all()
 
-    attendance_records = query.all()  # Correct query usage
+    # Query attendance inconsistencies (Late, Early Out, Overtime, Absent)
+    inconsistencies = db.session.query(
+        AttendanceInconsistency.employee_id,
+        AttendanceInconsistency.date,
+        AttendanceInconsistency.issue_type
+    ).filter(
+        db.extract('year', AttendanceInconsistency.date) == year,
+        db.extract('month', AttendanceInconsistency.date) == month
+    ).all()
 
+    # Organize inconsistencies in a dictionary for quick lookup
+    inconsistency_map = {}
+    for inc in inconsistencies:
+        if inc.employee_id not in inconsistency_map:
+            inconsistency_map[inc.employee_id] = []
+        inconsistency_map[inc.employee_id].append(inc.issue_type)
+
+    # Pass the data to the template
     return render_template(
         'admin/attendance_records.html',
         attendance=attendance_records,
-        current_month=f"{year}-{month:02d}",  # Ensure correct formatting
+        inconsistencies=inconsistency_map,
+        current_month=f"{year}-{month:02d}",
         datetime=datetime
     )
 
@@ -479,29 +499,42 @@ def view_user_logs(employee_id):
         return redirect(url_for('dashboard_admin'))
 
     month = request.form.get('month')  # Format: YYYY-MM
-    query = db.session.query(User.username)
     user = User.query.get_or_404(employee_id)
 
     if month:
         year, month = map(int, month.split('-'))
-        attendance_records = Attendance.query.filter(
-            Attendance.employee_id == employee_id,
-            db.extract('year', Attendance.clock_in) == year,
-            db.extract('month', Attendance.clock_in) == month
-        ).all()
     else:
         today = datetime.today()
-        attendance_records = Attendance.query.filter(
-            Attendance.employee_id == employee_id,
-            db.extract('year', Attendance.clock_in) == today.year,
-            db.extract('month', Attendance.clock_in) == today.month
-        ).all()
+        year, month = today.year, today.month
+
+    # Fetch attendance records for the selected month
+    attendance_records = Attendance.query.filter(
+        Attendance.employee_id == employee_id,
+        db.extract('year', Attendance.clock_in) == year,
+        db.extract('month', Attendance.clock_in) == month
+    ).all()
+
+    # Fetch inconsistencies for the selected month
+    inconsistencies = AttendanceInconsistency.query.filter(
+        AttendanceInconsistency.employee_id == employee_id,
+        db.extract('year', AttendanceInconsistency.date) == year,
+        db.extract('month', AttendanceInconsistency.date) == month
+    ).all()
+
+    # Organize inconsistencies by date for quick lookup
+    inconsistency_map = {}
+    for inc in inconsistencies:
+        if inc.date not in inconsistency_map:
+            inconsistency_map[inc.date] = []
+        inconsistency_map[inc.date].append(inc.issue_type)
 
     return render_template(
         'admin/user_attendance.html',
         user=user,
         attendance=attendance_records or [],  # 🛠️ Ensures `attendance` is always iterable
-        employee_id=employee_id
+        inconsistencies=inconsistency_map,  # Pass inconsistencies to the template
+        employee_id=employee_id,
+        current_month=f"{year}-{month:02d}"
     )
 
 # Edit Attendance Logs

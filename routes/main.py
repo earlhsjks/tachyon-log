@@ -2,26 +2,68 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash
 from datetime import datetime, timedelta, time
-from models.models import db, User, Attendance, Schedule, GlobalSettings
+from models.models import db, User, Attendance, Schedule, GlobalSettings, AttendanceInconsistency
 
 # Create a Blueprint for main user routes
 main_bp = Blueprint('main', __name__)
 
+from datetime import datetime, timedelta
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
 def check_attendance_flags(attendance_entry):
     """
-    Checks attendance flags and updates the database if needed.
-    This function should handle late flags, overtime flags, etc.
+    Checks and updates attendance flags based on clock-in and clock-out times.
+    Handles late arrivals, early departures, and overtime detection.
     """
-    if not attendance_entry:
+    if not attendance_entry or not attendance_entry.clock_in:
         return
 
-    # Example: Set 'late' flag if clock-in is after 9:00 AM
-    if attendance_entry.clock_in.hour > 9:
-        attendance_entry.late = True
+    global_settings = GlobalSettings.query.first()
+    allowed_late_minutes = global_settings.allowed_late_in if global_settings else 0
 
-    # Example: Set 'overtime' flag if work is more than 8 hours
-    if attendance_entry.clock_out and (attendance_entry.clock_out - attendance_entry.clock_in).seconds > 8 * 3600:
-        attendance_entry.overtime = True
+    # Get user's schedule for the day
+    today = attendance_entry.clock_in.date()
+    user_schedule = Schedule.query.filter_by(employee_id=attendance_entry.employee_id, day=today.strftime('%A')).first()
+
+    if user_schedule:
+        schedule_start = datetime.combine(today, user_schedule.start_time)
+        schedule_end = datetime.combine(today, user_schedule.end_time)
+
+        # LATE: Clock-in is after scheduled start + grace period
+        if attendance_entry.clock_in > schedule_start + timedelta(minutes=allowed_late_minutes):
+            db.session.add(AttendanceInconsistency(
+                employee_id=attendance_entry.employee_id,
+                date=today,
+                issue_type="Late",
+                details=f"Clock-in at {attendance_entry.clock_in.strftime('%I:%M %p')}, scheduled start {schedule_start.strftime('%I:%M %p')}"
+            ))
+
+        # EARLY OUT: Clock-out before scheduled end
+        if attendance_entry.clock_out and attendance_entry.clock_out < schedule_end:
+            db.session.add(AttendanceInconsistency(
+                employee_id=attendance_entry.employee_id,
+                date=today,
+                issue_type="Early Out",
+                details=f"Clock-out at {attendance_entry.clock_out.strftime('%I:%M %p')}, scheduled end {schedule_end.strftime('%I:%M %p')}"
+            ))
+
+        # OVERTIME: Work exceeds scheduled shift + buffer (default 8 hours)
+        if attendance_entry.clock_out:
+            work_duration = attendance_entry.clock_out - attendance_entry.clock_in
+            scheduled_duration = schedule_end - schedule_start
+            overtime_threshold = global_settings.overtime_threshold if global_settings else timedelta(hours=8)
+
+            if work_duration > scheduled_duration + overtime_threshold:
+                db.session.add(AttendanceInconsistency(
+                    employee_id=attendance_entry.employee_id,
+                    date=today,
+                    issue_type="Overtime",
+                    details=f"Worked {work_duration}, scheduled {scheduled_duration}"
+                ))
+
+    db.session.commit()
         
 # Home Route
 @main_bp.route('/')

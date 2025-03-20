@@ -66,7 +66,7 @@ class AttendanceInconsistency(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     employee_id = db.Column(db.String(50), db.ForeignKey("users.employee_id", ondelete="CASCADE"), nullable=False)
     date = db.Column(db.Date, nullable=False)
-    issue_type = db.Column(db.String(50), nullable=False)  # "Late", "Absent", "Overtime"
+    issue_type = db.Column(db.String(50), nullable=False)  # "Late", "Early Out", "Overtime"
     details = db.Column(db.Text, nullable=True)
 
     user = db.relationship("User", backref="inconsistencies")

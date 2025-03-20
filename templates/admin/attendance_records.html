@@ -45,6 +45,7 @@
                         <th>Clock In</th>
                         <th>Clock Out</th>
                         <th>Total Hours</th>
+                        <th>Flags</th> <!-- New Column -->
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -63,6 +64,16 @@
                                 {{ ((record.clock_out - record.clock_in).seconds % 3600) // 60 }}m
                             {% else %}
                                 -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% set flags = inconsistencies.get(record.employee_id, {}).get(record.clock_in.date(), []) %}
+                            {% if flags %}
+                                {% for flag in flags %}
+                                    <span class="flag {{ flag.issue_type|lower|replace(' ', '-') }}">{{ flag.issue_type }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="flag none">No Issues</span>
                             {% endif %}
                         </td>
                         <td>

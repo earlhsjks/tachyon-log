@@ -94,6 +94,34 @@ tbody tr:hover {
     color: var(--text-color);
 }
 
+/* Attendance Flags */
+.flag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fff;
+    margin-right: 5px;
+}
+
+.flag.late {
+    background-color: #ff4d4d; /* Red */
+}
+
+.flag.early-out {
+    background-color: #ff9900; /* Orange */
+}
+
+.flag.overtime {
+    background-color: #4caf50; /* Green */
+}
+
+.flag.none {
+    background-color: #ccc;
+}
+
 /* ========== FORCE CLOCK OUT BUTTON ========== */
 .force-clock-out-btn {
     padding: 8px 12px;
