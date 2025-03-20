@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
 
     <div class="dashboard-container">
-        <!-- ✅ On-Duty Employees (Today) -->
+        <!-- On-Duty Employees (Today) -->
         <div class="table-container">
             <h3>On-Duty Employees (Today)</h3>
 
@@ -41,7 +41,7 @@
             {% endif %}
         </div>
 
-        <!-- ❌ Forgot to Clock Out Table -->
+        <!-- Forgot to Clock Out Table -->
         <div class="table-container">
             <h3>Forgot to Clock Out (Previous Days)</h3>
 
@@ -81,7 +81,7 @@
             if (confirm("Are you sure you want to force clock-out this user?")) {
                 fetch(`/admin/force_clock_out/${employeeId}`, { method: 'POST' })
                 .then(() => {
-                    location.reload(); // ✅ Reloads the page to show flashed messages
+                    location.reload();
                 })
                 .catch(error => {
                     alert("Error: " + error.message);
