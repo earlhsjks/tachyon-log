@@ -20,8 +20,7 @@ def check_attendance_flags(attendance_entry):
     if not attendance_entry or not attendance_entry.clock_in:
         return
 
-    global_settings = GlobalSettings.query.first()
-    allowed_late_minutes = global_settings.allowed_late_in if global_settings else 0
+    allowed_late_minutes = 0  # Hardcoded grace period (5 minutes)
 
     # Get user's schedule for the day
     today = attendance_entry.clock_in.date()
@@ -53,7 +52,7 @@ def check_attendance_flags(attendance_entry):
         if attendance_entry.clock_out:
             work_duration = attendance_entry.clock_out - attendance_entry.clock_in
             scheduled_duration = schedule_end - schedule_start
-            overtime_threshold = global_settings.overtime_threshold if global_settings else timedelta(hours=8)
+            overtime_threshold = timedelta(hours=4)  # Hardcoded overtime threshold
 
             if work_duration > scheduled_duration + overtime_threshold:
                 db.session.add(AttendanceInconsistency(

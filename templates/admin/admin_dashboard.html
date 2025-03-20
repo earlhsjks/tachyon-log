@@ -7,10 +7,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
 
     <div class="dashboard-summary">
-        <div class="summary-box">
-            <h4>Total Employees</h4>
-            <p>{{ total_employees }}</p>
-        </div>
         <div class="summary-box late">
             <h4>Late</h4>
             <p>{{ late_employees }}</p>
@@ -41,7 +37,7 @@
                             <th>Employee ID</th>
                             <th>Name</th>
                             <th>Clock In</th>
-                            <th>Flags</th> <!-- New Column -->
+                            <th>Flags</th>
                             <th>Action</th>
                         </tr>
                     </thead>

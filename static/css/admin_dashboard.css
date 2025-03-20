@@ -94,7 +94,7 @@ tbody tr:hover {
     color: var(--text-color);
 }
 
-/* Attendance Summary Boxes */
+/* ========== DASHBOARD SUMMARY ========== */
 .dashboard-summary {
     display: flex;
     gap: 20px;
@@ -109,50 +109,35 @@ tbody tr:hover {
     font-size: 18px;
     font-weight: bold;
     color: #fff;
-    box-shadow: 0 3px 6px var(--shadow-dark);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Colors for each flag */
+/* Colors for each category */
 .late { background-color: #e74c3c; }         /* Red */
 .early-out { background-color: #f39c12; }    /* Orange */
 .overtime { background-color: #3498db; }     /* Blue */
 .absent { background-color: #8e44ad; }       /* Purple */
 
-/* Flags inside the table */
-.flags {
-    text-align: center;
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    .dashboard-summary {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .summary-box {
+        flex-basis: 45%;
+    }
 }
 
-.flag {
-    display: inline-block;
-    padding: 6px 10px;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 5px;
-    color: #fff;
-    box-shadow: 0px 2px 5px var(--shadow-dark);
-    margin: 2px;
-}
+@media (max-width: 600px) {
+    .dashboard-summary {
+        flex-direction: column;
+    }
 
-/* Attendance Flags */
-.flag.late {
-    background-color: #ff4d4d; /* Red */
-}
-
-.flag.early-out {
-    background-color: #ff9900; /* Orange */
-}
-
-.flag.overtime {
-    background-color: #4caf50; /* Green */
-}
-
-.flag.absent {
-    background-color: #8e44ad; /* Purple */
-}
-
-.flag.none {
-    background-color: #ccc;
+    .summary-box {
+        flex-basis: 100%;
+    }
 }
 
 /* ========== FORCE CLOCK OUT BUTTON ========== */
