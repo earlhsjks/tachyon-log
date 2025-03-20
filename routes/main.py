@@ -67,19 +67,33 @@ def dashboard_employee():
     ).all()
 
     status = "Off Duty"  # Default status
-
+    today = datetime.today().date()
+    
     if attendance_records:
-        last_record = attendance_records[-1]
-
-        if last_record.clock_out is None:
+        last_record = attendance_records[-1]  # Get last recorded attendance
+        
+        # Only consider 'On Duty' if clock-in is today
+        if last_record.clock_out is None and last_record.clock_in.date() == today:
             status = "On Duty"
-
-            if user_schedule and last_record.clock_in.time() > user_schedule.start_time:
-                status = "Late"
-
-        elif user_schedule and last_record.clock_out.time() > user_schedule.end_time:
-            status = "Overtime"
-
+    
+            if global_settings.enable_strict_schedule:
+                # Check if the user is late
+                if user_schedule and last_record.clock_in.time() > user_schedule.start_time:
+                    status = "Late"
+    
+                # Check if they are working overtime but haven't clocked out yet
+                elif user_schedule and datetime.now().time() > user_schedule.end_time:
+                    status = "Overtime"
+    
+        elif last_record.clock_out:  # User has clocked out
+            if global_settings.enable_strict_schedule:
+                if user_schedule and last_record.clock_in.time() > user_schedule.start_time:
+                    status = "Late"
+    
+                elif user_schedule and last_record.clock_out.time() > user_schedule.end_time:
+                    status = "Overtime"
+    
+    # Format status for CSS class
     status_class = status.lower().replace(" ", "-")
 
     return render_template(
