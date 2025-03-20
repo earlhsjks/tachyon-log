@@ -1,17 +1,15 @@
 import os
 from datetime import timedelta, datetime, timezone
 import logging
-
 from flask import Flask, session, render_template
 from flask_session import Session
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from werkzeug.security import generate_password_hash
 from flask_migrate import Migrate
 from sqlalchemy.exc import OperationalError
 from waitress import serve
 
-from models.models import db, User, GlobalSettings
+from models.models import db, User
 from config import Config
 
 # Configure logging

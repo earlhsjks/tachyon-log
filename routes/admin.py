@@ -141,7 +141,7 @@ def admin_dashboard():
         on_duty_today_list=on_duty_today_list,
         forgot_to_clock_out_list=forgot_to_clock_out_list,
         current_time=datetime.now(timezone.utc),
-        inconsistencies=inconsistencies  # 🛠️ Pass inconsistencies to template
+        inconsistencies=inconsistencies
     )
 
 @admin_bp.route('/force-clock-out/<string:employee_id>', methods=['POST'])

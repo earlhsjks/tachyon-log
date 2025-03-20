@@ -1,16 +1,11 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_user, login_required, logout_user, current_user
-from werkzeug.security import check_password_hash
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, time
 from models.models import db, User, Attendance, Schedule, GlobalSettings, AttendanceInconsistency
 
 # Create a Blueprint for main user routes
 main_bp = Blueprint('main', __name__)
-
-from datetime import datetime, timedelta
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
 
 def check_attendance_flags(attendance_entry):
     """
