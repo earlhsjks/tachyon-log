@@ -119,6 +119,17 @@ def admin_dashboard():
     present_users = [att.employee_id for att in Attendance.query.filter(Attendance.clock_in.isnot(None)).all()]
     absent_employees = AttendanceInconsistency.query.filter_by(issue_type="Absent", date=today).count()
 
+    # Fetch attendance inconsistencies and map them by employee_id and date
+    inconsistencies = {}
+    inconsistency_records = AttendanceInconsistency.query.all()
+
+    for record in inconsistency_records:
+        if record.employee_id not in inconsistencies:
+            inconsistencies[record.employee_id] = {}
+        if record.date not in inconsistencies[record.employee_id]:
+            inconsistencies[record.employee_id][record.date] = []
+        inconsistencies[record.employee_id][record.date].append(record.issue_type)
+
     return render_template(
         'admin/admin_dashboard.html',
         user=current_user,
@@ -129,7 +140,8 @@ def admin_dashboard():
         absent_employees=absent_employees,
         on_duty_today_list=on_duty_today_list,
         forgot_to_clock_out_list=forgot_to_clock_out_list,
-        current_time=datetime.now(timezone.utc)
+        current_time=datetime.now(timezone.utc),
+        inconsistencies=inconsistencies  # 🛠️ Pass inconsistencies to template
     )
 
 @admin_bp.route('/force-clock-out/<string:employee_id>', methods=['POST'])

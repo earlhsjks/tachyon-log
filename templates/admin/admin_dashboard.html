@@ -28,14 +28,13 @@
                             <td>{{ user.employee_id }}</td>
                             <td>{{ user.username }}</td>
                             <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
-                            <td>
-                                {% set flags = inconsistencies.get(user.employee_id, {}).get(user.clock_in.date(), []) %}
-                                {% if flags %}
-                                    {% for flag in flags %}
-                                        <span class="flag {{ flag.issue_type|lower|replace(' ', '-') }}">{{ flag.issue_type }}</span>
+                            <td class="flags">
+                                {% if user.employee_id in inconsistency_map %}
+                                    {% for flag in inconsistency_map[user.employee_id] %}
+                                        <span class="flag {{ flag|lower|replace(' ', '-') }}">{{ flag }}</span>
                                     {% endfor %}
                                 {% else %}
-                                    <span class="flag none">No Issues</span>
+                                    <span class="flag none">✔</span>
                                 {% endif %}
                             </td>
                             <td>
@@ -87,6 +86,29 @@
         </div>
     </div>
 
+    <div class="dashboard-summary">
+        <div class="summary-box">
+            <h4>Total Employees</h4>
+            <p>{{ total_employees }}</p>
+        </div>
+        <div class="summary-box late">
+            <h4>Late</h4>
+            <p>{{ late_employees }}</p>
+        </div>
+        <div class="summary-box early-out">
+            <h4>Early Out</h4>
+            <p>{{ early_out_employees }}</p>
+        </div>
+        <div class="summary-box overtime">
+            <h4>Overtime</h4>
+            <p>{{ overtime_employees }}</p>
+        </div>
+        <div class="summary-box absent">
+            <h4>Absent</h4>
+            <p>{{ absent_employees }}</p>
+        </div>
+    </div>
+    
     <script>
         function forceClockOut(employeeId) {
             if (confirm("Are you sure you want to force clock-out this user?")) {
