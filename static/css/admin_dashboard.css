@@ -118,6 +118,22 @@ tbody tr:hover {
 .overtime { background-color: #3498db; }     /* Blue */
 .absent { background-color: #8e44ad; }       /* Purple */
 
+.flag.late {
+    background-color: #ff4d4d; /* Red */
+}
+
+.flag.early-out {
+    background-color: #ff9900; /* Orange */
+}
+
+.flag.overtime {
+    background-color: #4caf50; /* Green */
+}
+
+.flag.none {
+    background-color: #ccc;
+}
+
 /* ========== RESPONSIVE DESIGN ========== */
 @media (max-width: 768px) {
     .dashboard-summary {
