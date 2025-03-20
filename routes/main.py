@@ -231,12 +231,12 @@ def clock_in():
 
     # Prevent triple clock-ins for users with second shifts
     if len(active_shifts) >= 2 and has_second_shift:
-        flash("You cannot clock in more than twice in a day!", "warning")
+        flash("You cannot clock in more than twice in a day!", "error")
         return redirect(url_for('main.dashboard_employee'))
 
     # Enforce strict schedule rule
     if global_settings and global_settings.enable_strict_schedule and not valid_schedule:
-        flash("You can only clock in during your scheduled shift!", "error")
+        flash("You can only clock in during your scheduled shift!", "warning")
         return redirect(url_for('main.dashboard_employee'))
 
     # Create a new attendance entry
@@ -263,7 +263,7 @@ def clock_out():
     ).order_by(Attendance.id.desc()).first()  # Get the latest clock-in
 
     if not last_record:
-        flash("No active clock-in found for today!", "danger")
+        flash("No active clock-in found for today!", "error")
         return redirect(url_for('main.dashboard_employee'))
 
     # Fetch global settings

@@ -6,20 +6,45 @@
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/account_settings.css') }}">
 
-    <div class="container">
-        <h2>Change Password</h2>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white text-center">
+                        <h4>Change Password</h4>
+                    </div>
+                    <div class="card-body">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    <div class="alert alert-{{ category }} text-center">{{ message }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
 
-        <form method="POST" action="{{ url_for('admin.account_settings') }}">
-            <label for="current_password">Current Password:</label>
-            <input type="password" name="current_password" required>
+                        <form method="POST" action="{{ url_for('admin.account_settings') }}">
+                            <div class="mb-3">
+                                <label for="current_password" class="form-label">Current Password</label>
+                                <input type="password" class="form-control" name="current_password" required>
+                            </div>
 
-            <label for="new_password">New Password:</label>
-            <input type="password" name="new_password" required>
+                            <div class="mb-3">
+                                <label for="new_password" class="form-label">New Password</label>
+                                <input type="password" class="form-control" name="new_password" required>
+                            </div>
 
-            <label for="confirm_password">Confirm New Password:</label>
-            <input type="password" name="confirm_password" required>
+                            <div class="mb-3">
+                                <label for="confirm_password" class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" name="confirm_password" required>
+                            </div>
 
-            <button type="submit">Update Password</button>
-        </form>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success">Update Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

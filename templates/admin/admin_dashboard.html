@@ -4,104 +4,137 @@
 {% block page_title %}Dashboard{% endblock %}
 
 {% block content %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
 
-    <div class="dashboard-summary">
-        <div class="summary-box late">
-            <h4>Late</h4>
-            <p>{{ late_employees }}</p>
+    <div class="container mt-4">
+        <!-- Dashboard Summary -->
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="card text-white bg-danger shadow">
+                    <div class="card-body">
+                        <h4 class="card-title">Late</h4>
+                        <p class="card-text fs-3">{{ late_employees }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning shadow">
+                    <div class="card-body">
+                        <h4 class="card-title">Early Out</h4>
+                        <p class="card-text fs-3">{{ early_out_employees }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success shadow">
+                    <div class="card-body">
+                        <h4 class="card-title">Overtime</h4>
+                        <p class="card-text fs-3">{{ overtime_employees }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-secondary shadow">
+                    <div class="card-body">
+                        <h4 class="card-title">Absent</h4>
+                        <p class="card-text fs-3">{{ absent_employees }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="summary-box early-out">
-            <h4>Early Out</h4>
-            <p>{{ early_out_employees }}</p>
-        </div>
-        <div class="summary-box overtime">
-            <h4>Overtime</h4>
-            <p>{{ overtime_employees }}</p>
-        </div>
-        <div class="summary-box absent">
-            <h4>Absent</h4>
-            <p>{{ absent_employees }}</p>
-        </div>
-    </div>
-    
-    <div class="dashboard-container">
-        <!-- On-Duty Employees (Today) -->
-        <div class="table-container">
-            <h3>On-Duty Employees (Today)</h3>
 
-            {% if on_duty_today_list %}
-                <table class="custom-table">
-                    <thead>
-                        <tr>
-                            <th>Employee ID</th>
-                            <th>Name</th>
-                            <th>Clock In</th>
-                            <th>Flags</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in on_duty_today_list %}
-                        <tr>
-                            <td>{{ user.employee_id }}</td>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
-                            <td class="flags">
-                                {% if user.employee_id in inconsistency_map %}
-                                    {% for flag in inconsistency_map[user.employee_id] %}
-                                        <span class="flag {{ flag|lower|replace(' ', '-') }}">{{ flag }}</span>
-                                    {% endfor %}
-                                {% else %}
-                                    <span class="flag none">No Issues</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <button class="force-clock-out-btn" onclick="forceClockOut('{{ user.employee_id }}')">
-                                    Force Clock-Out
-                                </button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p class="no-data-message">No employees are currently on duty today.</p>
-            {% endif %}
+        <!-- On-Duty Employees Table -->
+        <div class="card mt-4 shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">On-Duty Employees (Today)</h5>
+            </div>
+            <div class="card-body">
+                {% if on_duty_today_list %}
+                    <div class="table-responsive">
+                        <table class="table table-striped text-center align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Name</th>
+                                    <th>Clock In</th>
+                                    <th>Flags</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in on_duty_today_list %}
+                                <tr>
+                                    <td>{{ user.employee_id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
+                                    <td>
+                                        {% if user.employee_id in inconsistency_map %}
+                                            {% for flag in inconsistency_map[user.employee_id] %}
+                                                <span class="badge bg-danger">{{ flag }}</span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="badge bg-success">No Issues</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" onclick="forceClockOut('{{ user.employee_id }}')">
+                                            Force Clock-Out
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">No employees are currently on duty today.</p>
+                {% endif %}
+            </div>
         </div>
 
         <!-- Forgot to Clock Out Table -->
-        <div class="table-container">
-            <h3>Forgot to Clock Out (Previous Days)</h3>
-
-            {% if forgot_to_clock_out_list %}
-                <table class="custom-table">
-                    <thead>
-                        <tr>
-                            <th>Employee ID</th>
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Clock In</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in forgot_to_clock_out_list %}
-                        <tr>
-                            <td>{{ user.employee_id }}</td>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.clock_in.strftime('%Y-%m-%d') }}</td>
-                            <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
-                            <td>
-                                <button class="review-user-btn" onclick="reviewUser('{{ user.employee_id }}')">Review</button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p class="no-data-message">No employees have pending clock-outs.</p>
-            {% endif %}
+        <div class="card mt-4 shadow">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Forgot to Clock Out (Previous Days)</h5>
+            </div>
+            <div class="card-body">
+                {% if forgot_to_clock_out_list %}
+                    <div class="table-responsive">
+                        <table class="table table-striped text-center align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Name</th>
+                                    <th>Date</th>
+                                    <th>Clock In</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in forgot_to_clock_out_list %}
+                                <tr>
+                                    <td>{{ user.employee_id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.clock_in.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="reviewUser('{{ user.employee_id }}')">
+                                            Review
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">No employees have pending clock-outs.</p>
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -109,16 +142,14 @@
         function forceClockOut(employeeId) {
             if (confirm("Are you sure you want to force clock-out this user?")) {
                 fetch(`/admin/force_clock_out/${employeeId}`, { method: 'POST' })
-                .then(() => {
-                    location.reload();
-                })
-                .catch(error => {
-                    alert("Error: " + error.message);
-                });
+                .then(() => location.reload())
+                .catch(error => alert("Error: " + error.message));
             }
         }
+
         function reviewUser(employeeId) {
             window.location.href = `/admin/user-logs/${employeeId}`;
         }
     </script>
+
 {% endblock %}

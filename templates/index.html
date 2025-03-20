@@ -4,45 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tachyon Log</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <link rel="icon" type="image/png" href="static/favicon.png">
+    
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
+<body class="bg-light d-flex justify-content-center align-items-center vh-100">
 
-<body>
-    <div class="container">
-        <h1 class="title">Tachyon Log</h1>
-        <p class="subtitle">Computer Center DTR System</p>
+    <div class="login-container text-center p-4 shadow-lg rounded bg-white">
+        <h1 class="fw-bold text-primary">Tachyon Log</h1>
+        <p class="text-muted">Computer Center DTR System</p>
 
+        <!-- Flash Messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <p class="{{ category }}">{{ message }}</p>
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
 
-        <div class="login-box">
-            <div style="margin-bottom:20px;"><h2>Login</h2></div>
+        <div class="login-box mt-3">
+            <h2 class="mb-3">Login</h2>
             <form action="{{ url_for('main.login_employee') }}" method="POST">
-                
-                <!-- Floating Label Input -->
-                <div class="input-container">
-                    <i class="fas fa-id-badge"></i>
-                    <input type="text" name="employee_id" id="employee_id" placeholder=" " required autocomplete="off">
-                    <label for="employee_id">School ID</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-id-badge"></i></span>
+                    <input type="text" name="employee_id" id="employee_id" class="form-control" placeholder="School ID" required autocomplete="off">
                 </div>
-                
-                <button type="submit">Login</button>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
             </form>
 
-            <p class="admin-link">
-                <a href="{{ url_for('admin.login') }}">Admin Login</a>
+            <p class="mt-3">
+                <a href="{{ url_for('admin.login') }}" class="text-decoration-none">Admin Login</a>
             </p>
         </div>
 
-        <footer>
+        <footer class="mt-3 text-muted">
             <p>Created by <strong>Earl Jeno Garcia</strong></p>
         </footer>
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

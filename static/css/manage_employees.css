@@ -1,197 +1,73 @@
-/* ========== GLOBAL STYLES ========== */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Theme Colors */
-:root {
-    --primary-color: #388e3c; /* Green */
-    --accent-color: #ffb300; /* Gold */
-    --background-color: #f4f4f4;
-    --card-background: #ffffff;
-    --text-color: #333;
-    --shadow-light: rgba(0, 0, 0, 0.1);
-    --shadow-dark: rgba(0, 0, 0, 0.2);
-    --radius: 10px;
-    --transition: all 0.3s ease-in-out;
-}
-
-/* ========== PAGE LAYOUT ========== */
 body {
-    background: var(--background-color);
-    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
 }
 
-/* Centered Container */
-.container {
-    width: 100%;
-    max-width: 600px;
-    margin: auto;
-}
-
-/* ========== CARD (BOX) DESIGN ========== */
+/* Card Styling */
 .card {
-    background: var(--card-background);
-    padding: 25px;
-    border-radius: var(--radius);
-    box-shadow: 0 4px 10px var(--shadow-light);
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* Section Title */
-h3 {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 15px;
-    margin-top: 40px;
-}
-
-/* ========== FORM STYLES ========== */
-.add-employee-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-/* Form Group */
-.form-group {
-    width: 100%;
-}
-
-/* Two-Column Row for ID & Role */
-.form-row {
-    display: flex;
-    gap: 15px;
-}
-
-.form-row .form-group {
-    flex: 1;
-}
-
-/* Labels */
-label {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--text-color);
-    text-align: left;
-    display: block;
-}
-
-/* Input & Select Fields */
-input, select {
-    width: 100%;
-    padding: 10px;
-    border: 2px solid var(--primary-color);
-    border-radius: var(--radius);
-    font-size: 16px;
-    outline: none;
-    transition: var(--transition);
-    background: white;
-}
-
-/* Input Focus Effect */
-input:focus, select:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 10px rgba(255, 179, 0, 0.4);
-}
-
-/* Submit Button */
-button {
-    width: 100%;
-    padding: 14px;
+    border-radius: 8px;
     border: none;
-    border-radius: var(--radius);
-    font-size: 17px;
-    font-weight: 600;
-    background: var(--primary-color);
-    color: white;
-    cursor: pointer;
-    transition: var(--transition);
-    margin-bottom: 25px;
 }
 
-button:hover {
-    background: var(--accent-color);
-    box-shadow: 0 5px 10px var(--shadow-dark);
+/* Form Input Styling */
+.form-control, .form-select {
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 16px;
+    transition: 0.3s;
 }
 
-/* ========== EMPLOYEE LIST TABLE ========== */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--card-background);
-    box-shadow: 0 4px 10px var(--shadow-light);
-    border-radius: var(--radius);
+.form-control:focus, .form-select:focus {
+    border-color: #2e7d32;
+    box-shadow: 0 0 5px rgba(46, 125, 50, 0.5);
+}
+
+/* Button Styling */
+.btn-success, .btn-primary, .btn-danger, .btn-warning {
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.btn-success:hover {
+    background-color: #256d27;
+}
+
+.btn-primary:hover {
+    background-color: #1a5eaa;
+}
+
+.btn-danger:hover {
+    background-color: #a51212;
+}
+
+.btn-warning:hover {
+    background-color: #d39e00;
+}
+
+/* Tables */
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.table-bordered {
+    border-radius: 8px;
     overflow: hidden;
 }
 
-h3 {
-    margin-top: -10px;
+/* Responsive Table */
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-th, td {
-    padding: 12px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background: var(--primary-color);
-    color: white;
-    font-weight: 600;
-}
-
-/* Always Visible Action Buttons */
-td:last-child {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-/* Action Buttons */
-.edit-btn, .delete-btn {
-    padding: 8px 12px;
+/* Alerts */
+.alert {
     font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    border-radius: var(--radius);
-    transition: var(--transition);
-}
-
-.edit-btn {
-    background: var(--primary-color);
-    color: white;
-}
-
-.delete-btn {
-    background: #d32f2f;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.edit-btn:hover {
-    background: var(--accent-color);
-}
-
-.delete-btn:hover {
-    background: #b71c1c;
-}
-
-/* ========== RESPONSIVE DESIGN ========== */
-@media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-    }
-
-    .container {
-        max-width: 90%;
-    }
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 10px;
 }

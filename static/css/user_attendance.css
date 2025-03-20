@@ -1,4 +1,4 @@
-/* ========== GLOBAL STYLES ========== */
+/* ========== GENERAL STYLES ========== */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 * {
@@ -8,153 +8,72 @@
     font-family: 'Poppins', sans-serif;
 }
 
-/* ========== PAGE LAYOUT ========== */
-body {
-    background: #f4f4f4;
-    padding: 20px;
-}
-
+/* Ensure the container has padding */
 .container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: auto;
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 80px;
 }
 
-/* ========== HEADER ========== */
-h2 {
-    text-align: center;
-    font-size: 24px;
-    font-weight: 700;
-    color: #388e3c;
-    border-bottom: 3px solid #ffb300;
-    padding-bottom: 5px;
-    margin-bottom: 20px;
-}
-
-/* ========== TABLE STYLES ========== */
-.table-container {
-    overflow-x: auto;
-    margin-top: 20px;
-}
-
-.custom-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #ffffff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+/* ========== TABLE STYLING ========== */
+.attendance-table {
     border-radius: 10px;
     overflow: hidden;
 }
 
-th, td {
-    padding: 12px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background: #388e3c;
-    color: white;
-    font-weight: 600;
-}
-
-/* Alternating Row Colors */
-tbody tr:nth-child(even) {
-    background: #f9f9f9;
-}
-
-tbody tr:hover {
-    background: rgba(56, 142, 60, 0.1);
-}
-
-/* Attendance Flags */
-.flag {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: bold;
+/* Table Headers */
+.attendance-table thead {
     text-transform: uppercase;
-    color: #fff;
-    margin-right: 5px;
 }
 
-.flag.late {
-    background-color: #ff4d4d; /* Red */
-}
-
-.flag.early-out {
-    background-color: #ff9900; /* Orange */
-}
-
-.flag.overtime {
-    background-color: #4caf50; /* Green */
-}
-
-.flag.none {
-    background-color: #ccc;
-}
-
-/* ========== INPUT FIELDS ========== */
-input[type="time"] {
-    width: 100%;
-    max-width: 150px;
-    padding: 8px;
-    border: 2px solid #388e3c;
-    border-radius: 10px;
-    font-size: 16px;
-    outline: none;
-    transition: 0.3s;
-    background: white;
-}
-
-input[type="time"]:focus {
-    border-color: #ffb300;
-    box-shadow: 0 0 8px rgba(255, 179, 0, 0.4);
-}
-
-/* ========== SAVE BUTTON ========== */
-.save-btn {
-    padding: 10px 16px;
-    background: #388e3c;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.save-btn:hover {
-    background: #ffb300;
-}
-
-/* ========== NO RECORDS MESSAGE ========== */
-.no-records {
+.attendance-table th {
     text-align: center;
-    font-size: 16px;
-    font-weight: 600;
-    color: #888;
-    padding: 15px;
+    vertical-align: middle !important;
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
+/* Table Cells */
+.attendance-table td {
+    vertical-align: middle !important;
+    text-align: center;
+}
+
+/* Form Control Styling */
+.attendance-table input[type="time"] {
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+/* Badges for Flags */
+.badge {
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+/* Buttons */
+.btn-sm {
+    font-size: 14px;
+    padding: 6px 10px;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .container {
-        max-width: 95%;
+        padding: 10px;
     }
-
-    .custom-table {
+    
+    .attendance-table {
         font-size: 14px;
     }
 
-    .save-btn {
-        padding: 8px 12px;
-        font-size: 14px;
+    .btn-sm {
+        padding: 5px 8px;
+        font-size: 12px;
+    }
+
+    .badge {
+        font-size: 12px;
     }
 }

@@ -1,159 +1,32 @@
-/* ========== GLOBAL STYLES ========== */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Theme Colors */
-:root {
-    --primary-color: #388e3c; /* Green */
-    --accent-color: #ffb300; /* Gold */
-    --background-color: #f4f4f4;
-    --text-color: #333;
-    --shadow-light: rgba(0, 0, 0, 0.1);
-    --shadow-dark: rgba(0, 0, 0, 0.2);
-}
-
-/* Centered Page Styling */
 body {
-    background: var(--background-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
+    font-family: 'Inter', sans-serif;
 }
 
-/* Admin Login Container */
-.admin-container {
-    width: 100%;
-    max-width: 400px;
-    padding: 30px;
-    background: white;
+/* Card Styling */
+.card {
     border-radius: 12px;
-    box-shadow: 0 5px 15px var(--shadow-light);
-    text-align: center;
-}
-
-/* Title */
-.admin-container h2 {
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 40px;
-}
-
-/* ========== FLOATING LABEL INPUT ========== */
-.input-container {
-    position: relative;
-    width: 100%;
-    margin-bottom: 30px;
-}
-
-/* Floating Label */
-.input-container label {
-    position: absolute;
-    top: 50%;
-    left: 12px;
-    transform: translateY(-50%);
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--primary-color);
-    transition: all 0.3s ease-in-out;
-    pointer-events: none;
-}
-
-/* Input Field */
-.input-container input {
-    width: 100%;
-    padding: 14px 12px;
-    height: 50px;
-    text-align: left;
-    border: 2px solid var(--primary-color);
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--text-color);
-    background: white;
-    outline: none;
-    transition: border 0.3s, box-shadow 0.3s;
-}
-
-/* Move Label Up on Focus or Hover */
-.input-container input:focus + label,
-.input-container input:hover + label,
-.input-container input:not(:placeholder-shown) + label {
-    top: -10px;
-    left: 3px;
-    font-size: 12px;
-    color: var(--accent-color);
-    text-align: left;
-}
-
-/* Ensure typed text is left-aligned */
-.input-container input:not(:placeholder-shown) {
-    text-align: left;
-}
-
-/* Input Focus Effects */
-.input-container input:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 10px rgba(255, 179, 0, 0.4);
-}
-
-/* ========== BUTTON STYLES ========== */
-button {
-    width: 100%;
-    padding: 14px;
+    padding: 20px;
     border: none;
-    border-radius: 8px;
-    font-size: 17px;
+}
+
+.card-body {
+    padding: 30px;
+}
+
+/* Input Group Styling */
+.input-group-text {
+    background: #f8f9fa;
+    border-right: none;
+}
+
+.input-group .form-control {
+    border-left: none;
+}
+
+/* Button Styling */
+.btn-primary {
     font-weight: 600;
-    background: var(--primary-color);
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s, box-shadow 0.3s;
-}
-
-button:hover {
-    background: var(--accent-color);
-    box-shadow: 0 5px 10px var(--shadow-dark);
-}
-
-/* ========== FLASH MESSAGES ========== */
-p.success {
-    color: #388e3c;
-    background: #e8f5e9;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 30px;
-    margin-top: -30px;
-}
-
-p.error {
-    color: #d32f2f;
-    background: #ffebee;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 30px;
-    margin-top: -30px;
-}
-
-/* ========== LINKS ========== */
-.admin-container a {
-    display: block;
-    margin-top: 20px;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--primary-color);
-    transition: color 0.3s;
-}
-
-.admin-container a:hover {
-    color: var(--accent-color);
 }

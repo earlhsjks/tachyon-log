@@ -6,58 +6,46 @@
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/attendance_records.css') }}">
 
-    <div class="container">
-        <h3>Attendance Records</h3>
+    <div class="container mt-4">
+        <h3 class="text-center text-success">Attendance Records</h3>
 
-        <!-- Unified Month Selection with Filter and Export Buttons -->
-        <div class="filter-export-wrapper">
-            <label for="month">Select Month:</label>
-            <input type="month" id="month" name="month" value="{{ request.args.get('month', current_month) }}" class="filter-input">
-            
-            <button type="submit" form="filter-form" class="btn filter-btn">Filter</button>
-
-            <form method="GET" action="{{ url_for('admin.export_pdf') }}" target="_blank" class="export-form">
-                <input type="hidden" name="month" id="export-month">
-                <button type="submit" class="btn export-btn">Print</button>
-            </form>
+        <!-- Filter & Export Row -->
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-6">
+                <form id="filter-form" method="GET" action="{{ url_for('admin.admin_attendance') }}" class="d-flex gap-2">
+                    <input type="month" id="month" name="month" value="{{ request.args.get('month', current_month) }}" class="form-control">
+                    <button type="submit" class="btn btn-success">Filter</button>
+                </form>
+            </div>
+            <div class="col-md-3">
+                <form method="GET" action="{{ url_for('admin.export_pdf') }}" target="_blank">
+                    <input type="hidden" name="month" id="export-month">
+                    <button type="submit" class="btn btn-primary w-100">Export PDF</button>
+                </form>
+            </div>
         </div>
 
-        <!-- Hidden Form for Filtering (Now Uses GET) -->
-        <form id="filter-form" method="GET" action="{{ url_for('admin.admin_attendance') }}" style="display: none;">
-            <input type="hidden" name="month" id="filter-month">
-        </form>
-
-        <script>
-            // Update both hidden inputs when the user selects a month
-            document.getElementById('month').addEventListener('change', function() {
-                document.getElementById('filter-month').value = this.value;
-                document.getElementById('export-month').value = this.value;
-            });
-        </script>
-
         <!-- Attendance Table -->
-        <div class="table-container">
-            <table>
-                <thead>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark text-center">
                     <tr>
                         <th>Name</th>
                         <th>Date</th>
                         <th>Clock In</th>
                         <th>Clock Out</th>
                         <th>Total Hours</th>
-                        <th>Flags</th> <!-- New Column -->
+                        <th>Flags</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for record in attendance %}
-                    <tr>
+                    <tr class="text-center">
                         <td>{{ record.username }}</td>
                         <td>{{ record.clock_in.strftime('%Y-%m-%d')}}</td>
                         <td>{{ record.clock_in.strftime('%I:%M %p') }}</td>
-                        <td>
-                            {{ record.clock_out.strftime('%I:%M %p') if record.clock_out else 'N/A' }}
-                        </td>
+                        <td>{{ record.clock_out.strftime('%I:%M %p') if record.clock_out else 'N/A' }}</td>
                         <td>
                             {% if record.clock_in and record.clock_out %}
                                 {{ ((record.clock_out - record.clock_in).seconds // 3600)|int }}h
@@ -70,24 +58,30 @@
                             {% set flags = inconsistencies.get(record.employee_id, {}).get(record.clock_in.date(), []) %}
                             {% if flags %}
                                 {% for flag in flags %}
-                                    <span class="flag {{ flag.issue_type|lower|replace(' ', '-') }}">{{ flag.issue_type }}</span>
+                                    <span class="badge bg-danger">{{ flag.issue_type }}</span>
                                 {% endfor %}
                             {% else %}
-                                <span class="flag none">No Issues</span>
+                                <span class="badge bg-secondary">No Issues</span>
                             {% endif %}
                         </td>
                         <td>
-                            <a href="{{ url_for('admin.view_user_logs', employee_id=record.employee_id) }}" class="edit-btn">Review</a>
+                            <a href="{{ url_for('admin.view_user_logs', employee_id=record.employee_id) }}" class="btn btn-warning btn-sm">Review</a>
                         </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">No attendance records found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+    </div>
 
-        <!-- Export Section -->
-        <div class="export-section">
-            
-        </div>
+    <script>
+        document.getElementById('month').addEventListener('change', function() {
+            document.getElementById('export-month').value = this.value;
+        });
+    </script>
 
 {% endblock %}

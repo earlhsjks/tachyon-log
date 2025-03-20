@@ -4,25 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GIA Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_employee.css') }}">
+
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body>
+<body class="bg-light">
 
-    <!-- Logout Button (Moved to Body) -->
-    <a href="{{ url_for('main.logout') }}" class="logout-btn">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark px-3">
+        <span class="navbar-brand">GIA Dashboard</span>
+        <a href="{{ url_for('main.logout') }}" class="btn btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </nav>
 
-    <div id="toast-container">
+    <!-- Flash Messages -->
+    <div class="container mt-3">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="toast {{ category }}">
-                        <span class="toast-message">{{ message }}</span>
-                        <div class="toast-progress"></div>
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -30,73 +38,81 @@
     </div>
 
     <!-- Header Section -->
-    <div class="header-container">
-        {{ name }}
+    <div class="container text-center mt-4">
+        <h2 class="fw-bold">{{ name }}</h2>
     </div>
 
     <!-- Live Clock & Date -->
-    <div class="clock-container">
-        <div id="date"></div>
-        <div class="clock-status-wrapper">
-            <div id="clock"></div>
-            <span id="status-icon" class="{{ status|lower|replace(' ', '-') }}"></span>
-        </div>              
-    </div>    
+    <div class="container text-center mt-3">
+        <div class="d-flex justify-content-center align-items-center flex-column">
+            <h5 id="date" class="fw-bold"></h5>
+            <div class="d-flex align-items-center">
+                <h3 id="clock" class="fw-bold"></h3>
+                <span id="status-icon" class="ms-2 {{ status|lower|replace(' ', '-') }}"></span>
+            </div>
+        </div> 
+    </div>
 
     <!-- Clock In/Out Buttons -->
-    <div class="button-container">
-        <a href="{{ url_for('main.clock_in') }}" class="btn clock-in">Clock In</a>
-        <a href="{{ url_for('main.clock_out') }}" class="btn clock-out">Clock Out</a>
+    <div class="container text-center mt-4">
+        <a href="{{ url_for('main.clock_in') }}" class="btn btn-success btn-lg me-2">Clock In</a>
+        <a href="{{ url_for('main.clock_out') }}" class="btn btn-danger btn-lg">Clock Out</a>
     </div>
 
     <!-- Attendance Records Section -->
-    <section class="attendance-section">
-        <div class="attendance-header">
-            <h2 class="section-title">Attendance Records</h2>
-            <form method="GET" action="{{ url_for('main.dashboard_employee') }}" class="attendance-filter">
-                <label for="month" class="filter-label">Select Month:</label>
-                <div class="filter-input-group">
-                    <input type="month" id="month" name="month" value="{{ request.args.get('month', current_month) }}" class="filter-input">
-                    <button type="submit" class="btn filter-btn">Filter</button>
-                </div>
-            </form>
-        </div>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Attendance Records</h5>
+                <form method="GET" action="{{ url_for('main.dashboard_employee') }}" class="d-flex">
+                    <label for="month" class="me-2 align-self-center">Select Month:</label>
+                    <input type="month" id="month" name="month" class="form-control me-2"
+                        value="{{ request.args.get('month', current_month) }}">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </form>
+            </div>
 
-        <div class="table-container">
-            {% if attendance_records %}
-                <table class="attendance-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Clock In</th>
-                            <th>Clock Out</th>
-                            <th>Total Hours</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for record in attendance_records %}
-                            <tr>
-                                <td>{{ record.clock_in.strftime('%Y-%m-%d') if record.clock_in else 'N/A' }}</td>
-                                <td>{{ record.clock_in.strftime('%I:%M %p') if record.clock_in else 'N/A' }}</td>
-                                <td>{{ record.clock_out.strftime('%I:%M %p') if record.clock_out else 'N/A' }}</td>
-                                <td>
-                                    {% if record.clock_in and record.clock_out %}
-                                        {{ ((record.clock_out - record.clock_in).seconds // 3600)|int }}h 
-                                        {{ ((record.clock_out - record.clock_in).seconds % 3600) // 60 }}m
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p class="no-records">No attendance records found for this month.</p>
-            {% endif %}
+            <div class="card-body">
+                {% if attendance_records %}
+                    <div class="table-responsive">
+                        <table class="table table-striped text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Clock In</th>
+                                    <th>Clock Out</th>
+                                    <th>Total Hours</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in attendance_records %}
+                                    <tr>
+                                        <td>{{ record.clock_in.strftime('%Y-%m-%d') if record.clock_in else 'N/A' }}</td>
+                                        <td>{{ record.clock_in.strftime('%I:%M %p') if record.clock_in else 'N/A' }}</td>
+                                        <td>{{ record.clock_out.strftime('%I:%M %p') if record.clock_out else 'N/A' }}</td>
+                                        <td>
+                                            {% if record.clock_in and record.clock_out %}
+                                                {{ ((record.clock_out - record.clock_in).seconds // 3600)|int }}h 
+                                                {{ ((record.clock_out - record.clock_in).seconds % 3600) // 60 }}m
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center text-muted">No attendance records found for this month.</p>
+                {% endif %}
+            </div>
         </div>
-    </section>
+    </div>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/dashboard_clock.js') }}"></script>
+
 </body>
 </html>
