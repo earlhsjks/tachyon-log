@@ -32,7 +32,7 @@
     </nav>
 
     <div class="d-flex">
-        <!-- Sidebar (Hidden on Mobile, Visible on Desktop) -->
+        <!-- Sidebar -->
         <nav id="sidebar" class="bg-dark text-white p-3 vh-100">
             <div class="sidebar-content">
                 <div class="text-center fs-4 fw-bold mb-3">Tachyon Log</div>
@@ -54,22 +54,28 @@
 
         <!-- Main Content -->
         <div class="flex-grow-1 p-4">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div class="container">
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
-
             <h2 class="mb-4">{% block page_title %}Dashboard{% endblock %}</h2>
+
             {% block content %}{% endblock %}
         </div>
+    </div>
+
+    <!-- Bootstrap Toast Notification Container (Top-Right) -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="toast align-items-center text-bg-{{ category }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                {{ message }}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </div>
 
     <!-- Bootstrap JS -->
@@ -79,6 +85,15 @@
     <script>
         document.getElementById("mobileMenuToggle").addEventListener("click", function () {
             document.getElementById("sidebar").classList.toggle("mobile-active");
+        });
+
+        // Show Bootstrap Toasts Automatically
+        document.addEventListener("DOMContentLoaded", function () {
+            var toastElList = [].slice.call(document.querySelectorAll(".toast"));
+            var toastList = toastElList.map(function (toastEl) {
+                return new bootstrap.Toast(toastEl, { delay: 4000 });
+            });
+            toastList.forEach(toast => toast.show());
         });
     </script>
 
