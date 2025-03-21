@@ -119,7 +119,7 @@
                                 <tr>
                                     <td>{{ user.employee_id }}</td>
                                     <td>{{ user.username }}</td>
-                                    <td>{{ user.clock_in.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ user.clock_in.strftime('%m-%d-%y') }}</td>
                                     <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
                                     <td>
                                         <button class="btn btn-primary btn-sm" onclick="reviewUser('{{ user.employee_id }}')">

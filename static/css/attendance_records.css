@@ -12,8 +12,7 @@ body, html, button, input, textarea, select,
 
 /* Button Styles */
 .btn-success, .btn-primary, .btn-warning {
-    font-weight: bold;
-    padding: 10px;
+    padding: 6px 10px;
     border-radius: 6px;
 }
 

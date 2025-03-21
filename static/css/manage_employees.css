@@ -1,5 +1,4 @@
 body {
-    font-family: 'Inter', sans-serif;
     background-color: #f8f9fa;
 }
 
@@ -25,7 +24,7 @@ body {
 /* Button Styling */
 .btn-success, .btn-primary, .btn-danger, .btn-warning {
     font-weight: bold;
-    padding: 10px;
+    padding: 6px 10px;
     border-radius: 6px;
 }
 
