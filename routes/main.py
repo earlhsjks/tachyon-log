@@ -12,10 +12,18 @@ def check_attendance_flags(attendance_entry):
     Checks and updates attendance flags based on clock-in and clock-out times.
     Handles late arrivals, early departures, and overtime detection.
     """
+
+    # Fetch strict mode setting from the database
+    settings = GlobalSettings.query.first()  # Assuming only one settings row exists
+    strict_mode = settings.enable_strict_schedule if settings else False
+
+    if not strict_mode:
+        return  # Exit function if strict mode is OFF
+
     if not attendance_entry or not attendance_entry.clock_in:
         return
 
-    allowed_late_minutes = 0  # Hardcoded grace period (5 minutes)
+    allowed_late_minutes = 0  # Hardcoded grace period
 
     # Get user's schedule for the day
     today = attendance_entry.clock_in.date()
@@ -43,11 +51,11 @@ def check_attendance_flags(attendance_entry):
                 details=f"Clock-out at {attendance_entry.clock_out.strftime('%I:%M %p')}, scheduled end {schedule_end.strftime('%I:%M %p')}"
             ))
 
-        # OVERTIME: Work exceeds scheduled shift + buffer (default 8 hours)
+        # OVERTIME: Work exceeds scheduled shift + buffer (default 4 hours)
         if attendance_entry.clock_out:
             work_duration = attendance_entry.clock_out - attendance_entry.clock_in
             scheduled_duration = schedule_end - schedule_start
-            overtime_threshold = timedelta(hours=4)  # Hardcoded overtime threshold
+            overtime_threshold = timedelta(hours=4)
 
             if work_duration > scheduled_duration + overtime_threshold:
                 db.session.add(AttendanceInconsistency(
