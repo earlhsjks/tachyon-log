@@ -7,7 +7,7 @@ import io, pytz
 from collections import defaultdict
 from datetime import datetime, timedelta
 from models.models import db, User, Attendance, Schedule, GlobalSettings, Logs, AttendanceInconsistency
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import Integritydanger
 from sqlalchemy import text, or_
 
 # Create a Blueprint for admin routes
@@ -20,7 +20,7 @@ def parse_time(time_str):
         return None
     try:
         return datetime.strptime(time_str, "%H:%M").time()
-    except ValueError:
+    except Valuedanger:
         return None  # Handle incorrect formats safely
 
 # Function to log changes
@@ -53,7 +53,7 @@ def login():
 
             return redirect(url_for("admin.admin_dashboard"))
         else:
-            flash("Invalid Credentials. Please try again.", "error")
+            flash("Invalid Credentials. Please try again.", "danger")
 
     return render_template('admin/login_admin.html')    
 
@@ -69,7 +69,7 @@ def logout():
 @login_required
 def admin_dashboard():
     if current_user.role not in ["superadmin", "admin"]:
-        flash("Access Denied!", "error")
+        flash("Access Denied!", "danger")
         return redirect(url_for('main.home'))
 
     # Exclude superadmin from statistics
@@ -149,7 +149,7 @@ def force_clock_out(employee_id):
     
     # Only superadmin or admin can use this
     if current_user.role not in ["superadmin", "admin"]:
-        flash("Unauthorized access!", "error")
+        flash("Unauthorized access!", "danger")
         return redirect(url_for("admin.dashboard"))
 
     # Get the latest active attendance record
@@ -159,7 +159,7 @@ def force_clock_out(employee_id):
     ).order_by(Attendance.clock_in.desc()).first()
 
     if not attendance:
-        flash("Employee is not currently on duty!", "error")
+        flash("Employee is not currently on duty!", "danger")
         return redirect(url_for("admin.dashboard"))
 
     # Get the employee's schedule for today
@@ -211,8 +211,8 @@ def admin_attendance():
 
     try:
         year, month = map(int, month.split('-'))  # Convert to integers
-    except ValueError:
-        flash("Invalid month format. Please select a valid month.", "error")
+    except Valuedanger:
+        flash("Invalid month format. Please select a valid month.", "danger")
         return redirect(url_for('admin.admin_attendance'))
 
     # Query attendance records for the selected month
@@ -257,7 +257,7 @@ def admin_attendance():
 @login_required
 def admin_employees():
     if current_user.role not in ["superadmin", "admin"]:
-        flash("Access Denied!", "error")
+        flash("Access Denied!", "danger")
         return redirect(url_for('main.home'))
 
     users = db.session.scalars(db.select(User)).all()
@@ -270,7 +270,7 @@ def admin_employees():
 @login_required
 def edit_user(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
-        flash("Access Denied!", "error")
+        flash("Access Denied!", "danger")
         return redirect(url_for('main.home'))
 
     user = User.query.get_or_404(employee_id)
@@ -300,7 +300,7 @@ def edit_user(employee_id):
 @login_required
 def update_user(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
-        flash("Access Denied!", "error")
+        flash("Access Denied!", "danger")
         return redirect(url_for('main.home'))
 
     user = User.query.get_or_404(employee_id)
@@ -328,7 +328,7 @@ def update_user(employee_id):
         if new_employee_id and new_employee_id != old_employee_id:
             existing_user = User.query.get(new_employee_id)
             if existing_user:
-                flash("Employee ID already exists! Choose a different one.", "error")
+                flash("Employee ID already exists! Choose a different one.", "danger")
                 return redirect(url_for('admin.update_user', employee_id=old_employee_id))
 
             # Step 2: Update the User's employee_id first
@@ -410,12 +410,12 @@ def update_user(employee_id):
 
         flash("User updated successfully!", "success")
 
-    except IntegrityError as e:
+    except Integritydanger as e:
         db.session.rollback()
-        flash(f"Database Integrity Error: {str(e)}", "error")
+        flash(f"Database Integrity danger: {str(e)}", "danger")
     except Exception as e:
         db.session.rollback()
-        flash(f"Error updating user: {str(e)}", "error")
+        flash(f"danger updating user: {str(e)}", "danger")
 
     return redirect(url_for('admin.admin_employees'))
 
@@ -424,7 +424,7 @@ def update_user(employee_id):
 @login_required
 def add_user():
     if current_user.role not in ["superadmin", "admin"]:
-        flash("Access Denied!", "error")
+        flash("Access Denied!", "danger")
         return redirect(url_for('main.home'))
 
     employee_id = request.form.get('employee_id')
@@ -432,7 +432,7 @@ def add_user():
     role = request.form.get('role')
 
     if User.query.filter_by(employee_id=employee_id).first():
-        flash("Employee ID already exists!", "error")
+        flash("Employee ID already exists!", "danger")
         return redirect(url_for('admin.admin_employees'))
 
     try:
@@ -457,7 +457,7 @@ def add_user():
 
     except Exception as e:
         db.session.rollback()
-        flash(f"Error adding user: {str(e)}", "error")
+        flash(f"danger adding user: {str(e)}", "danger")
 
     return redirect(url_for('admin.admin_employees'))
 
@@ -466,13 +466,13 @@ def add_user():
 @login_required
 def delete_user(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
-        flash("Access Denied!", "error")
+        flash("Access Denied!", "danger")
         return redirect(url_for('admin.admin_employees'))
     
     user = User.query.get_or_404(employee_id)
 
     if user.role == "admin" and user.employee_id == "admin":
-        flash("You cannot delete the built-in Admin account!", "error")
+        flash("You cannot delete the built-in Admin account!", "danger")
         return redirect(url_for('admin.edit_user', employee_id=user.employee_id))
 
     try:
@@ -496,7 +496,7 @@ def delete_user(employee_id):
 
     except Exception as e:
         db.session.rollback()
-        flash(f"Error deleting user: {str(e)}", "error")
+        flash(f"danger deleting user: {str(e)}", "danger")
 
     return redirect(url_for('admin.admin_employees'))
 
@@ -606,7 +606,7 @@ def edit_attendance():
 
     except Exception as e:
         db.session.rollback()
-        flash(f"Error updating record: {e}", "error")
+        flash(f"danger updating record: {e}", "danger")
 
     return redirect(request.referrer)
 
@@ -621,17 +621,17 @@ def account_settings():
 
         # Validate current password
         if not check_password_hash(current_user.password, current_password):
-            flash("Current password is incorrect!", "error")
+            flash("Current password is incorrect!", "danger")
             return redirect(url_for('admin.account_settings'))
 
         # Check if new passwords match
         if new_password != confirm_password:
-            flash("New passwords do not match!", "error")
+            flash("New passwords do not match!", "danger")
             return redirect(url_for('admin.account_settings'))
 
         # Enforce password strength
         if len(new_password) < 8 or not any(char.isdigit() for char in new_password):
-            flash("Password must be at least 8 characters long and contain a number!", "error")
+            flash("Password must be at least 8 characters long and contain a number!", "danger")
             return redirect(url_for('admin.account_settings'))
 
         try:
@@ -652,7 +652,7 @@ def account_settings():
 
         except Exception as e:
             db.session.rollback()
-            flash(f"Error updating password: {e}", "error")
+            flash(f"danger updating password: {e}", "danger")
 
     return render_template('admin/account_settings.html')
 
@@ -661,7 +661,7 @@ def account_settings():
 @login_required
 def settings():
     if current_user.role not in ["superadmin", "admin"]:
-        flash("Access Denied!", "error")
+        flash("Access Denied!", "danger")
         return redirect(url_for('main.home'))
 
     settings = GlobalSettings.query.first()
@@ -703,7 +703,7 @@ def settings():
 
         except Exception as e:
             db.session.rollback()
-            flash(f"Error saving settings: {e}", "error")
+            flash(f"danger saving settings: {e}", "danger")
 
         return redirect(url_for("admin.settings"))
 
@@ -746,7 +746,7 @@ def export_pdf():
 
     try:
         year, month = map(int, selected_month.split('-'))  # Convert to integers
-    except ValueError:
+    except Valuedanger:
         flash("Invalid month format. Defaulting to current month.", "warning")
         return redirect(url_for('admin.export_pdf', month=datetime.today().strftime('%Y-%m')))
 

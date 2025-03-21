@@ -84,7 +84,7 @@ def login_employee():
             login_user(user)
             return redirect(url_for('main.dashboard_employee'))
         else:
-            flash("ID Not Found!", "error")
+            flash("ID Not Found!", "danger")
 
     return render_template('index.html')
 
@@ -177,7 +177,7 @@ def clock_in():
         )]
 
     if not user_schedules:
-        flash("No schedule set for today.", "error")
+        flash("No schedule set for today.", "danger")
         return redirect(url_for('main.dashboard_employee'))
 
     # Get allowed early-in time
@@ -221,7 +221,7 @@ def clock_in():
     ).count()
 
     if global_settings and global_settings.enable_strict_schedule and total_clock_ins_today >= 2:
-        flash("Maximum of two clock-ins allowed per day!", "error")
+        flash("Maximum of two clock-ins allowed per day!", "danger")
         return redirect(url_for('main.dashboard_employee'))
 
     # If user already has an active shift today, check if it's in the same time block
@@ -239,7 +239,7 @@ def clock_in():
 
     # Prevent triple clock-ins for users with second shifts
     if len(active_shifts) >= 2 and has_second_shift:
-        flash("You cannot clock in more than twice in a day!", "error")
+        flash("You cannot clock in more than twice in a day!", "danger")
         return redirect(url_for('main.dashboard_employee'))
 
     # Enforce strict schedule rule
@@ -271,7 +271,7 @@ def clock_out():
     ).order_by(Attendance.id.desc()).first()  # Get the latest clock-in
 
     if not last_record:
-        flash("No active clock-in found for today!", "error")
+        flash("No active clock-in found for today!", "danger")
         return redirect(url_for('main.dashboard_employee'))
 
     # Fetch global settings
@@ -291,7 +291,7 @@ def clock_out():
 
         # Block clock-out if more than 30 minutes past scheduled end time
         if actual_clock_out > time_limit:
-            flash("Clock-out denied! More than 30 minutes past your scheduled end time.", "error")
+            flash("Clock-out denied! More than 30 minutes past your scheduled end time.", "danger")
             return redirect(url_for('main.dashboard_employee'))
 
         # If between schedule end and 7:30 PM, force clock-out to schedule end
