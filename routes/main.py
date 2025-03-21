@@ -252,9 +252,9 @@ def clock_in():
     check_attendance_flags(new_entry)
     db.session.add(new_entry)
     db.session.commit()
-
+    
     flash("Clocked in successfully!", "success")
-    return redirect(url_for('main.dashboard_employee'))
+    return redirect(url_for('main.dashboard_employee', clocked_in=1))
 
 @main_bp.route('/clock_out')
 @login_required
@@ -311,7 +311,9 @@ def clock_out():
     check_attendance_flags(last_record)
 
     flash("Clocked out successfully!", "success")
-    return redirect(url_for('main.dashboard_employee'))
+
+    # Redirect with `clocked_out=1` parameter
+    return redirect(url_for('main.dashboard_employee', clocked_out=1))
 
 # Break Tracking Feature (Disabled)
 @main_bp.route('/start-break')
