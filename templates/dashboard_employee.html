@@ -46,13 +46,15 @@
 
     <!-- Live Clock & Date -->
     <div class="container text-center mt-3">
-        <div class="d-flex justify-content-center align-items-center flex-column">
-            <h5 id="date" class="fw-bold"></h5>
-            <div class="d-flex align-items-center">
-                <h3 id="clock" class="fw-bold"></h3>
-                <span id="status-icon" class="ms-2 {{ status|lower|replace(' ', '-') }}"></span>
+        <div class="card shadow-sm border rounded p-3">
+            <div class="card-body">
+                <h5 id="date" class="fw-bold"></h5>
+                <div class="d-flex justify-content-center align-items-center">
+                    <h3 id="clock" class="fw-bold"></h3>
+                    <span id="status-icon" class="ms-2 {{ status|lower|replace(' ', '-') }}"></span>
+                </div>
             </div>
-        </div> 
+        </div>
     </div>
 
     <!-- Clock In/Out Buttons -->
