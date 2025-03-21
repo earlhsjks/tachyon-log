@@ -26,9 +26,9 @@
 
 /* Badge Styling */
 .badge {
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 /* Button Styling */

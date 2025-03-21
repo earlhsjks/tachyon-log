@@ -7,6 +7,7 @@
 
     <!-- Local Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_attendance.css') }}">
 
     <!-- Local Bootstrap JS -->
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
@@ -32,15 +33,15 @@
                     {% if attendance %}
                         {% for record in attendance %}
                         <tr>
-                            <td class="align-middle">{{ record.clock_in.strftime('%m-%d-%y') }}</td>
-                            <td class="align-middle">{{ record.clock_in.strftime('%A') }}</td>
+                            <td class="align-middle">{{ record.clock_in.strftime('%m-%d-%y') if record.clock_in else 'N/A' }}</td>
+                            <td class="align-middle">{{ record.clock_in.strftime('%A') if record.clock_in else 'N/A' }}</td>
 
                             <!-- Wrap input fields to center them -->
                             <td class="align-middle">
                                 <div class="d-flex justify-content-center">
                                     <input type="hidden" name="record_id" value="{{ record.id }}">
                                     <input type="time" class="form-control text-center" name="clock_in_{{ record.id }}" 
-                                           value="{{ record.clock_in.strftime('%H:%M') }}">
+                                           value="{{ record.clock_in.strftime('%H:%M') if record.clock_in else '' }}">
                                 </div>
                             </td>
                             <td class="align-middle">
@@ -60,16 +61,15 @@
                             </td>
 
                             <td class="align-middle">
-                                {% set flags = inconsistencies.get(record.employee_id, {}).get(record.clock_in.date(), []) %}
+                                {% set flags = inconsistencies.get(record.employee_id, {}).get(record.clock_in.strftime('%Y-%m-%d') if record.clock_in else '', []) %}
                                 {% if flags %}
                                     {% for flag in flags %}
-                                        <span class="badge bg-danger">{{ flag.issue_type }}</span>
+                                        <span class="badge bg-danger">{{ flag }}</span>
                                     {% endfor %}
                                 {% else %}
                                     <span class="badge bg-success">No Issues</span>
                                 {% endif %}
                             </td>
-
                             <td class="align-middle">
                                 <button type="submit" name="save" value="{{ record.id }}" class="btn btn-primary btn-sm">Save</button>
                             </td>

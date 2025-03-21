@@ -62,13 +62,13 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% set flags = inconsistencies.get(record.employee_id, {}).get(record.clock_in.date(), []) %}
+                            {% set flags = inconsistencies.get(record.employee_id, {}).get(record.clock_in.strftime('%Y-%m-%d'), []) %}
                             {% if flags %}
                                 {% for flag in flags %}
-                                    <span class="badge bg-danger">{{ flag.issue_type }}</span>
+                                    <span class="badge bg-danger">{{ flag }}</span>
                                 {% endfor %}
                             {% else %}
-                                <span class="badge bg-secondary">No Issues</span>
+                                <span class="badge bg-success">No Issues</span>
                             {% endif %}
                         </td>
                         <td>

@@ -6,6 +6,7 @@
 {% block content %}
     <!-- Local Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
 
     <!-- Local Bootstrap JS -->
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
@@ -72,15 +73,15 @@
                                     <td>{{ user.username }}</td>
                                     <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
                                     <td>
-                                        {% set flags = inconsistency_map.get(user.employee_id, {}).get(user.clock_in.strftime('%Y-%m-%d'), []) %}
-                                        {% if flags %}
-                                            {% for flag in flags %}
-                                                <span class="badge bg-danger">{{ flag }}</span>
-                                            {% endfor %}
-                                        {% else %}
-                                            <span class="badge bg-success">No Issues</span>
-                                        {% endif %}
-                                    </td>                                    
+                                    {% set flags = inconsistencies.get(user.employee_id, {}).get(user.clock_in.strftime('%Y-%m-%d'), []) %}
+                                    {% if flags %}
+                                        {% for flag in flags %}
+                                            <span class="badge bg-danger">{{ flag }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <span class="badge bg-success">No Issues</span>
+                                    {% endif %}
+                                    </td>
                                     <td>
                                         <button class="btn btn-danger btn-sm" onclick="forceClockOut('{{ user.employee_id }}')">
                                             Force Clock-Out

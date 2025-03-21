@@ -121,11 +121,12 @@ def admin_dashboard():
     inconsistency_records = AttendanceInconsistency.query.all()
 
     for record in inconsistency_records:
+        date_str = record.date.strftime('%Y-%m-%d')  # Ensure proper format
         if record.employee_id not in inconsistencies:
             inconsistencies[record.employee_id] = {}
-        if record.date not in inconsistencies[record.employee_id]:
-            inconsistencies[record.employee_id][record.date] = []
-        inconsistencies[record.employee_id][record.date].append(record.issue_type)
+        if date_str not in inconsistencies[record.employee_id]:
+            inconsistencies[record.employee_id][date_str] = []
+        inconsistencies[record.employee_id][date_str].append(record.issue_type)
 
     return render_template(
         'admin/admin_dashboard.html',
@@ -204,17 +205,17 @@ def admin_attendance():
 
     # Ensure `month` is properly formatted
     month = request.args.get('month', '').strip()
-    
+
     if not month or '-' not in month:  # Handle missing or incorrect format
         month = datetime.today().strftime('%Y-%m')  # Default to current month
-    
+
     try:
         year, month = map(int, month.split('-'))  # Convert to integers
     except ValueError:
         flash("Invalid month format. Please select a valid month.", "error")
         return redirect(url_for('admin.admin_attendance'))
 
-    # Query attendance records
+    # Query attendance records for the selected month
     attendance_records = db.session.query(
         User.username,
         Attendance.employee_id,
@@ -225,30 +226,28 @@ def admin_attendance():
         db.extract('month', Attendance.clock_in) == month
     ).order_by(Attendance.clock_in.desc()).all()
 
-    # Query attendance inconsistencies (Late, Early Out, Overtime, Absent)
-    inconsistencies = db.session.query(
-        AttendanceInconsistency.employee_id,
-        AttendanceInconsistency.date,
-        AttendanceInconsistency.issue_type
-    ).filter(
+    # Fetch attendance inconsistencies for the selected month
+    inconsistency_records = AttendanceInconsistency.query.filter(
         db.extract('year', AttendanceInconsistency.date) == year,
         db.extract('month', AttendanceInconsistency.date) == month
     ).all()
 
-    # Organize inconsistencies in a dictionary for quick lookup
-    inconsistency_map = {}
-    for inc in inconsistencies:
-        if inc.employee_id not in inconsistency_map:
-            inconsistency_map[inc.employee_id] = {}
-        if inc.date not in inconsistency_map[inc.employee_id]:
-            inconsistency_map[inc.employee_id][inc.date] = []
-        inconsistency_map[inc.employee_id][inc.date].append(inc.issue_type)
+    # Process inconsistencies into a dictionary (indexed by employee_id & date)
+    inconsistencies = {}
+    for record in inconsistency_records:
+        date_str = record.date.strftime('%Y-%m-%d')  # Format properly
+        if record.employee_id not in inconsistencies:
+            inconsistencies[record.employee_id] = {}
+        if date_str not in inconsistencies[record.employee_id]:
+            inconsistencies[record.employee_id][date_str] = []
+        inconsistencies[record.employee_id][date_str].append(record.issue_type)
 
     # Pass the data to the template
     return render_template(
         'admin/attendance_records.html',
+        user=current_user,  # Ensure `user` is available in the template
         attendance=attendance_records,
-        inconsistencies=inconsistency_map,
+        inconsistencies=inconsistencies,
         current_month=f"{year}-{month:02d}",
         datetime=datetime
     )
@@ -518,32 +517,35 @@ def view_user_logs(employee_id):
         today = datetime.today()
         year, month = today.year, today.month
 
-    # Fetch attendance records for the selected month
+    # Fetch attendance records for the selected employee and month
     attendance_records = Attendance.query.filter(
         Attendance.employee_id == employee_id,
         db.extract('year', Attendance.clock_in) == year,
         db.extract('month', Attendance.clock_in) == month
     ).all()
 
-    # Fetch inconsistencies for the selected month
-    inconsistencies = AttendanceInconsistency.query.filter(
+    # Fetch inconsistencies for the selected employee and month
+    inconsistency_records = AttendanceInconsistency.query.filter(
         AttendanceInconsistency.employee_id == employee_id,
         db.extract('year', AttendanceInconsistency.date) == year,
         db.extract('month', AttendanceInconsistency.date) == month
     ).all()
 
-    # Organize inconsistencies by date for quick lookup
-    inconsistency_map = {}
-    for inc in inconsistencies:
-        if inc.date not in inconsistency_map:
-            inconsistency_map[inc.date] = []
-        inconsistency_map[inc.date].append(inc.issue_type)
+    # Properly map inconsistencies by employee_id and date
+    inconsistencies = {}
+    for record in inconsistency_records:
+        date_str = record.date.strftime('%Y-%m-%d')  # Ensure correct format
+        if employee_id not in inconsistencies:
+            inconsistencies[employee_id] = {}
+        if date_str not in inconsistencies[employee_id]:
+            inconsistencies[employee_id][date_str] = []
+        inconsistencies[employee_id][date_str].append(record.issue_type)
 
     return render_template(
         'admin/user_attendance.html',
         user=user,
-        attendance=attendance_records or [],  # 🛠️ Ensures `attendance` is always iterable
-        inconsistencies=inconsistency_map,  # Pass inconsistencies to the template
+        attendance=attendance_records or [],
+        inconsistencies=inconsistencies,
         employee_id=employee_id,
         current_month=f"{year}-{month:02d}"
     )
