@@ -72,14 +72,15 @@
                                     <td>{{ user.username }}</td>
                                     <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
                                     <td>
-                                        {% if user.employee_id in inconsistency_map %}
-                                            {% for flag in inconsistency_map[user.employee_id] %}
+                                        {% set flags = inconsistency_map.get(user.employee_id, {}).get(user.clock_in.strftime('%Y-%m-%d'), []) %}
+                                        {% if flags %}
+                                            {% for flag in flags %}
                                                 <span class="badge bg-danger">{{ flag }}</span>
                                             {% endfor %}
                                         {% else %}
                                             <span class="badge bg-success">No Issues</span>
                                         {% endif %}
-                                    </td>
+                                    </td>                                    
                                     <td>
                                         <button class="btn btn-danger btn-sm" onclick="forceClockOut('{{ user.employee_id }}')">
                                             Force Clock-Out
