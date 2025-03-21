@@ -49,7 +49,7 @@
                 <!-- Normal Schedule Section -->
                 <h4 class="text-primary">Normal Schedule</h4>
                 <div class="row g-3">
-                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
                     <div class="col-md-6">
                         <label class="form-label">{{ day }}</label>
                         <div class="d-flex gap-2">
@@ -81,7 +81,7 @@
                             <tr>
                                 <td>
                                     <select name="day[]" class="form-select">
-                                        {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                                        {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
                                         <option value="{{ day }}" {% if schedule.day == day %}selected{% endif %}>{{ day }}</option>
                                         {% endfor %}
                                     </select>
@@ -124,7 +124,6 @@ document.getElementById('addSchedule').addEventListener('click', function() {
                 <option value="Thursday">Thursday</option>
                 <option value="Friday">Friday</option>
                 <option value="Saturday">Saturday</option>
-                <option value="Sunday">Sunday</option>
             </select>
         </td>
         <td><input type="time" name="second_start_time[]" class="form-control"></td>

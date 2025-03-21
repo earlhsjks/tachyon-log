@@ -20,15 +20,6 @@
                     <div class="card-header bg-success text-white text-center">
                         <h4>Change Password</h4>
                     </div>
-                    <div class="card-body">
-                        {% with messages = get_flashed_messages(with_categories=true) %}
-                            {% if messages %}
-                                {% for category, message in messages %}
-                                    <div class="alert alert-{{ category }} text-center">{{ message }}</div>
-                                {% endfor %}
-                            {% endif %}
-                        {% endwith %}
-
                         <form method="POST" action="{{ url_for('admin.account_settings') }}">
                             <div class="mb-3">
                                 <label for="current_password" class="form-label">Current Password</label>
