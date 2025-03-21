@@ -7,7 +7,7 @@ import io, pytz
 from collections import defaultdict
 from datetime import datetime, timedelta
 from models.models import db, User, Attendance, Schedule, GlobalSettings, Logs, AttendanceInconsistency
-from sqlalchemy.exc import Integritydanger
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy import text, or_
 
 # Create a Blueprint for admin routes
@@ -20,7 +20,7 @@ def parse_time(time_str):
         return None
     try:
         return datetime.strptime(time_str, "%H:%M").time()
-    except Valuedanger:
+    except ValueError:
         return None  # Handle incorrect formats safely
 
 # Function to log changes
@@ -211,7 +211,7 @@ def admin_attendance():
 
     try:
         year, month = map(int, month.split('-'))  # Convert to integers
-    except Valuedanger:
+    except ValueError:
         flash("Invalid month format. Please select a valid month.", "danger")
         return redirect(url_for('admin.admin_attendance'))
 
@@ -410,12 +410,12 @@ def update_user(employee_id):
 
         flash("User updated successfully!", "success")
 
-    except Integritydanger as e:
+    except IntegrityError as e:
         db.session.rollback()
-        flash(f"Database Integrity danger: {str(e)}", "danger")
+        flash(f"Database Integrity Error: {str(e)}", "danger")
     except Exception as e:
         db.session.rollback()
-        flash(f"danger updating user: {str(e)}", "danger")
+        flash(f"Error updating user: {str(e)}", "danger")
 
     return redirect(url_for('admin.admin_employees'))
 
@@ -457,7 +457,7 @@ def add_user():
 
     except Exception as e:
         db.session.rollback()
-        flash(f"danger adding user: {str(e)}", "danger")
+        flash(f"Error adding user: {str(e)}", "danger")
 
     return redirect(url_for('admin.admin_employees'))
 
@@ -496,7 +496,7 @@ def delete_user(employee_id):
 
     except Exception as e:
         db.session.rollback()
-        flash(f"danger deleting user: {str(e)}", "danger")
+        flash(f"Error deleting user: {str(e)}", "danger")
 
     return redirect(url_for('admin.admin_employees'))
 
@@ -606,7 +606,7 @@ def edit_attendance():
 
     except Exception as e:
         db.session.rollback()
-        flash(f"danger updating record: {e}", "danger")
+        flash(f"Error updating record: {e}", "danger")
 
     return redirect(request.referrer)
 
@@ -652,7 +652,7 @@ def account_settings():
 
         except Exception as e:
             db.session.rollback()
-            flash(f"danger updating password: {e}", "danger")
+            flash(f"Error updating password: {e}", "danger")
 
     return render_template('admin/account_settings.html')
 
@@ -703,7 +703,7 @@ def settings():
 
         except Exception as e:
             db.session.rollback()
-            flash(f"danger saving settings: {e}", "danger")
+            flash(f"Error saving settings: {e}", "danger")
 
         return redirect(url_for("admin.settings"))
 
@@ -746,7 +746,7 @@ def export_pdf():
 
     try:
         year, month = map(int, selected_month.split('-'))  # Convert to integers
-    except Valuedanger:
+    except ValueError:
         flash("Invalid month format. Defaulting to current month.", "warning")
         return redirect(url_for('admin.export_pdf', month=datetime.today().strftime('%Y-%m')))
 
