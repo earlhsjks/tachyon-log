@@ -26,11 +26,14 @@ def parse_time(time_str):
 # Function to log changes
 def log_entry(admin_id, action, details=None):
     """Logs admin actions into the system."""
+
+    current_time = datetime.now()
+
     log_entry = Logs(
         admin_id = admin_id,
         action = action,
         details = details,
-        timestamp=datetime.now()
+        timestamp=current_time
     )
     db.session.add(log_entry)
     db.session.commit()
