@@ -11,6 +11,7 @@ def check_attendance_flags(attendance_entry):
     """
     Checks and updates attendance flags based on clock-in and clock-out times.
     Handles late arrivals, early departures, and overtime detection.
+    Excludes weekends (Saturday and Sunday).
     """
 
     # Fetch strict mode setting from the database
@@ -23,47 +24,54 @@ def check_attendance_flags(attendance_entry):
     if not attendance_entry or not attendance_entry.clock_in:
         return
 
+    today = attendance_entry.clock_in.date()
+
+    # Skip if today is Saturday (5) or Sunday (6)
+    if today.weekday() in [5, 6]:
+        return
+
     allowed_late_minutes = 0  # Hardcoded grace period
 
     # Get user's schedule for the day
-    today = attendance_entry.clock_in.date()
     user_schedule = Schedule.query.filter_by(employee_id=attendance_entry.employee_id, day=today.strftime('%A')).first()
 
-    if user_schedule:
-        schedule_start = datetime.combine(today, user_schedule.start_time)
-        schedule_end = datetime.combine(today, user_schedule.end_time)
+    if not user_schedule:
+        return  # No schedule found, skip checks
 
-        # LATE: Clock-in is after scheduled start + grace period
-        if attendance_entry.clock_in > schedule_start + timedelta(minutes=allowed_late_minutes):
+    schedule_start = datetime.combine(today, user_schedule.start_time)
+    schedule_end = datetime.combine(today, user_schedule.end_time)
+
+    # LATE: Clock-in is after scheduled start + grace period
+    if attendance_entry.clock_in > schedule_start + timedelta(minutes=allowed_late_minutes):
+        db.session.add(AttendanceInconsistency(
+            employee_id=attendance_entry.employee_id,
+            date=today,
+            issue_type="Late",
+            details=f"Clock-in at {attendance_entry.clock_in.strftime('%I:%M %p')}, scheduled start {schedule_start.strftime('%I:%M %p')}"
+        ))
+
+    # EARLY OUT: Clock-out before scheduled end
+    if attendance_entry.clock_out and attendance_entry.clock_out < schedule_end:
+        db.session.add(AttendanceInconsistency(
+            employee_id=attendance_entry.employee_id,
+            date=today,
+            issue_type="Early Out",
+            details=f"Clock-out at {attendance_entry.clock_out.strftime('%I:%M %p')}, scheduled end {schedule_end.strftime('%I:%M %p')}"
+        ))
+
+    # OVERTIME: Work exceeds scheduled shift + buffer (default 4 hours)
+    if attendance_entry.clock_out:
+        work_duration = attendance_entry.clock_out - attendance_entry.clock_in
+        scheduled_duration = schedule_end - schedule_start
+        overtime_threshold = timedelta(hours=4)
+
+        if work_duration > scheduled_duration + overtime_threshold:
             db.session.add(AttendanceInconsistency(
                 employee_id=attendance_entry.employee_id,
                 date=today,
-                issue_type="Late",
-                details=f"Clock-in at {attendance_entry.clock_in.strftime('%I:%M %p')}, scheduled start {schedule_start.strftime('%I:%M %p')}"
+                issue_type="Overtime",
+                details=f"Worked {work_duration}, scheduled {scheduled_duration}"
             ))
-
-        # EARLY OUT: Clock-out before scheduled end
-        if attendance_entry.clock_out and attendance_entry.clock_out < schedule_end:
-            db.session.add(AttendanceInconsistency(
-                employee_id=attendance_entry.employee_id,
-                date=today,
-                issue_type="Early Out",
-                details=f"Clock-out at {attendance_entry.clock_out.strftime('%I:%M %p')}, scheduled end {schedule_end.strftime('%I:%M %p')}"
-            ))
-
-        # OVERTIME: Work exceeds scheduled shift + buffer (default 4 hours)
-        if attendance_entry.clock_out:
-            work_duration = attendance_entry.clock_out - attendance_entry.clock_in
-            scheduled_duration = schedule_end - schedule_start
-            overtime_threshold = timedelta(hours=4)
-
-            if work_duration > scheduled_duration + overtime_threshold:
-                db.session.add(AttendanceInconsistency(
-                    employee_id=attendance_entry.employee_id,
-                    date=today,
-                    issue_type="Overtime",
-                    details=f"Worked {work_duration}, scheduled {scheduled_duration}"
-                ))
 
     db.session.commit()
         
