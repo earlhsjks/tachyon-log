@@ -23,20 +23,20 @@ def parse_time(time_str):
     except ValueError:
         return None  # Handle incorrect formats safely
 
-# Function to log changes
 def log_entry(admin_id, action, details=None):
-    """Logs admin actions into the system."""
-
-    current_time = datetime.now()
+    print("🚀 log_entry() function STARTED")  # This should print immediately
+    timestamp = datetime.now()
+    print(f"⏳ Timestamp: {timestamp}")  # This should print too
 
     log_entry = Logs(
-        admin_id = admin_id,
-        action = action,
-        details = details,
-        timestamp=current_time
+        admin_id=admin_id,
+        action=action,
+        details=details,
+        timestamp=timestamp
     )
     db.session.add(log_entry)
     db.session.commit()
+    print("✅ log_entry() function COMPLETED")
 
 # Admin Login
 @admin_bp.route('/login', methods=['GET', 'POST'])

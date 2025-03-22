@@ -6,6 +6,7 @@ flask_socketio
 flask-session
 pandas
 pymysql
+pytz
 reportlab
 werkzeug
 waitress
