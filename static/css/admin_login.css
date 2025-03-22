@@ -1,8 +1,7 @@
-/* Apply Inter as the primary font */
-body, html, button, input, textarea, select, 
-.form-control, .btn, .alert, .nav-link, .card, 
-.card-header, .table, .badge, .input-group-text {
-    font-family: 'Inter', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+    font-family: Roboto, sans-serif;
 }
 
 /* Card Styling */
