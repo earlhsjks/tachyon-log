@@ -262,8 +262,7 @@ def clock_in():
     check_attendance_flags(new_entry)
     db.session.add(new_entry)
     db.session.commit()
-
-    flash("Clocked in successfully!", "success")
+    
     return redirect(url_for('main.dashboard_employee', clocked_in=1))
 
 @main_bp.route('/clock_out')
@@ -312,16 +311,14 @@ def clock_out():
             last_record.clock_out = actual_clock_out  # Normal clock-out
 
     else:
-        # 🔓 No strict schedule → Allow clock-out anytime
+        # No strict schedule → Allow clock-out anytime
         last_record.clock_out = actual_clock_out
 
     db.session.commit()
 
     # Check attendance flags (Overtime, etc.)
     check_attendance_flags(last_record)
-
-    flash("Clocked out successfully!", "success")
-
+    
     # Redirect with `clocked_out=1` parameter
     return redirect(url_for('main.dashboard_employee', clocked_out=1))
 
