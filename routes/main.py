@@ -265,12 +265,12 @@ def clock_in():
     
     return redirect(url_for('main.dashboard_employee', clocked_in=1))
 
-@main_bp.route('/clock_out')
+@main_bp.route('/clock-out')
 @login_required
 def clock_out():
     today = datetime.today()
     now = datetime.now()
-    
+
     # Get the latest clock-in record for today
     last_record = Attendance.query.filter(
         Attendance.employee_id == current_user.employee_id,
@@ -287,28 +287,48 @@ def clock_out():
     global_settings = GlobalSettings.query.first()
     strict_schedule = global_settings.enable_strict_schedule if global_settings else False
 
-    # Get the user's schedule for today
+    # Get ALL schedules for today (including second shift)
     today_day = today.strftime("%A")
-    user_schedule = Schedule.query.filter_by(employee_id=current_user.employee_id, day=today_day).first()
+    user_schedules = Schedule.query.filter_by(employee_id=current_user.employee_id, day=today_day).all()
 
     # Default clock-out time: Now
     actual_clock_out = now
 
-    if strict_schedule and user_schedule:
-        schedule_end = datetime.combine(today, user_schedule.end_time)
-        time_limit = schedule_end + timedelta(minutes=30)  # ⏳ 30-minute grace period
+    if strict_schedule and user_schedules:
+        # Detect if this is a second shift
+        is_second_shift = False
+        schedule_end = None
 
-        # Block clock-out if more than 30 minutes past scheduled end time
-        if actual_clock_out > time_limit:
-            flash("Clock-out denied! More than 30 minutes past your scheduled end time.", "danger")
-            return redirect(url_for('main.dashboard_employee'))
+        for schedule in user_schedules:
+            if last_record.clock_in.time() >= schedule.start_time and last_record.clock_in.time() <= schedule.end_time:
+                schedule_end = datetime.combine(today, schedule.end_time)
+                break  # First shift found, stop here
 
-        # If between schedule end and 7:30 PM, force clock-out to schedule end
-        time_730pm = datetime.combine(today, time(19, 30))  # 7:30 PM cutoff
-        if schedule_end < actual_clock_out < time_730pm:
-            last_record.clock_out = schedule_end
+            # If there is a broken schedule (second shift)
+            if schedule.is_broken and schedule.second_start_time and schedule.second_end_time:
+                if last_record.clock_in.time() >= schedule.second_start_time and last_record.clock_in.time() <= schedule.second_end_time:
+                    schedule_end = datetime.combine(today, schedule.second_end_time)
+                    is_second_shift = True
+                    break  # Second shift found, stop here
+
+        if schedule_end:
+            time_limit = schedule_end + timedelta(minutes=30)  # ⏳ 30-minute grace period
+
+            # Block clock-out if more than 30 minutes past scheduled end time
+            if actual_clock_out > time_limit:
+                flash("Clock-out denied! More than 30 minutes past your scheduled end time.", "danger")
+                return redirect(url_for('main.dashboard_employee'))
+
+            # If between schedule end and 7:30 PM, force clock-out to schedule end
+            time_730pm = datetime.combine(today, time(19, 30))  # 7:30 PM cutoff
+            if schedule_end < actual_clock_out < time_730pm:
+                last_record.clock_out = schedule_end
+            else:
+                last_record.clock_out = actual_clock_out  # Normal clock-out
+
         else:
-            last_record.clock_out = actual_clock_out  # Normal clock-out
+            # No schedule found → Allow normal clock-out
+            last_record.clock_out = actual_clock_out
 
     else:
         # No strict schedule → Allow clock-out anytime
@@ -318,7 +338,7 @@ def clock_out():
 
     # Check attendance flags (Overtime, etc.)
     check_attendance_flags(last_record)
-    
+
     # Redirect with `clocked_out=1` parameter
     return redirect(url_for('main.dashboard_employee', clocked_out=1))
 
