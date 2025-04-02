@@ -1,20 +1,31 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
-
 /* Ensure the container has padding */
 .container {
     max-width: 1200px;
     margin: auto;
 }
 
+.filter-form {
+    max-width: 400px; /* Prevents stretching */
+    width: 100%; 
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-form input {
+    flex: 1; /* Ensures input takes equal space */
+}
+
+.filter-form button {
+    white-space: nowrap; /* Prevents button from stretching */
+}
+
 /* ========== TABLE STYLING ========== */
 .attendance-table {
     border-radius: 10px;
     overflow: hidden;
+    margin-top: 10px;
 }
 
 /* Table Headers */

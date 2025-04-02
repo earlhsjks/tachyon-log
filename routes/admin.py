@@ -504,18 +504,23 @@ def delete_user(employee_id):
     return redirect(url_for('admin.admin_employees'))
 
 # Specific User Attendance
-@admin_bp.route('/user-logs/<string:employee_id>', methods=['GET', 'POST'])
+@admin_bp.route('/user-logs/<string:employee_id>', methods=['GET'])
 @login_required
 def view_user_logs(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
         flash("Unauthorized Access!", "danger")
         return redirect(url_for('dashboard_admin'))
 
-    month = request.form.get('month')  # Format: YYYY-MM
+    month = request.args.get('month')  # Use GET instead of POST to match filter form
+
     user = User.query.get_or_404(employee_id)
 
     if month:
-        year, month = map(int, month.split('-'))
+        try:
+            year, month = map(int, month.split('-'))
+        except ValueError:
+            flash("Invalid date format.", "danger")
+            return redirect(url_for('admin.view_user_logs', employee_id=employee_id))
     else:
         today = datetime.today()
         year, month = today.year, today.month
@@ -537,7 +542,7 @@ def view_user_logs(employee_id):
     # Properly map inconsistencies by employee_id and date
     inconsistencies = {}
     for record in inconsistency_records:
-        date_str = record.date.strftime('%Y-%m-%d')  # Ensure correct format
+        date_str = record.date.strftime('%Y-%m-%d')
         if employee_id not in inconsistencies:
             inconsistencies[employee_id] = {}
         if date_str not in inconsistencies[employee_id]:
@@ -550,7 +555,7 @@ def view_user_logs(employee_id):
         attendance=attendance_records or [],
         inconsistencies=inconsistencies,
         employee_id=employee_id,
-        current_month=f"{year}-{month:02d}"
+        current_month=f"{year}-{month:02d}"  # Ensure correct formatting
     )
 
 # Edit Attendance Logs
