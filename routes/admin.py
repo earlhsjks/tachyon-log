@@ -759,7 +759,7 @@ def export_pdf():
         return redirect(url_for('admin.export_pdf', month=datetime.today().strftime('%Y-%m')))
 
     first_day = datetime(year, month, 1)
-    last_day = (first_day + timedelta(days=33)).replace(day=1) - timedelta(days=1)
+    last_day = (first_day + timedelta(days=32)).replace(day=1) - timedelta(days=1)
     total_days = last_day.day
 
     # Exclude "superadmin" and "admin" roles
