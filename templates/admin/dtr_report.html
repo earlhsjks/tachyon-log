@@ -33,7 +33,7 @@
                     <th>IN</th><th>OUT</th><th>IN</th><th>OUT</th><th>HH</th><th>MM</th>
                 </tr>
 
-                {% for day in range(1, total_days+1) %}
+                {% for day in range(1, total_days+2) %}
                 {% set date_key = "%04d-%02d-%02d" % (year, month, day) %}
                 {% set shifts = attendance_dict[user.employee_id].get(date_key, {}) %}
                 {% set shift1 = shifts.get("shift1", {"in": None, "out": None}) %}
