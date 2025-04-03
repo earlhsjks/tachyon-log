@@ -747,7 +747,8 @@ def export_pdf():
         return redirect(url_for('dashboard_admin'))
 
     # Ensure selected_month is valid, otherwise default to current month
-    selected_month = request.args.get('month', '').strip()
+    selected_month = '2025-01'
+    # selected_month = request.args.get('month', '').strip()
     
     if not selected_month or '-' not in selected_month:
         selected_month = datetime.today().strftime('%Y-%m')  # Default to current month
