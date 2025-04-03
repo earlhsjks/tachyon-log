@@ -1,6 +1,10 @@
-@page { 
-    size: 8.5in 11in; 
+@page {
+    size: 8.5in 11in;
     margin: 0.2in;
+}
+
+@page :nth-of-type(n+2) {
+    margin-top: 35px;  /* Adjust for pages after the first */
 }
 
 body {
