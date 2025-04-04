@@ -60,7 +60,7 @@
                 {% set extra_hours = daily_minutes // 60 %}
                 {% set daily_hours = daily_hours + extra_hours %}
                 {% set daily_minutes = daily_minutes % 60 %}
-            
+
                 <tr>
                     <td>{{ day }}</td>
                     <td>{{ shift1["in"].strftime('%I:%M %p') if shift1["in"] else '' }}</td>

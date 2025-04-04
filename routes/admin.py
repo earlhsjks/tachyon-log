@@ -747,9 +747,8 @@ def export_pdf():
         return redirect(url_for('dashboard_admin'))
 
     # Ensure selected_month is valid, otherwise default to current month
-    selected_month = '2025-01'
-    # selected_month = request.args.get('month', '').strip()
-    
+    selected_month = request.args.get('month', '').strip() or datetime.today().strftime('%Y-%m')
+
     if not selected_month or '-' not in selected_month:
         selected_month = datetime.today().strftime('%Y-%m')  # Default to current month
 
@@ -769,7 +768,7 @@ def export_pdf():
     # Fetch attendance records for the selected month
     attendance_records = Attendance.query.filter(
         Attendance.clock_in >= first_day,
-        Attendance.clock_in <= last_day
+        Attendance.clock_in < (last_day + timedelta(days=1))
     ).order_by(Attendance.clock_in).all()
 
     # Dictionary to store attendance data
@@ -777,7 +776,7 @@ def export_pdf():
         "shift1": {"in": None, "out": None}, 
         "shift2": {"in": None, "out": None}
     }))
-
+        
     # Dictionary to store total hours per user (initialized to 0 seconds)
     total_hours_dict = {user.employee_id: 0 for user in users}  
 
@@ -788,7 +787,7 @@ def export_pdf():
 
         clock_in_time = record.clock_in
         clock_out_time = record.clock_out if record.clock_out else None
-
+            
         if not attendance_dict[employee_id][date_key]["shift1"]["in"]:
             attendance_dict[employee_id][date_key]["shift1"]["in"] = clock_in_time
             attendance_dict[employee_id][date_key]["shift1"]["out"] = clock_out_time
@@ -798,7 +797,7 @@ def export_pdf():
         else:
             attendance_dict[employee_id][date_key]["shift2"]["in"] = clock_in_time
             attendance_dict[employee_id][date_key]["shift2"]["out"] = clock_out_time
-
+        
     # Calculate total hours per user
     for user in users:
         total_seconds = 0
@@ -815,7 +814,7 @@ def export_pdf():
 
     # Pair users (two per page)
     user_pairs = [users[i:i+2] for i in range(0, len(users), 2)]
-
+    
     return render_template(
         'admin/dtr_report.html', 
         user_pairs=user_pairs, 
