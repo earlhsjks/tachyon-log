@@ -618,6 +618,37 @@ def edit_attendance():
 
     return redirect(request.referrer)
 
+@admin_bp.route('/add-attendance-entry', methods=['POST'])
+@login_required
+def add_attendance_entry():
+    if current_user.role not in ["superadmin", "admin"]:
+        flash("Unauthorized Access!", "danger")
+        return redirect(url_for('dashboard_admin'))
+
+    employee_id = request.form.get('employee_id')
+    date_str = request.form.get('date')
+    clock_in_str = request.form.get('clock_in')
+    clock_out_str = request.form.get('clock_out')
+
+    try:
+        clock_in = datetime.strptime(f"{date_str} {clock_in_str}", "%Y-%m-%d %H:%M")
+        clock_out = datetime.strptime(f"{date_str} {clock_out_str}", "%Y-%m-%d %H:%M")
+    except (ValueError, TypeError):
+        flash("Invalid date or time format.", "danger")
+        return redirect(url_for('admin.view_user_logs', employee_id=employee_id))
+
+    # Save the new attendance entry
+    new_attendance = Attendance(
+        employee_id=employee_id,
+        clock_in=clock_in,
+        clock_out=clock_out
+    )
+    db.session.add(new_attendance)
+    db.session.commit()
+
+    flash("New attendance entry added successfully.", "success")
+    return redirect(url_for('admin.view_user_logs', employee_id=employee_id))
+  
 # Account Settings (Change Password)
 @admin_bp.route('/account-settings', methods=['GET', 'POST'])
 @login_required
