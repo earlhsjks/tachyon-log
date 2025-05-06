@@ -21,6 +21,13 @@
             <button type="submit" class="btn btn-success">Filter</button>
         </form>
     </div>    
+
+        <!-- Add New Attendance Entry Button -->
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAttendanceModal">
+            Add New Entry
+        </button>
+    </div>
     
     <form method="POST" action="{{ url_for('admin.edit_attendance') }}">
         <div class="table-responsive">
@@ -92,4 +99,40 @@
         </div>
     </form>
 </div>
+
+<!-- Add Attendance Modal -->
+<div class="modal fade" id="addAttendanceModal" tabindex="-1" aria-labelledby="addAttendanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('admin.add_attendance_entry') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAttendanceModalLabel">Add Attendance Entry</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="employee_id" value="{{ employee_id }}">
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" name="date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="clock_in" class="form-label">Clock In</label>
+                        <input type="time" class="form-control" name="clock_in" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="clock_out" class="form-label">Clock Out</label>
+                        <input type="time" class="form-control" name="clock_out" required>
+                    </div>
+                </div>
+                <form onsubmit="location.reload(); return false;">
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Save Entry</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>                
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
