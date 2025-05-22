@@ -1,26 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}Dashboard{% endblock %} | Tachyon Log</title>
 
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" />
 
     <!-- Bootstrap (Local) -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
 
     <!-- Boxicons & FontAwesome -->
-    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
 
+    
     {% block extra_css %}{% endblock %}
+    <style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #page-content {
+        flex: 1 0 auto;
+        display: flex;
+        min-height: 0; /* Important for flex child scrolling */
+    }
+
+    #sidebar {
+        width: 250px;
+        background-color: #212529; /* Bootstrap dark */
+        color: white;
+        padding: 1rem;
+        min-height: 100vh;
+    }
+
+    main.flex-grow-1 {
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+
+    footer {
+        flex-shrink: 0;
+        padding: 1rem 0;
+        width: 100%;
+    }
+
+    .container-footer {
+        max-width: calc(100% - 250px);
+        margin-left: 250px;
+        padding: 0 1rem;
+        text-align: center;
+        font-size: 13px;
+        line-height: 1px;
+    }
+    </style>
+
 </head>
 <body>
-
     <!-- Navbar (Visible Only on Mobile) -->
     <nav class="navbar navbar-dark bg-dark d-md-none">
         <div class="container-fluid">
@@ -31,50 +74,86 @@
         </div>
     </nav>
 
-    <div class="d-flex">
+    <div id="page-content">
         <!-- Sidebar -->
-        <nav id="sidebar" class="bg-dark text-white p-3 vh-100">
+        <nav id="sidebar" class="bg-dark text-white p-3">
             <div class="sidebar-content">
                 <div class="text-center fs-4 fw-bold mb-3">Tachyon Log</div>
-                <hr>
+                <hr />
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a href="{{ url_for('admin.admin_dashboard') }}" class="nav-link text-white"><i class="bx bx-home-alt"></i> <span>Dashboard</span></a></li>
-                    <li class="nav-item"><a href="{{ url_for('admin.admin_employees') }}" class="nav-link text-white"><i class="bx bx-id-card"></i> <span>Users</span></a></li>
-                    <li class="nav-item"><a href="{{ url_for('admin.admin_attendance') }}" class="nav-link text-white"><i class="bx bx-time-five"></i> <span>Attendance</span></a></li>
-                    <li class="nav-item"><a href="{{ url_for('admin.settings') }}" class="nav-link text-white"><i class="bx bx-cog"></i> <span>Settings</span></a></li>
-                    <li class="nav-item"><a href="{{ url_for('admin.view_logs') }}" class="nav-link text-white"><i class="bx bx-folder-open"></i> <span>Logs</span></a></li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('admin.admin_dashboard') }}" class="nav-link text-white">
+                            <i class="bx bx-home-alt"></i> <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('admin.admin_employees') }}" class="nav-link text-white">
+                            <i class="bx bx-id-card"></i> <span>Users</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('admin.admin_attendance') }}" class="nav-link text-white">
+                            <i class="bx bx-time-five"></i> <span>Attendance</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('admin.settings') }}" class="nav-link text-white">
+                            <i class="bx bx-cog"></i> <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('admin.view_logs') }}" class="nav-link text-white">
+                            <i class="bx bx-folder-open"></i> <span>Logs</span>
+                        </a>
+                    </li>
                 </ul>
-                <hr>
+                <hr />
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a href="{{ url_for('admin.account_settings') }}" class="nav-link text-white"><i class="bx bx-user"></i> <span>Account</span></a></li>
-                    <li class="nav-item"><a href="{{ url_for('main.logout') }}" class="nav-link text-white"><i class="bx bx-log-out"></i> <span>Logout</span></a></li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('admin.account_settings') }}" class="nav-link text-white">
+                            <i class="bx bx-user"></i> <span>Account</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('main.logout') }}" class="nav-link text-white">
+                            <i class="bx bx-log-out"></i> <span>Logout</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
 
         <!-- Main Content -->
-        <div class="flex-grow-1 p-4">
-            <h2 class="mb-4">{% block page_title %}Dashboard{% endblock %}</h2>
-
-            {% block content %}{% endblock %}
-        </div>
+        <main class="flex-grow-1 p-4">
+            <div class="container">
+                <h2 class="mb-4">{% block page_title %}Dashboard{% endblock %}</h2>
+                {% block content %}{% endblock %}
+            </div>
+        </main>
     </div>
 
     <!-- Bootstrap Toast Notification Container (Top-Right) -->
     <div class="toast-container position-fixed top-0 end-0 p-3">
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="toast align-items-center text-bg-{{ category }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div class="d-flex">
-                            <div class="toast-body">
-                                {{ message }}
-                            </div>
-                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div
+            class="toast align-items-center text-bg-{{ category }} border-0"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+        >
+            <div class="d-flex">
+                <div class="toast-body">{{ message }}</div>
+                <button
+                    type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"
+                ></button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
         {% endwith %}
     </div>
 
@@ -83,9 +162,11 @@
 
     <!-- Sidebar Toggle for Mobile -->
     <script>
-        document.getElementById("mobileMenuToggle").addEventListener("click", function () {
-            document.getElementById("sidebar").classList.toggle("mobile-active");
-        });
+        document
+            .getElementById("mobileMenuToggle")
+            .addEventListener("click", function () {
+                document.getElementById("sidebar").classList.toggle("mobile-active");
+            });
 
         // Show Bootstrap Toasts Automatically
         document.addEventListener("DOMContentLoaded", function () {
@@ -93,10 +174,18 @@
             var toastList = toastElList.map(function (toastEl) {
                 return new bootstrap.Toast(toastEl, { delay: 4000 });
             });
-            toastList.forEach(toast => toast.show());
+            toastList.forEach((toast) => toast.show());
         });
     </script>
 
     {% block extra_js %}{% endblock %}
+
+    <footer>
+    <div class="container-footer">
+        <p>&copy; {{ current_year }} Tachyon Log. All rights reserved.</p>
+        <p>Developed by <a href="https://github.com/earlhsjks" target="_blank" class="text-decoration-none">earlhsjks</a>
+        </p>
+    </div>
+    </footer>
 </body>
 </html>

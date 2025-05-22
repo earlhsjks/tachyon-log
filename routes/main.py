@@ -7,6 +7,10 @@ from models.models import db, User, Attendance, Schedule, GlobalSettings, Attend
 # Create a Blueprint for main user routes
 main_bp = Blueprint('main', __name__)
 
+@main_bp.context_processor
+def inject_current_year():
+    return {'current_year': datetime.now().year}
+
 def check_attendance_flags(attendance_entry):
     """
     Checks and updates attendance flags based on clock-in and clock-out times.

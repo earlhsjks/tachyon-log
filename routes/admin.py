@@ -13,6 +13,10 @@ from sqlalchemy import text, or_
 # Create a Blueprint for admin routes
 admin_bp = Blueprint('admin', __name__)
 
+@admin_bp.context_processor
+def inject_current_year():
+    return {'current_year': datetime.now().year}
+
 # Funtion of udate user schedule
 def parse_time(time_str):
     """Convert string to time object, return None if empty or invalid."""

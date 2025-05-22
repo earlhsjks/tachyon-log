@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GIA Dashboard</title>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_employee.css') }}">
+
     <!-- Local Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 
@@ -15,9 +17,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
-<body class="bg-light">
 
-    <!-- Navbar -->
+<body class="bg-light">
+    <main>
+            <!-- Navbar -->
     <nav class="navbar navbar-dark bg-dark px-3">
         <span class="navbar-brand">GIA Dashboard</span>
         <a href="{{ url_for('main.logout') }}" class="btn btn-danger">
@@ -191,5 +194,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/dashboard_clock.js') }}"></script>
 
+    </main>
+
+    <footer class="text-center py-3 border-top">
+        <div class="container">
+            <p class="mb-1">&copy; {{ current_year }} Tachyon Log. All rights reserved.</p>
+            <p class="mb-0">
+                Developed by 
+                <a href="https://github.com/earlhsjks" target="_blank" class="text-decoration-none text-primary">
+                    earlhsjks
+                </a>
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
