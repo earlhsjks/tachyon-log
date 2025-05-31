@@ -6,13 +6,26 @@
 
 /* General Reset */
 body, html {
+    height: 100%;
     margin: 0;
     padding: 0;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#page-content {
+    flex: 1 0 auto;
+    display: flex;
+    min-height: 0; /* Important for flex child scrolling */
 }
 
 :root {
     --mobile-sidebar-width: 80px; /* Set to 100px, 120px, etc., as needed */
+}
+
+main.flex-grow-1 {
+    flex-grow: 1;
+    overflow-y: auto;
 }
 
 /* Sidebar (Default for Desktop) */
@@ -165,4 +178,19 @@ body, html {
         margin-left: 0;
         width: 100%;
     }
+}
+
+footer {
+    flex-shrink: 0;
+    padding: 1rem 0;
+    width: 100%;
+}
+
+.container-footer {
+    max-width: calc(100% - 250px);
+    margin-left: 250px;
+    padding: 0 1rem;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1px;
 }

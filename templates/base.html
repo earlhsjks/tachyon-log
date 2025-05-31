@@ -19,49 +19,6 @@
 
     
     {% block extra_css %}{% endblock %}
-    <style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-    }
-
-    #page-content {
-        flex: 1 0 auto;
-        display: flex;
-        min-height: 0; /* Important for flex child scrolling */
-    }
-
-    #sidebar {
-        width: 250px;
-        background-color: #212529; /* Bootstrap dark */
-        color: white;
-        padding: 1rem;
-        min-height: 100vh;
-    }
-
-    main.flex-grow-1 {
-        flex-grow: 1;
-        overflow-y: auto;
-    }
-
-    footer {
-        flex-shrink: 0;
-        padding: 1rem 0;
-        width: 100%;
-    }
-
-    .container-footer {
-        max-width: calc(100% - 250px);
-        margin-left: 250px;
-        padding: 0 1rem;
-        text-align: center;
-        font-size: 13px;
-        line-height: 1px;
-    }
-    </style>
-
 </head>
 <body>
     <!-- Navbar (Visible Only on Mobile) -->
