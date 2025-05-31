@@ -1,3 +1,4 @@
+.gitignore
 venv/
 venv
 third-party/
