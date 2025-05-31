@@ -9,7 +9,6 @@ from datetime import datetime, timedelta, time
 from models.models import db, User, Attendance, Schedule, GlobalSettings, Logs, AttendanceInconsistency
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import text, or_
-from zoneinfo import ZoneInfo
 
 # Create a Blueprint for admin routes
 admin_bp = Blueprint('admin', __name__)
@@ -33,7 +32,7 @@ def log_entry(admin_id, action, details=None):
         admin_id=admin_id,
         action=action,
         details=details,
-        timestamp=datetime.now(ZoneInfo("Asia/Manila"))
+        timestamp=datetime.now() + timedelta(hours=8)
     )
 
     db.session.add(log_entry)
