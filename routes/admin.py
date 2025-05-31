@@ -32,7 +32,7 @@ def log_entry(admin_id, action, details=None):
         admin_id=admin_id,
         action=action,
         details=details,
-        timestamp=datetime.now()
+        timestamp=datetime.datetime.now()
     )
 
     db.session.add(log_entry)
