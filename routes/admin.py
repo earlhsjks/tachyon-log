@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import pandas as pd
 import io, pytz
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from models.models import db, User, Attendance, Schedule, GlobalSettings, Logs, AttendanceInconsistency
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import text, or_
@@ -28,19 +28,15 @@ def parse_time(time_str):
         return None  # Handle incorrect formats safely
 
 def log_entry(admin_id, action, details=None):
-    print("🚀 log_entry() function STARTED")  # This should print immediately
-    timestamp = datetime.now()
-    print(f"⏳ Timestamp: {timestamp}")  # This should print too
-
     log_entry = Logs(
         admin_id=admin_id,
         action=action,
         details=details,
-        timestamp=timestamp
+        timestamp=datetime.now()
     )
+
     db.session.add(log_entry)
     db.session.commit()
-    print("✅ log_entry() function COMPLETED")
 
 # Admin Login
 @admin_bp.route('/login', methods=['GET', 'POST'])
