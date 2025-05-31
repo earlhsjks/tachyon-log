@@ -9,6 +9,7 @@ from datetime import datetime, timedelta, time
 from models.models import db, User, Attendance, Schedule, GlobalSettings, Logs, AttendanceInconsistency
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import text, or_
+from zoneinfo import ZoneInfo
 
 # Create a Blueprint for admin routes
 admin_bp = Blueprint('admin', __name__)
@@ -28,16 +29,11 @@ def parse_time(time_str):
         return None  # Handle incorrect formats safely
 
 def log_entry(admin_id, action, details=None):
-
-    def getTime():
-        today = datetime.today().strftime('%A')  # Get current day
-        now = datetime.now().time()
-
     log_entry = Logs(
         admin_id=admin_id,
         action=action,
         details=details,
-        timestamp=getTime
+        timestamp=datetime.now(ZoneInfo("Asia/Manila"))
     )
 
     db.session.add(log_entry)
