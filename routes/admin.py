@@ -69,7 +69,7 @@ def login():
 def logout():
     logout_user()  # Logs out the user
     session.clear()  # Clears session data
-    return redirect(url_for('main.index'))  # Redirect to login page
+    return render_template('admin/login_admin.html')  # Redirect to login page
 
 # Dashboard
 @admin_bp.route('/dashboard')
@@ -77,7 +77,7 @@ def logout():
 def admin_dashboard():
     if current_user.role not in ["superadmin", "admin"]:
         flash("Access Denied!", "danger")
-        return redirect(url_for('main.home'))
+        return render_template('admin/login_admin.html')
 
     # Exclude superadmin from statistics
     total_employees = User.query.filter(User.role != "superadmin").count()
@@ -157,7 +157,7 @@ def force_clock_out(employee_id):
     # Only superadmin or admin can use this
     if current_user.role not in ["superadmin", "admin"]:
         flash("Unauthorized access!", "danger")
-        return redirect(url_for("admin.dashboard"))
+        return render_template('admin/login_admin.html')
 
     # Get the latest active attendance record
     attendance = Attendance.query.filter(
@@ -208,7 +208,7 @@ def force_clock_out(employee_id):
 def admin_attendance():
     if current_user.role not in ["superadmin", "admin"]:
         flash("Unauthorized Access!", "danger")
-        return redirect(url_for('main.login_employee'))
+        return render_template('admin/login_admin.html')
 
     # Ensure `month` is properly formatted
     month = request.args.get('month', '').strip()
@@ -265,7 +265,7 @@ def admin_attendance():
 def admin_employees():
     if current_user.role not in ["superadmin", "admin"]:
         flash("Access Denied!", "danger")
-        return redirect(url_for('main.home'))
+        return render_template('admin/login_admin.html')
 
     users = db.session.scalars(db.select(User)).all()
     users = User.query.filter(User.role != "superadmin").all()
@@ -278,7 +278,7 @@ def admin_employees():
 def edit_user(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
         flash("Access Denied!", "danger")
-        return redirect(url_for('main.home'))
+        return render_template('admin/login_admin.html')
 
     user = User.query.get_or_404(employee_id)
 
@@ -308,7 +308,7 @@ def edit_user(employee_id):
 def update_user(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
         flash("Access Denied!", "danger")
-        return redirect(url_for('main.home'))
+        return render_template('admin/login_admin.html')
 
     user = User.query.get_or_404(employee_id)
     print("🚀 Received Form Data:", request.form)
@@ -432,7 +432,7 @@ def update_user(employee_id):
 def add_user():
     if current_user.role not in ["superadmin", "admin"]:
         flash("Access Denied!", "danger")
-        return redirect(url_for('main.home'))
+        return render_template('admin/login_admin.html')
 
     employee_id = request.form.get('employee_id')
     username = request.form.get('username')
@@ -474,7 +474,7 @@ def add_user():
 def delete_user(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
         flash("Access Denied!", "danger")
-        return redirect(url_for('admin.admin_employees'))
+        return render_template('admin/login_admin.html')
     
     user = User.query.get_or_404(employee_id)
 
@@ -513,7 +513,7 @@ def delete_user(employee_id):
 def view_user_logs(employee_id):
     if current_user.role not in ["superadmin", "admin"]:
         flash("Unauthorized Access!", "danger")
-        return redirect(url_for('dashboard_admin'))
+        return render_template('admin/login_admin.html')
 
     month = request.args.get('month')  # Use GET instead of POST to match filter form
 
@@ -568,7 +568,7 @@ def view_user_logs(employee_id):
 def edit_attendance():
     if current_user.role not in ["superadmin", "admin"]:
         flash("Unauthorized Access!", "danger")
-        return redirect(url_for('dashboard_admin'))
+        return render_template('admin/login_admin.html')
 
     record_id = request.form.get('save')  # Get the record ID from the button
     if not record_id:
@@ -627,7 +627,7 @@ def edit_attendance():
 def add_attendance_entry():
     if current_user.role not in ["superadmin", "admin"]:
         flash("Unauthorized Access!", "danger")
-        return redirect(url_for('dashboard_admin'))
+        return render_template('admin/login_admin.html')
 
     employee_id = request.form.get('employee_id')
     date_str = request.form.get('date')
@@ -705,7 +705,7 @@ def account_settings():
 def settings():
     if current_user.role not in ["superadmin", "admin"]:
         flash("Access Denied!", "danger")
-        return redirect(url_for('main.home'))
+        return render_template('admin/login_admin.html')
 
     settings = GlobalSettings.query.first()
 
@@ -758,7 +758,7 @@ def settings():
 def view_logs():
     if current_user.role not in ["superadmin", "admin"]:
         flash("Unauthorized access!", "danger")
-        return redirect(url_for('dashboard_admin'))
+        return render_template('admin/login_admin.html')
 
     log_date = request.form.get('log_date')
     rows_per_page = int(request.form.get('rows_per_page', 10))
@@ -779,7 +779,7 @@ def view_logs():
 @login_required
 def export_pdf():
     if current_user.role not in ["superadmin", "admin"]:
-        return redirect(url_for('dashboard_admin'))
+        return render_template('admin/login_admin.html')
 
     # Ensure selected_month is valid, otherwise default to current month
     selected_month = request.args.get('month', '').strip() or datetime.today().strftime('%Y-%m')
@@ -865,7 +865,7 @@ def export_pdf():
 @login_required
 def export_excel():
     if current_user.role not in ["superadmin", "admin"]:
-        return redirect(url_for('main.home'))
+        return render_template('admin/login_admin.html')
 
     records = Attendance.Session.scalars().all()
     data = [{"Employee ID": record.employee_id, "Clock In": record.clock_in, "Clock Out": record.clock_out or "N/A"} for record in records]
