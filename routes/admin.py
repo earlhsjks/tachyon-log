@@ -28,11 +28,16 @@ def parse_time(time_str):
         return None  # Handle incorrect formats safely
 
 def log_entry(admin_id, action, details=None):
+
+    def getTime():
+        today = datetime.today().strftime('%A')  # Get current day
+        now = datetime.now().time()
+
     log_entry = Logs(
         admin_id=admin_id,
         action=action,
         details=details,
-        timestamp=datetime.datetime.now()
+        timestamp=getTime
     )
 
     db.session.add(log_entry)
