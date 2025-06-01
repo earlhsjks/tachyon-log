@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta, time
 from models.models import db, User, Attendance, Schedule, GlobalSettings, AttendanceInconsistency
 
-# Create a Blueprint for main user routes
 main_bp = Blueprint('main', __name__)
 
 @main_bp.context_processor
@@ -18,29 +17,26 @@ def check_attendance_flags(attendance_entry):
     Excludes weekends (Saturday and Sunday).
     """
 
-    # Fetch strict mode setting from the database
     settings = GlobalSettings.query.first()  # Assuming only one settings row exists
     strict_mode = settings.enable_strict_schedule if settings else False
 
     if not strict_mode:
-        return  # Exit function if strict mode is OFF
+        return
 
     if not attendance_entry or not attendance_entry.clock_in:
         return
 
     today = attendance_entry.clock_in.date()
 
-    # Skip if today is Saturday (5) or Sunday (6)
     if today.weekday() in [5, 6]:
         return
 
-    allowed_late_minutes = 0  # Hardcoded grace period
+    allowed_late_minutes = 0
 
-    # Get user's schedule for the day
     user_schedule = Schedule.query.filter_by(employee_id=attendance_entry.employee_id, day=today.strftime('%A')).first()
 
     if not user_schedule:
-        return  # No schedule found, skip checks
+        return
 
     schedule_start = datetime.combine(today, user_schedule.start_time)
     schedule_end = datetime.combine(today, user_schedule.end_time)
@@ -78,7 +74,7 @@ def check_attendance_flags(attendance_entry):
             ))
 
     db.session.commit()
-        
+
 # Home Route
 @main_bp.route('/')
 def home():
@@ -86,7 +82,6 @@ def home():
 
 @main_bp.route('/', methods=['GET', 'POST'])
 def login_employee():
-    """Handles employee login from the main index page."""
     if request.method == 'POST':
         employee_id = request.form.get('employee_id')
         
@@ -109,7 +104,6 @@ def dashboard_employee():
     if month:
         year, month = map(int, month.split('-'))
     else:
-        # Default: Show current month
         today = datetime.today()
         year, month = today.year, today.month
 
@@ -122,43 +116,11 @@ def dashboard_employee():
         db.extract('month', Attendance.clock_in) == month
     ).all()
 
-    status = "Off Duty"  # Default status
-    today = datetime.today().date()
-    
-    if attendance_records:
-        last_record = attendance_records[-1]  # Get last recorded attendance
-        
-        # Only consider 'On Duty' if clock-in is today
-        if last_record.clock_out is None and last_record.clock_in.date() == today:
-            status = "On Duty"
-    
-            if GlobalSettings.enable_strict_schedule:
-                # Check if the user is late
-                if user_schedule and last_record.clock_in.time() > user_schedule.start_time:
-                    status = "Late"
-    
-                # Check if they are working overtime but haven't clocked out yet
-                elif user_schedule and datetime.now().time() > user_schedule.end_time:
-                    status = "Overtime"
-    
-        elif last_record.clock_out:  # User has clocked out
-            if GlobalSettings.enable_strict_schedule:
-                if user_schedule and last_record.clock_in.time() > user_schedule.start_time:
-                    status = "Late"
-    
-                elif user_schedule and last_record.clock_out.time() > user_schedule.end_time:
-                    status = "Overtime"
-    
-    # Format status for CSS class
-    status_class = status.lower().replace(" ", "-")
-
     return render_template(
         'dashboard_employee.html',
-        status=status,  # For display text
-        status_class=status_class,  # For CSS class
         name=current_user.username,
         attendance_records=attendance_records,
-        current_month=f"{year}-{month:02d}"  # Ensure month is always two digits (e.g., 2024-03)
+        current_month=f"{year}-{month:02d}" 
     )
 
 # Logout Route
@@ -172,7 +134,7 @@ def logout():
 @main_bp.route('/clock-in')
 @login_required
 def clock_in():
-    today = datetime.today().strftime('%A')  # Get current day
+    today = datetime.today().strftime('%A')
     now = datetime.now().time()
 
     # Get user's schedule for today (normal & broken)
@@ -321,7 +283,7 @@ def clock_out():
                     break  # Second shift matched
 
         if schedule_end:
-            time_limit = schedule_end + timedelta(minutes=30)  # ⏳ 30-minute grace period
+            time_limit = schedule_end + timedelta(minutes=30)  # 30-minute grace period
 
             # Block clock-out if more than 30 minutes past scheduled end time
             if actual_clock_out > time_limit:
@@ -391,9 +353,3 @@ def end_break():
     flash("Break ended!", "success")
 
     return redirect(url_for('main.dashboard_employee'))
-
-# User Manual
-@main_bp.route('/manual')
-def manual():
-
-    return render_template('manual.html')

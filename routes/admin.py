@@ -32,7 +32,7 @@ def log_entry(admin_id, action, details=None):
         admin_id=admin_id,
         action=action,
         details=details,
-        timestamp=datetime.now() + timedelta(hours=8)
+        timestamp=datetime.now()
     )
 
     db.session.add(log_entry)
@@ -307,8 +307,7 @@ def update_user(employee_id):
         return render_template('admin/login_admin.html')
 
     user = User.query.get_or_404(employee_id)
-    print("🚀 Received Form Data:", request.form)
-
+    
     new_employee_id_list = request.form.getlist('employee_id')
     new_employee_id = new_employee_id_list[-1] if new_employee_id_list else user.employee_id
 

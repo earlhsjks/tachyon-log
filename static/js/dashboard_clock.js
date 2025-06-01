@@ -52,3 +52,4 @@ document.addEventListener("DOMContentLoaded", function () {
         statusIcon.classList.add("blink");
     }
 });
+    
