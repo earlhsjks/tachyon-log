@@ -107,14 +107,11 @@ def dashboard_employee():
         today = datetime.today()
         year, month = today.year, today.month
 
-    today_day = datetime.today().strftime('%A')  # Get today's weekday
-    user_schedule = Schedule.query.filter_by(employee_id=current_user.employee_id, day=today_day).first()
-
     attendance_records = Attendance.query.filter(
         Attendance.employee_id == current_user.employee_id,
         db.extract('year', Attendance.clock_in) == year,
         db.extract('month', Attendance.clock_in) == month
-    ).all()
+    ).order_by(Attendance.clock_in.desc()).all()
 
     return render_template(
         'dashboard_employee.html',
@@ -198,10 +195,10 @@ def clock_in():
     ).all()
 
     # Max clock-in rule for strict schedule
-    if global_settings and global_settings.enable_strict_schedule and total_clock_ins_today >= 2:
+    if len(active_shifts) >= 2:
         flash("Maximum of two clock-ins allowed per day!", "danger")
         return redirect(url_for('main.dashboard_employee'))
-
+    
     # Prevent duplicate clock-in for the same shift
     for shift in active_shifts:
         if valid_schedule:
@@ -212,11 +209,6 @@ def clock_in():
             if is_second_shift and shift.clock_in.time() >= valid_schedule.second_start_time and shift.clock_out is None:
                 flash("You already clocked in for your second shift! Please clock out before clocking in again.", "warning")
                 return redirect(url_for('main.dashboard_employee'))
-
-    # Prevent triple clock-in
-    if len(active_shifts) >= 2 and has_second_shift:
-        flash("You cannot clock in more than twice in a day!", "danger")
-        return redirect(url_for('main.dashboard_employee'))
 
     # Enforce strict schedule
     if global_settings and global_settings.enable_strict_schedule and not valid_schedule:

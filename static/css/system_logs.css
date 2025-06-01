@@ -20,15 +20,8 @@ body {
     overflow: hidden;
 }
 
-/* Table Header */
-.log-table thead th {
-    text-transform: uppercase;
-}
-
-/* Action Column */
-.log-action {
-    font-weight: bold;
-    color: #ff9800;
+.log-table {
+    white-space: nowrap;
 }
 
 /* Responsive Tweaks */

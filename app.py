@@ -105,7 +105,6 @@ def initialize_database():
             )
             db.session.add_all([superadmin, admin])
             db.session.commit()
-            logging.info("SuperAdmin and Admin accounts created.")
 
 # Run Flask App
 if __name__ == '__main__':

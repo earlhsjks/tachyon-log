@@ -27,6 +27,7 @@ class Attendance(db.Model):
     __tablename__ = 'attendance'
     id = db.Column(db.Integer, primary_key=True)
     employee_id = db.Column(db.String(50), db.ForeignKey('users.employee_id', ondelete="CASCADE"), nullable=False)
+    # date = db.Column(db.Date, nullable=False)
     clock_in = db.Column(db.DateTime, nullable=True)
     clock_out = db.Column(db.DateTime, nullable=True)
 
@@ -80,7 +81,7 @@ class Logs(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     admin_id = db.Column(db.String(50), db.ForeignKey('users.employee_id', ondelete="CASCADE"), nullable=False)
     action = db.Column(db.String(255), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.now, nullable=False)
     details = db.Column(db.Text, nullable=True)
 
     admin = db.relationship('User', backref='logs', lazy=True)

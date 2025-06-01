@@ -7,10 +7,11 @@
 
     <!-- Local Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_attendance.css') }}">
 
     <!-- Local Bootstrap JS -->
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_attendance.css') }}">
     
 <div class="container mt-4">
     <h2 class="text-center text-primary">Viewing Attendance for: {{ user.username }}</h2>

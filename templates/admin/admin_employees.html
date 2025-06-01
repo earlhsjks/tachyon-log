@@ -7,10 +7,11 @@
 
     <!-- Local Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_employees.css') }}">
 
     <!-- Local Bootstrap JS -->
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_employees.css') }}">
     
     <div class="container mt-4">
         <div class="row">
@@ -55,11 +56,11 @@
                         <h4>Employee List</h4>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="overflow-x: auto;">
                             <table class="table table-bordered text-center align-middle">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th class="align-middle">Employee ID</th>
+                                        <th class="align-middle">ID</th>
                                         <th class="align-middle">Full Name</th>
                                         <th class="align-middle">Role</th>
                                         <th class="align-middle">Actions</th>
@@ -91,11 +92,11 @@
                         <h4>Admin List</h4>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="overflow-x: auto;">
                             <table class="table table-bordered text-center align-middle">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th class="align-middle">Admin ID</th>
+                                        <th class="align-middle">ID</th>
                                         <th class="align-middle">Full Name</th>
                                         <th class="align-middle">Role</th>
                                         <th class="align-middle">Actions</th>

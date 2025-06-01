@@ -36,6 +36,7 @@ body {
 .table {
     border-radius: 8px;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 .table thead th {
