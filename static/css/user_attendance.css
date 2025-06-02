@@ -29,11 +29,6 @@
     white-space: nowrap;
 }
 
-/* Table Headers */
-.attendance-table thead {
-    text-transform: uppercase;
-}
-
 .attendance-table th {
     text-align: center;
     vertical-align: middle !important;
