@@ -93,7 +93,7 @@
                             <tbody>
                                 {% for record in attendance_records %}
                                     <tr>
-                                        <td>{{ record.clock_in.strftime('%d') if record.clock_in else '-' }}</td>
+                                        <td>{{ record.clock_in.strftime('%e') if record.clock_in else '-' }}</td>
                                         <td>{{ record.clock_in.strftime('%I:%M %p') if record.clock_in else '-' }}</td>
                                         <td>{{ record.clock_out.strftime('%I:%M %p') if record.clock_out else '-' }}</td>
                                         <td>
