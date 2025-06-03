@@ -11,7 +11,18 @@ body {
     border-radius: 10px;
 }
 
-/* Toggle Switch Styling */
+.form-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.75rem;
+}
+
+.form-switch .form-check-label {
+    margin-bottom: 0;
+    line-height: 1.4rem;
+}
+
 .form-switch .form-check-input {
     width: 2.5rem;
     height: 1.4rem;
@@ -24,12 +35,10 @@ body {
     cursor: pointer;
 }
 
-/* Input Fields */
 .form-control {
     border-radius: 8px;
 }
 
-/* Buttons */
 .btn-success {
     font-weight: bold;
     padding: 10px;
