@@ -1,11 +1,7 @@
-# Tachyon Log
-
+## Tachyon Log
 Tachyon Log is a **local attendance management system** designed for organizations to efficiently track employee attendance, work schedules, and manage user roles.
 
----
-
-## 🚀 Features
-
+## Features
 ### **Admin Dashboard**
 - **Total Employees** – View the total number of registered employees.
 - **On-Duty Employees** – Track currently clocked-in employees.
@@ -29,6 +25,6 @@ Tachyon Log is a **local attendance management system** designed for organizatio
 - **Allow Early Clock-Out** – Decide whether employees can leave early.
 - **Allow Overtime** – Enable/disable overtime tracking.
 
-## 📜 License
+## License
 This project is licensed under the **MIT License**.
 
