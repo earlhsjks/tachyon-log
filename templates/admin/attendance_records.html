@@ -49,10 +49,10 @@
                 <tbody>
                     {% for record in attendance %}
                     <tr class="text-center">
-                        <td>{{ record.username }}</td>
+                        <td>{{ record.first_name }} {{ record.last_name }}</td>
                         <td>{{ record.clock_in.strftime('%m-%d-%y')}}</td>
                         <td>{{ record.clock_in.strftime('%I:%M %p') }}</td>
-                        <td>{{ record.clock_out.strftime('%I:%M %p') if record.clock_out else 'N/A' }}</td>
+                        <td>{{ record.clock_out.strftime('%I:%M %p') if record.clock_out else '-' }}</td>
                         <td>
                             {% if record.clock_in and record.clock_out %}
                                 {{ ((record.clock_out - record.clock_in).seconds // 3600)|int }}h

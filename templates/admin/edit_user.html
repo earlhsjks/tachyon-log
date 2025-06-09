@@ -28,11 +28,22 @@
             <input type="hidden" name="employee_id" value="{{ user.employee_id }}">
 
             <!-- User Info -->
-            <div class="mb-3">
-                <label class="form-label">Full Name:</label>
-                <input type="text" name="username" value="{{ user.username }}" class="form-control" required>
+            <div class="row mb-3">
+                <div class="col-md-5">
+                    <label class="form-label">First Name:</label>
+                    <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Last Name:</label>
+                    <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Middle Initial:</label>
+                    <input type="text" class="form-control text-uppercase" name="middle_name"
+                           maxlength="1" autocomplete="off" style="text-transform: uppercase;"
+                           value="{{ user.middle_name[:-1] if user.middle_name else '' }}">
+                </div>
             </div>
-
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Employee ID:</label>
@@ -43,62 +54,64 @@
                     <select name="role" class="form-select" required>
                         <option value="employee" {% if user.role == "employee" %}selected{% endif %}>Employee</option>
                         <option value="admin" {% if user.role == "admin" %}selected{% endif %}>Admin</option>
+                        <option value="manager" {% if user.role == "manager" %}selected{% endif %}>Manager</option>
                     </select>
                 </div>
             </div>
 
             <!-- Normal Schedule Section -->
-            <h4 class="text-primary">Normal Schedule</h4>
-            <div class="row g-3">
-                {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
-                <div class="col-md-6">
-                    <label class="form-label">{{ day }}</label>
-                    <div class="d-flex gap-2">
-                        <input type="time" name="{{ day.lower() }}_start"
-                            value="{{ schedule.get(day, {}).start_time.strftime('%H:%M') if schedule.get(day, {}).start_time and not schedule.get(day, {}).is_broken else '' }}"
-                            class="form-control">
-                        <input type="time" name="{{ day.lower() }}_end"
-                            value="{{ schedule.get(day, {}).end_time.strftime('%H:%M') if schedule.get(day, {}).end_time and not schedule.get(day, {}).is_broken else '' }}"
-                            class="form-control">
+             {% if user.role != "admin" and user.role != "manager" %}
+                <h4 class="text-primary">Normal Schedule</h4>
+                <div class="row g-3">
+                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
+                    <div class="col-md-6">
+                        <label class="form-label">{{ day }}</label>
+                        <div class="d-flex gap-2">
+                            <input type="time" name="{{ day.lower() }}_start"
+                                value="{{ schedule.get(day, {}).start_time.strftime('%H:%M') if schedule.get(day, {}).start_time and not schedule.get(day, {}).is_broken else '' }}"
+                                class="form-control">
+                            <input type="time" name="{{ day.lower() }}_end"
+                                value="{{ schedule.get(day, {}).end_time.strftime('%H:%M') if schedule.get(day, {}).end_time and not schedule.get(day, {}).is_broken else '' }}"
+                                class="form-control">
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
 
-            <!-- Broken Schedule Section -->
-            <h4 class="text-danger mt-4">Broken Schedule</h4>
-            <div class="table-responsive">
-                <table class="table table-bordered" id="scheduleTable">
-                    <thead class="table-dark text-center">
-                        <tr>
-                            <th>Day</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for broken in broken_schedules %}
-                        <tr>
-                            <td>
-                                <select name="day[]" class="form-select">
-                                    {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
-                                    <option value="{{ day }}" {% if broken.day == day %}selected{% endif %}>{{ day }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td><input type="time" name="second_start_time[]" value="{{ broken.second_start_time.strftime('%H:%M') if broken.second_start_time else '' }}" class="form-control"></td>
-                            <td><input type="time" name="second_end_time[]" value="{{ broken.second_end_time.strftime('%H:%M') if broken.second_end_time else '' }}" class="form-control"></td>
-                            <td><button type="button" class="btn btn-danger btn-sm removeSchedule" onclick="removeSchedule(this, '{{ broken.id }}')">Remove</button></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                <!-- Broken Schedule Section -->
+                <h4 class="text-danger mt-4">Broken Schedule</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="scheduleTable">
+                        <thead class="table-dark text-center">
+                            <tr>
+                                <th>Day</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for broken in broken_schedules %}
+                            <tr>
+                                <td>
+                                    <select name="day[]" class="form-select">
+                                        {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] %}
+                                        <option value="{{ day }}" {% if broken.day == day %}selected{% endif %}>{{ day }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td><input type="time" name="second_start_time[]" value="{{ broken.second_start_time.strftime('%H:%M') if broken.second_start_time else '' }}" class="form-control"></td>
+                                <td><input type="time" name="second_end_time[]" value="{{ broken.second_end_time.strftime('%H:%M') if broken.second_end_time else '' }}" class="form-control"></td>
+                                <td><button type="button" class="btn btn-danger btn-sm removeSchedule" onclick="removeSchedule(this, '{{ broken.id }}')">Remove</button></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
-            <!-- Add Broken Schedule Button -->
-            <button type="button" id="addSchedule" class="btn btn-outline-primary w-100">Add Broken Schedule</button>
-
+                <!-- Add Broken Schedule Button -->
+                <button type="button" id="addSchedule" class="btn btn-outline-primary w-100">Add Broken Schedule</button>
+            {% endif %}
             <!-- Buttons -->
             <div class="d-flex justify-content-between mt-4">
                 <button type="submit" class="btn btn-success px-4">Update User</button>

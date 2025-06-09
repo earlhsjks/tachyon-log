@@ -23,11 +23,20 @@
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ url_for('admin.add_user') }}">
-                            <div class="mb-3">
-                                <label class="form-label">First Name:</label>
-                                <input type="text" class="form-control" name="username" required autocomplete="off">
+                            <div class="row">
+                                <div class="col-md-5 mb-3">
+                                    <label class="form-label">First Name:</label>
+                                    <input type="text" class="form-control" name="first_name" required autocomplete="off">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Last Name:</label>
+                                    <input type="text" class="form-control" name="last_name" required autocomplete="off">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Middle Initial:</label>
+                                    <input type="text" class="form-control text-uppercase" name="middle_name" maxlength="1" autocomplete="off" style="text-transform: uppercase;">
+                                </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Employee ID:</label>
@@ -42,7 +51,6 @@
                                     </select>
                                 </div>
                             </div>
-
                             <button type="submit" class="btn btn-success w-100">Add User</button>
                         </form>
                     </div>
@@ -70,7 +78,7 @@
                                     {% for user in users if user.role != 'admin' %}
                                     <tr>
                                         <td class="align-middle">{{ user.employee_id }}</td>
-                                        <td class="align-middle">{{ user.username }}</td>
+                                        <td class="align-middle">{{ user.first_name }} {{ user.middle_name or '' }} {{ user.last_name }}</td>
                                         <td class="align-middle">{{ user.role }}</td>
                                         <td class="align-middle">
                                             <a href="{{ url_for('admin.edit_user', employee_id=user.employee_id) }}" class="btn btn-warning btn-sm">Edit</a>
@@ -106,7 +114,7 @@
                                     {% for user in users if user.role == 'admin' or user.role == 'manager' %}
                                     <tr>
                                         <td class="align-middle">{{ user.employee_id }}</td>
-                                        <td class="align-middle">{{ user.username }}</td>
+                                        <td class="align-middle">{{ user.first_name }} {{ user.middle_name or '' }} {{ user.last_name }}</td>
                                         <td class="align-middle">{{ user.role }}</td>
                                         <td class="align-middle">
                                             <a href="{{ url_for('admin.edit_user', employee_id=user.employee_id) }}" class="btn btn-warning btn-sm">Edit</a>

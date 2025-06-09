@@ -44,7 +44,9 @@
 
     <!-- Header Section -->
     <div class="container text-center mt-4">
-        <h2 class="fw-bold">{{ name }}</h2>
+        <h2 class="fw-bold">
+            {{ current_user.first_name }} {{ current_user.middle_name or '' }} {{ current_user.last_name }}
+        </h2>
     </div>
 
     <!-- Live Clock & Date -->

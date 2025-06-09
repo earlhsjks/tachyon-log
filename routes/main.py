@@ -78,7 +78,7 @@ def check_attendance_flags(attendance_entry):
 # Home Route
 @main_bp.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('auth/employee.html')
 
 @main_bp.route('/', methods=['GET', 'POST'])
 def login_employee():
@@ -93,7 +93,7 @@ def login_employee():
         else:
             flash("ID Not Found!", "danger")
 
-    return render_template('index.html')
+    return render_template('auth/employee.html')
 
 # Employee Dashboard
 @main_bp.route('/gia-dashboard')
@@ -115,7 +115,7 @@ def dashboard_employee():
 
     return render_template(
         'dashboard_employee.html',
-        name=current_user.username,
+        name=f"{current_user.first_name} {current_user.middle_name or ''} {current_user.last_name}".strip(),
         attendance_records=attendance_records,
         current_month=f"{year}-{month:02d}" 
     )

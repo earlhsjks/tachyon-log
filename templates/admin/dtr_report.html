@@ -17,7 +17,9 @@
             <div>NOTRE DAME OF MARBEL UNIVERSITY</div>
             <div class="address">City of Koronadal, South Cotabato</div>
             <div class="dtr-title">DAILY TIME RECORD</div>
-            <div class="name">{{ user.username }} - {{ user.employee_id }}</div>
+            <div class="name">
+                {{ user.last_name }}, {{ user.first_name }} {{ user.middle_name }} - {{ user.employee_id }}
+            </div>
             <div class="subtitle">Name</div>
             <div class="month-label">
                 For the month of {{ datetime(year, month, 1).strftime('%B') }}, {{ year }}

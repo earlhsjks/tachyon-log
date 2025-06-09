@@ -9,12 +9,23 @@ class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
     employee_id = db.Column(db.String(50), primary_key=True)
-    # first_name = db.Column(db.String(50), nullable=False)
-    # last_name = db.Column(db.String(50), nullable=False)
-    # middle_name = db.Column(db.String(50), nullable=True)
-    username = db.Column(db.String(100), nullable=False)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    _middle_name = db.Column("middle_name", db.String(50), nullable=True)
     password = db.Column(db.String(200), nullable=True)
     role = db.Column(db.String(20), nullable=False, default='employee')
+
+    @property
+    def middle_name(self):
+        return self._middle_name
+
+    @middle_name.setter
+    def middle_name(self, value):
+        if value:
+            value = value.strip()
+            if not value.endswith('.'):
+                value += '.'
+        self._middle_name = value
 
     def set_password(self, password):
         if password:
@@ -27,7 +38,6 @@ class Attendance(db.Model):
     __tablename__ = 'attendance'
     id = db.Column(db.Integer, primary_key=True)
     employee_id = db.Column(db.String(50), db.ForeignKey('users.employee_id', ondelete="CASCADE"), nullable=False)
-    # date = db.Column(db.Date, nullable=False)
     clock_in = db.Column(db.DateTime, nullable=True)
     clock_out = db.Column(db.DateTime, nullable=True)
 

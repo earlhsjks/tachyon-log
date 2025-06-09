@@ -27,17 +27,17 @@
                     </div>
 
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="allow_early_out" id="earlyOut"
-                            {% if settings.allow_early_out %}checked{% endif %}>
+                        <input class="form-check-input" type="checkbox" name="early_out_allowed" id="earlyOut"
+                            {% if settings.early_out_allowed %}checked{% endif %}>
                         <label class="form-check-label" for="earlyOut">Allow Early Clock-Out</label>
                     </div>
 
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="allow_overtime" id="overtime"
-                            {% if settings.allow_overtime %}checked{% endif %}>
+                        <input class="form-check-input" type="checkbox" name="overtime_allowed" id="overtime"
+                            {% if settings.overtime_allowed %}checked{% endif %}>
                         <label class="form-check-label" for="overtime">Allow Overtime</label>
                     </div>
-                </div>                
+                </div>
 
                 <h4 class="text-secondary">Allowed Early In</h4>
                 <div class="mb-3">
