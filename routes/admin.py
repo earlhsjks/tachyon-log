@@ -85,6 +85,7 @@ def admin_dashboard():
     on_duty_today_list = (
         db.session.query(
             User.employee_id,
+            User.first_name,
             User.last_name,
             Attendance.clock_in
         )
@@ -100,6 +101,7 @@ def admin_dashboard():
     forgot_to_clock_out_list = (
         db.session.query(
             User.employee_id,
+            User.first_name,
             User.last_name,
             Attendance.clock_in
         )
@@ -123,8 +125,6 @@ def admin_dashboard():
     )
 
     # Employees who are absent based on schedule
-    all_users = User.query.filter(User.role != "superadmin").all()
-    present_users = [att.employee_id for att in Attendance.query.filter(Attendance.clock_in.isnot(None)).all()]
     absent_employees = AttendanceInconsistency.query.filter_by(issue_type="Absent", date=today).count()
 
     # Fetch attendance inconsistencies and map them by employee_id and date

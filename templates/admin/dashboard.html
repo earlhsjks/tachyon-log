@@ -71,7 +71,7 @@
                                 {% for user in on_duty_today_list %}
                                 <tr>
                                     <td>{{ user.employee_id }}</td>
-                                    <td>{{ record.first_name }} {{ record.last_name }}</td>
+                                    <td>{{ user[1] }} {{ user[2] }}</td>
                                     <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
                                     <td>
                                     {% set flags = inconsistencies.get(user.employee_id, {}).get(user.clock_in.strftime('%Y-%m-%d'), []) %}
@@ -121,7 +121,7 @@
                                 {% for user in forgot_to_clock_out_list %}
                                 <tr>
                                     <td>{{ user.employee_id }}</td>
-                                    <td>{{ record.first_name }} {{ record.last_name }}</td>
+                                    <td>{{ user[1] }} {{ user[2] }}</td>
                                     <td>{{ user.clock_in.strftime('%m-%d-%y') }}</td>
                                     <td>{{ user.clock_in.strftime('%I:%M %p') }}</td>
                                     <td>
