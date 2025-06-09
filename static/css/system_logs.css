@@ -4,14 +4,6 @@ body {
     background-color: #f4f6f9;
 }
 
-/* Log Filter Form */
-.log-filter {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-}
-
 /* Table Styling */
 .log-table {
     background: white;
