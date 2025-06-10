@@ -282,8 +282,8 @@ def clock_out():
                 return redirect(url_for('main.dashboard_employee'))
 
             # If between schedule end and 7:30 PM, force clock-out to schedule end
-            time_730pm = datetime.combine(today, time(19, 30))  # 7:30 PM cutoff
-            if schedule_end < actual_clock_out < time_730pm:
+            nightTime = datetime.combine(today, time(18, 30))  # 7:30 PM cutoff
+            if schedule_end < actual_clock_out < nightTime:
                 last_record.clock_out = schedule_end
             else:
                 last_record.clock_out = actual_clock_out  # Normal clock-out

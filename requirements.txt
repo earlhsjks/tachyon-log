@@ -11,4 +11,3 @@ reportlab
 werkzeug
 waitress
 xlsxwriter
-session
