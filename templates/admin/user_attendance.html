@@ -51,10 +51,10 @@
                             <td class="align-middle">{{ record.clock_in.strftime('%m-%d-%y') if record.clock_in else 'N/A' }}</td>
                             <td class="align-middle">{{ record.clock_in.strftime('%A') if record.clock_in else 'N/A' }}</td>
                             <td class="align-middle">
-                                {{ record.clock_in.strftime('%H:%M') if record.clock_in else '' }}
+                                {{ record.clock_in.strftime('%I:%M %p') if record.clock_in else '-' }}
                             </td>
                             <td class="align-middle">
-                                {{ record.clock_out.strftime('%H:%M') if record.clock_out else '' }}
+                                {{ record.clock_out.strftime('%I:%M %p') if record.clock_out else '-' }}
                             </td>
                             <td class="align-middle">
                                 {% if record.clock_in and record.clock_out %}
