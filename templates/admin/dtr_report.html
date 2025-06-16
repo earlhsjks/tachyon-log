@@ -96,6 +96,9 @@
                     <p class="underline">JAYSON P. NOSIS</p>
                     <p>Unit Head</p>
                 </div>
+                <div class="sysgen mt-4" style="">
+                    System Generated {{ now.strftime('%B %d, %Y %I:%M %p') }}
+                </div>
             </div>
         </div>
         {% endfor %}
@@ -105,7 +108,7 @@
 
 <script>
     window.onload = function() {
-        window.print(); // Open print dialog
+        window.print();
     };
 </script>
 

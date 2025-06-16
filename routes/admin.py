@@ -930,7 +930,8 @@ def export_pdf():
     user_pairs = [users[i:i+2] for i in range(0, len(users), 2)]
     
     return render_template(
-        'admin/dtr_report.html', 
+        'admin/dtr_report.html',
+        now=datetime.now(),
         user_pairs=user_pairs, 
         month=month, 
         year=year, 

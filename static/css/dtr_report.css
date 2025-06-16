@@ -1,7 +1,7 @@
 @page {
     size: 8.5in 11in;
     margin: 0.2in;
-    margin-top: 0.5in;
+    margin-top: 0.3in;
 }
 
 body {
@@ -183,4 +183,11 @@ table tr {
     font-size: 10pt;
     height: 16px;
     line-height: 16px;
+}
+
+.sysgen {
+    margin-top: 50px;
+    text-align: right;
+    font-size: 0.9em;
+    color: #888;
 }
