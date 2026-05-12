@@ -2,8 +2,6 @@
 
 Tachyon Log is a **local attendance management system** designed for organizations to efficiently track employee attendance, work schedules, and manage user roles.
 
----
-
 ## Features
 
 ### **Admin Dashboard**
